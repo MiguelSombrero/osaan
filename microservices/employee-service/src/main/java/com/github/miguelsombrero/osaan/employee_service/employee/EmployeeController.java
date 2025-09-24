@@ -2,6 +2,8 @@ package com.github.miguelsombrero.osaan.employee_service.employee;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/v1/employees")
 public class EmployeeController {
@@ -17,9 +19,9 @@ public class EmployeeController {
         return service.saveEmployee(employee);
     }
 
-    @GetMapping("/{email}")
-    public Employee getEmployee(@PathVariable String email) {
-        return service.getEmployee(email);
+    @GetMapping("/{employeeId}")
+    public Employee getEmployee(@PathVariable UUID employeeId) {
+        return service.getEmployeeById(employeeId);
     }
 
 }

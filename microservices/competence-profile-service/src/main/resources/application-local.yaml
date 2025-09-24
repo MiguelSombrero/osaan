@@ -1,0 +1,12 @@
+employee:
+  service:
+    url: http://localhost:8080
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: DEBUG
+    web: DEBUG
+
+PORT: 8092

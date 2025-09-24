@@ -1,15 +1,15 @@
-package com.github.miguelsombrero.osaan.employee_service;
+package com.github.miguelsombrero.osaan.competence_profile_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
 @ComponentScan(basePackages = "com.github.miguelsombrero.osaan")
-public class EmployeeServiceApplication {
+@SpringBootApplication
+public class CompetenceProfileServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EmployeeServiceApplication.class, args);
+        SpringApplication.run(CompetenceProfileServiceApplication.class, args);
     }
 
 }
