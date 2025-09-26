@@ -1,0 +1,59 @@
+services:
+  # -----------------
+  # Microservices
+  # -----------------
+  employee-service:
+    build: ./microservices/employee-service
+    container_name: employee-service
+    depends_on:
+      - osaan-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://osaan-db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: osaan_pass
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8091:8080"
+
+  skill-catalog-service:
+    build: ./microservices/skill-catalog-service
+    container_name: skill-catalog-service
+    depends_on:
+      - osaan-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://osaan-db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: osaan_pass
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8092:8080"
+
+  competence--profile-service:
+    build: ./microservices/competence-profile-service
+    container_name: competence-profile-service
+    depends_on:
+      - osaan-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://osaan-db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: osaan_pass
+      EMPLOYEE_SERVICE_URL: http://employee-service:8080
+      SKILL_SERVICE_URL: http://skill-catalog-service:8080
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8093:8080"
+
+  # One DB for all microservices for simplicity in development
+  osaan-db:
+    image: postgres:latest
+    container_name: osaan-db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: osaan_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - osaan-data:/var/lib/postgresql/data
+
+volumes:
+  osaan-data:

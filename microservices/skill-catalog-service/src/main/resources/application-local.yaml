@@ -5,4 +5,5 @@ logging:
         jdbc: DEBUG
     web: DEBUG
 
-PORT: 8091
+server:
+  port: 8092

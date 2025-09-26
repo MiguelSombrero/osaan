@@ -9,9 +9,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+public class Skill {
     private UUID id;
-    private String firstName;
-    private String lastName;
-    private String email;
 }

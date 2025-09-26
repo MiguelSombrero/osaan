@@ -3,11 +3,11 @@
 ## Usage
 
 ```bash
-curl -X POST http://localhost:8091/v1/skills -H "Content-Type: application/json" -d '{"name":"Python"}'
+curl -X POST http://localhost:8092/v1/skills -H "Content-Type: application/json" -d '{"name":"React"}'
 ```
 
 ```bash
-curl -X GET http://localhost:8091/v1/skills/Python
+curl -X GET http://localhost:8092/v1/skills/Python
 ```
 
 ## For developer

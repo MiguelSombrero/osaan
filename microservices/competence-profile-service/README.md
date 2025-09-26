@@ -2,12 +2,16 @@
 
 ## Usage
 
-```bash
-curl -X POST http://localhost:8092/v1/competences -H "Content-Type: application/json" -d '{"employeeId":"edd06b3a-ae13-41f8-9db3-4a15b7b743d4","skillId":"20c93851-7cd6-4e8a-b878-48fbf306e922","rating":4}'
-```
+### Add skill
 
 ```bash
-curl -X GET http://localhost:8092/v1/skills/Python
+curl -X POST http://localhost:8093/v1/competences -H "Content-Type: application/json" -d '[{"employeeId":"52718fc1-2455-4994-b699-82ae5a9d4c9f","skillId":"cc8d8374-ee8f-45e7-9dea-39fa99969ac6","rating":2}]'
+```
+
+### Get employees with skill
+
+```bash
+curl -X GET http://localhost:8093/v1/competences/search?skill=java&rating=5
 ```
 
 ## For developer

@@ -1,5 +1,6 @@
 package com.github.miguelsombrero.osaan.competence_profile_service.integration;
 
+import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,17 +15,22 @@ import java.util.UUID;
 public class CompetenceIntegration {
 
     private final String employeeServiceUrl;
+    private final String skillCatalogServiceUrl;
 
-    private final RestClient employeeClient;
+    private final RestClient client;
 
-    CompetenceIntegration(@Value("${employee.service.url}") String employeeServiceUrl, RestClient.Builder clientBuilder) {
+    CompetenceIntegration(
+            @Value("${employee.service.url}") String employeeServiceUrl,
+            @Value("${skill.service.url}") String skillCatalogServiceUrl,
+            RestClient.Builder clientBuilder) {
         this.employeeServiceUrl = employeeServiceUrl;
-        this.employeeClient = clientBuilder.build();
+        this.skillCatalogServiceUrl = skillCatalogServiceUrl;
+        this.client = clientBuilder.build();
     }
 
     public Optional<Employee> getEmployee(UUID employeeId) {
         try {
-            Employee employee = employeeClient.get()
+            Employee employee = client.get()
                     .uri(employeeServiceUrl + "/v1/employees/{employeeId}", employeeId)
                     .retrieve()
                     .body(Employee.class);
@@ -32,6 +38,18 @@ public class CompetenceIntegration {
             return Optional.ofNullable(employee);
         } catch (HttpClientErrorException.NotFound e) {
             return Optional.empty();
+        }
+    }
+
+    public Skill findSkillByName(String name) {
+        try {
+            return client.get()
+                    .uri(skillCatalogServiceUrl + "/v1/skills/{name}", name)
+                    .retrieve()
+                    .body(Skill.class);
+        } catch (HttpClientErrorException.NotFound e) {
+            log.error("Skill with name {} does not exist", name);
+            throw new ResourceNotFoundException("Skill not found");
         }
     }
 }

@@ -1,6 +1,10 @@
 employee:
   service:
-    url: http://localhost:8080
+    url: http://localhost:8091
+
+skill:
+  service:
+    url: http://localhost:8092
 
 logging:
   level:
@@ -9,4 +13,5 @@ logging:
         jdbc: DEBUG
     web: DEBUG
 
-PORT: 8092
+server:
+  port: 8093

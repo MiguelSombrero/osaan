@@ -1,0 +1,19 @@
+logging:
+  level:
+    org:
+      hibernate:
+        stat: DEBUG
+        SQL: DEBUG
+      springframework:
+        jdbc: DEBUG
+    web: DEBUG
+
+server:
+  port: 8091
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
