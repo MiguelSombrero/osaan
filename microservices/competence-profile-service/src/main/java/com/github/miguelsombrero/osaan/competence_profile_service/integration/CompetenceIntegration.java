@@ -3,10 +3,14 @@ package com.github.miguelsombrero.osaan.competence_profile_service.integration;
 import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.resilience.annotation.Retryable;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +32,11 @@ public class CompetenceIntegration {
         this.client = clientBuilder.build();
     }
 
+    @Retryable(
+            includes = {HttpServerErrorException.class, ResourceAccessException.class, RestClientException.class},
+            maxAttempts = 3,
+            delay = 1000,
+            multiplier = 2)
     public Optional<Employee> getEmployee(UUID employeeId) {
         try {
             Employee employee = client.get()
@@ -52,4 +61,35 @@ public class CompetenceIntegration {
             throw new ResourceNotFoundException("Skill not found");
         }
     }
+
+    //TODO: Not yet working?
+//    @CircuitBreaker(
+//            retryFor = {HttpServerErrorException.class, ResourceAccessException.class, RestClientException.class},
+//            maxAttempts = 3,
+//            openTimeout = 5000,
+//            resetTimeout = 10000,
+//            recover = "getEmployeesFallbackValue")
+    @Retryable(
+            includes = {HttpServerErrorException.class, ResourceAccessException.class, RestClientException.class},
+            maxAttempts = 3,
+            delay = 1000,
+            multiplier = 2)
+    public List<Employee> getEmployees(List<UUID> employeeIds) {
+        String url = UriComponentsBuilder
+                .fromUriString(employeeServiceUrl + "/v1/employees")
+                .queryParam("employeeIds", employeeIds.toArray())
+                .toUriString();
+
+        return client.get().uri(url)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
+    }
+
+    @Recover
+    private List<Employee> getEmployeesFallbackValue(RestClientException ex, List<UUID> employeeIds) {
+        log.error("Error fetching employees with ids {}: {}", employeeIds, ex.getMessage());
+        return List.of();
+    }
+
 }

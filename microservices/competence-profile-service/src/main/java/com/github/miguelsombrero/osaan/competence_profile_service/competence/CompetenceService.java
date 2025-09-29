@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -26,16 +27,16 @@ class CompetenceService {
         this.integration = integration;
     }
 
-    public List<Competence> saveCompetences(List<Competence> competences) {
-        if (integration.getEmployee(competences.getFirst().getEmployeeId()).isEmpty()) {
-            log.error("Employee with id {} does not exist", competences.getFirst().getEmployeeId());
+    public List<Competence> saveCompetences(UUID employeeId, List<Competence> competences) {
+        if (integration.getEmployee(employeeId).isEmpty()) {
+            log.error("Employee with id {} does not exist", employeeId);
             throw new ResourceNotFoundException("Employee not found");
         }
 
         //TODO: Validate skills exist
 
         List<CompetenceEntity> entities = competences.stream()
-                .map(mapper::apiToEntity)
+                .map(competence -> mapper.apiToEntity(competence, employeeId))
                 .toList();
 
         return repository.saveAll(entities).stream()
@@ -50,9 +51,6 @@ class CompetenceService {
                 .map(rating -> repository.findBySkillIdAndRatingGreaterThanEqual(skill.getId(), rating))
                 .orElseGet(() -> repository.findBySkillId(skill.getId()));
 
-        return profiles.stream()
-                .map(cp -> integration.getEmployee(cp.getEmployeeId()))
-                .flatMap(Optional::stream)
-                .toList();
+        return integration.getEmployees(profiles.stream().map(Competence::getEmployeeId).toList());
     }
 }

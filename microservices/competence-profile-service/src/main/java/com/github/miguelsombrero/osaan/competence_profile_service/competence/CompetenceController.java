@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/competences")
@@ -16,9 +17,11 @@ class CompetenceController {
         this.service = service;
     }
 
-    @PostMapping
-    public List<Competence> createCompetences(@RequestBody List<Competence> competences) {
-        return service.saveCompetences(competences);
+    @PostMapping("/{employeeId}")
+    public List<Competence> createCompetences(
+            @PathVariable UUID employeeId, @RequestBody List<Competence> competences) {
+        //TODO: EmployeeId should be extracted from OAuth2 token
+        return service.saveCompetences(employeeId, competences);
     }
 
     @GetMapping("/search")

@@ -3,6 +3,7 @@ package com.github.miguelsombrero.osaan.employee_service.employee;
 import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -14,6 +15,12 @@ class EmployeeService {
     EmployeeService(EmployeeMapper mapper, EmployeeRepository repository) {
         this.mapper = mapper;
         this.repository = repository;
+    }
+
+    public List<Employee> getEmployees(List<UUID> employeeIds) {
+        return repository.findAllById(employeeIds).stream()
+                .map(mapper::entityToApi)
+                .toList();
     }
 
     public Employee getEmployeeById(UUID employeeId) {

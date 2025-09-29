@@ -19,6 +19,11 @@ class GlobalControllerExceptionHandler {
         return createProblemDetail(NOT_FOUND, ex);
     }
 
+    /*@ExceptionHandler(Exception.class)
+    public ProblemDetail handleGenericExceptions(Exception ex) {
+        return createProblemDetail(INTERNAL_SERVER_ERROR, ex);
+    }*/
+
     private ProblemDetail createProblemDetail(HttpStatus httpStatus, Exception ex) {
         log.error("Returning HTTP status: {}, message: {}", httpStatus, ex.getMessage());
 

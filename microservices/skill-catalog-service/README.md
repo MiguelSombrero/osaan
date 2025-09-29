@@ -3,7 +3,7 @@
 ## Usage
 
 ```bash
-curl -X POST http://localhost:8092/v1/skills -H "Content-Type: application/json" -d '{"name":"React"}'
+curl -X POST http://localhost:8092/v1/skills -H "Content-Type: application/json" -d '{"name":"Python"}'
 ```
 
 ```bash
