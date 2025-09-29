@@ -70,7 +70,7 @@ public class CompetenceIntegration {
 //            resetTimeout = 10000,
 //            recover = "getEmployeesFallbackValue")
     @Retryable(
-            includes = {HttpServerErrorException.class, ResourceAccessException.class, RestClientException.class},
+            includes = {RestClientException.class},
             maxAttempts = 3,
             delay = 1000,
             multiplier = 2)

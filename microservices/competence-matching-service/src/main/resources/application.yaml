@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: competence-matching-service
+  cloud:
+    stream:
+      bindings:
+        skillCreated-in-0:
+          destination: skill.created.queue
+          group: competence-matching-service
+      rabbit:
+        bindings:
+          skillCreated-in-0:
+            consumer:
+              autoBindDlq: true
+              republishToDlq: true
+  sql:
+    init:
+      mode: always

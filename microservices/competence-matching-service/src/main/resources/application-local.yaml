@@ -1,0 +1,21 @@
+logging:
+  level:
+    com.github.miguelsombrero.osaan: DEBUG
+    org.springframework.jdbc: DEBUG
+    web: TRACE
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
+
+server:
+  port: 8094
+
+spring:
+  mail:
+    host: localhost
+    port: 1025
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest # Default RabbitMQ credentials for local development

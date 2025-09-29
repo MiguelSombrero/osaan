@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/employees")
+@RequestMapping(value = "/employees", version = "1")
 public class EmployeeController {
 
     private final EmployeeService service;

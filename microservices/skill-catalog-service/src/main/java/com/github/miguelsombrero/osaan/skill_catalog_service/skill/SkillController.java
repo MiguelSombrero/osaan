@@ -3,7 +3,7 @@ package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/skills")
+@RequestMapping(value = "/skills", version = "1")
 class SkillController {
 
     private final SkillService service;

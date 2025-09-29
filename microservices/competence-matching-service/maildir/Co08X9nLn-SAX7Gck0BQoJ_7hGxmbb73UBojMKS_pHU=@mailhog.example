@@ -1,0 +1,14 @@
+HELO:<miikas-mbp.home>
+FROM:<competence-matching-service>
+TO:<anna.korhonen@example.com>
+
+Date: Mon, 29 Sep 2025 15:15:10 +0300 (EEST)
+From: competence-matching-service
+To: anna.korhonen@example.com
+Message-ID: <872654462.0.1759148110189@miikas-mbp.home>
+Subject: New Skill Created
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+A new skill was created: java with rating 4
