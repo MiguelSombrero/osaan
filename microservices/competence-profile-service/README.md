@@ -5,15 +5,15 @@
 ### Add skill
 
 ```bash
-curl -X POST http://localhost:8093/v1/competences/8684952d-ab2a-4536-b297-6e41bf757675 \
+curl -X POST http://localhost:8093/v1/competences/7c0e21b4-9f2a-47a6-bf11-1dbe5a8472f9 \
   -H "Content-Type: application/json" \
-  -d '[{"skillId":"5411d974-52c4-493b-ad36-312838c34183","rating":2},{"skillId":"c1470b88-0454-4c15-b07f-0eb3536472e5","rating":3},{"skillId":"98a39d5f-a589-4d44-afce-163893c86f8c","rating":5}]'
+  -d '[{"skillId":"d7e1b2f4-8a33-46c1-9e42-3f9c71b85d2a","rating":4}]'
 ```
 
 ### Search employees with skill and rating
 
 ```bash
-curl -X GET http://localhost:8093/v1/competences/search?skill=Java&rating=3
+curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=4
 ```
 
 ## For developer

@@ -1,0 +1,30 @@
+employee:
+  service:
+    url: http://employee-service:8080
+
+skill:
+  service:
+    url: http://skill-catalog-service:8080
+
+logging:
+  level:
+    org.springframework.web.client.RestClient: DEBUG
+    org.springframework.jdbc: DEBUG
+    org.springframework.resilience: TRACE
+    web: TRACE
+
+management:
+  endpoint.health.show-details: "ALWAYS"
+  endpoints.web.exposure.include: "*"
+  health.circuitbreakers.enabled: true
+
+spring:
+  datasource:
+    url: jdbc:postgresql://osaan-db:5432/postgres
+    username: postgres
+    password: osaan_pass
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest # Default RabbitMQ credentials for local development

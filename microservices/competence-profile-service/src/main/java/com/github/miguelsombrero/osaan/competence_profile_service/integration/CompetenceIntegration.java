@@ -1,6 +1,5 @@
 package com.github.miguelsombrero.osaan.competence_profile_service.integration;
 
-import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -51,15 +50,22 @@ public class CompetenceIntegration {
     }
 
     public Skill findSkillByName(String name) {
-        try {
-            return client.get()
-                    .uri(skillCatalogServiceUrl + "/v1/skills/{name}", name)
-                    .retrieve()
-                    .body(Skill.class);
-        } catch (HttpClientErrorException.NotFound e) {
-            log.error("Skill with name {} does not exist", name);
-            throw new ResourceNotFoundException("Skill not found");
-        }
+        String url = UriComponentsBuilder
+                .fromUriString(skillCatalogServiceUrl + "/v1/skills")
+                .queryParam("name", name)
+                .toUriString();
+
+        return client.get()
+                .uri(url)
+                .retrieve()
+                .body(Skill.class);
+    }
+
+    public Skill findSkillById(UUID skillId) {
+        return client.get()
+                .uri(skillCatalogServiceUrl + "/v1/skills/{skillId}", skillId)
+                .retrieve()
+                .body(Skill.class);
     }
 
     //TODO: Not yet working?

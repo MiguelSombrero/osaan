@@ -1,0 +1,23 @@
+logging:
+  level:
+    com.github.miguelsombrero.osaan: DEBUG
+    org.springframework.jdbc: DEBUG
+    web: TRACE
+
+management:
+  endpoint.health.show-details: "ALWAYS"
+  endpoints.web.exposure.include: "*"
+
+spring:
+  datasource:
+    url: jdbc:postgresql://osaan-db:5432/postgres
+    username: postgres
+    password: osaan_pass
+  mail:
+    host: mailhog
+    port: 1025
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest # Default RabbitMQ credentials for local development

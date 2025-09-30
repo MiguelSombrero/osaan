@@ -1,48 +1,25 @@
 services:
   # -----------------
-  # Microservices
+  # Common services
   # -----------------
-  employee-service:
-    build: ./microservices/employee-service
-    container_name: employee-service
-    depends_on:
-      - osaan-db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://osaan-db:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: osaan_pass
-      SPRING_PROFILES_ACTIVE: docker
+  mailhog:
+    image: mailhog/mailhog
     ports:
-      - "8091:8080"
-
-  skill-catalog-service:
-    build: ./microservices/skill-catalog-service
-    container_name: skill-catalog-service
-    depends_on:
-      - osaan-db
+      - "1025:1025"     # SMTP port
+      - "8025:8025"     # Web UI port
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://osaan-db:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: osaan_pass
-      SPRING_PROFILES_ACTIVE: docker
+      - MH_STORAGE=maildir
+      - MH_MAILDIR_PATH=/maildir
+    volumes:
+      - ./maildir:/maildir
+  
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
     ports:
-      - "8092:8080"
-
-  competence--profile-service:
-    build: ./microservices/competence-profile-service
-    container_name: competence-profile-service
-    depends_on:
-      - osaan-db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://osaan-db:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: osaan_pass
-      EMPLOYEE_SERVICE_URL: http://employee-service:8080
-      SKILL_SERVICE_URL: http://skill-catalog-service:8080
-      SPRING_PROFILES_ACTIVE: docker
-    ports:
-      - "8093:8080"
-
+      - "5672:5672"
+      - "15672:15672" # Management UI
+  
   # One DB for all microservices for simplicity in development
   osaan-db:
     image: postgres:latest
@@ -54,6 +31,51 @@ services:
       - "5432:5432"
     volumes:
       - osaan-data:/var/lib/postgresql/data
+      
+  # -----------------
+  # Microservices
+  # -----------------
+  employee-service:
+    build: ./microservices/employee-service
+    container_name: employee-service
+    depends_on:
+      - osaan-db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8091:8080"
+
+  skill-catalog-service:
+    build: ./microservices/skill-catalog-service
+    container_name: skill-catalog-service
+    depends_on:
+      - osaan-db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8092:8080"
+
+  competence--profile-service:
+    build: ./microservices/competence-profile-service
+    container_name: competence-profile-service
+    depends_on:
+      - osaan-db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8093:8080"
+
+  competence--matching-service:
+    build: ./microservices/competence-matching-service
+    container_name: competence-matching-service
+    depends_on:
+      - osaan-db
+      - mailhog
+      - rabbitmq
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8093:8080"
 
 volumes:
   osaan-data:

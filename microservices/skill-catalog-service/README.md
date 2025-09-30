@@ -2,12 +2,20 @@
 
 ## Usage
 
+### Add skill
+
 ```bash
 curl -X POST http://localhost:8092/v1/skills -H "Content-Type: application/json" -d '{"name":"Python"}'
 ```
 
+### GET skill
 ```bash
-curl -X GET http://localhost:8092/v1/skills/Python
+curl -X GET http://localhost:8092/v1/skills/a3f8c2de-4b19-4f7d-9c72-6a0f4b1d93c5
+```
+
+### Search skill by name
+```bash
+curl -X GET http://localhost:8092/v1/skills?name=Java
 ```
 
 ## For developer

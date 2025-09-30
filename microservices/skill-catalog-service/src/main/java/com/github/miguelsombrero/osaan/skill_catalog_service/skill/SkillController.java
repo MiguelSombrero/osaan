@@ -2,6 +2,8 @@ package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping(value = "/skills", version = "1")
 class SkillController {
@@ -17,9 +19,14 @@ class SkillController {
         return service.saveSkill(skill);
     }
 
-    @GetMapping("/{name}")
-    public Skill getSkill(@PathVariable String name) {
-        return service.getSkill(name);
+    @GetMapping("/{skillId}")
+    public Skill getSkill(@PathVariable UUID skillId) {
+        return service.getSkill(skillId);
+    }
+
+    @GetMapping
+    public Skill searchSkillByName(@RequestParam String name) {
+        return service.searchByName(name);
     }
 
 }

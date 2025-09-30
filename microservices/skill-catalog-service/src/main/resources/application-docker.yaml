@@ -1,0 +1,11 @@
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: DEBUG
+    web: DEBUG
+
+spring.datasource:
+  url: jdbc:postgresql://osaan-db:5432/postgres
+  username: postgres
+  password: osaan_pass

@@ -1,6 +1,9 @@
 package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 
+import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 class SkillService {
@@ -18,8 +21,16 @@ class SkillService {
         return mapper.entityToApi(repository.save(entity));
     }
 
-    public Skill getSkill(String name) {
-        SkillEntity entity = repository.findByNameIgnoreCase(name).orElse(new SkillEntity());
+    public Skill getSkill(UUID skillId) {
+        SkillEntity entity = repository.findById(skillId)
+                .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
         return mapper.entityToApi(entity);
     }
+
+    public Skill searchByName(String name) {
+        SkillEntity entity = repository.findByNameIgnoreCase(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
+        return mapper.entityToApi(entity);
+    }
+
 }

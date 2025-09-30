@@ -1,0 +1,21 @@
+logging:
+  level:
+    org:
+      hibernate:
+        stat: DEBUG
+        SQL: DEBUG
+      springframework:
+        jdbc: DEBUG
+    web: DEBUG
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
+
+  datasource:
+    url: jdbc:postgresql://osaan-db:5432/postgres
+    username: postgres
+    password: osaan_pass
