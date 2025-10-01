@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/competences", version = "1")
+@RequestMapping(value = "/v1/competences")
 class CompetenceController {
 
     private final CompetenceService service;

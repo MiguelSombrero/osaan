@@ -2,17 +2,56 @@
 
 Knowledge management system
 
-## Usage
+## Install
 
-### Run in local 
+You can run it from IDE, from Docker Compose or deploy it to Kubertenes cluster
+
+### Deploy to OpenShift Local
+
+#### Start cluster
+
+```bash
+crc start
+```
+
+#### Login to cluster
+
+```bash
+oc login -u kubeadmin https://api.crc.testing:6443 
+```
+
+#### Install operators
+
+In fresh cluster, install required Operators.
+
+SealedSecrets:
+
+```bash
+kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
+```
+
+#### Create SealedSecrets
+
+Example:
+
+```bash
+oc get secret postgres-secret -n osaan-dev -o yaml | kubeseal \
+  --controller-namespace=kube-system \
+  --controller-name=sealed-secrets-controller \
+  --format=yaml > manifests/platform/sealedsecret.yaml
+```
+
+### Run with Docker Compose
 
 ```bash
 docker compose build
 ```
 
 ```bash
-docker compose up
+docker compose up -d
 ```
+
+## Usage
 
 ### Add Skills
 

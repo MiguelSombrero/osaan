@@ -13,11 +13,6 @@ logging:
     org.springframework.resilience: TRACE
     web: TRACE
 
-management:
-  endpoint.health.show-details: "ALWAYS"
-  endpoints.web.exposure.include: "*"
-  health.circuitbreakers.enabled: true
-
 spring:
   datasource:
     url: jdbc:postgresql://osaan-db:5432/postgres

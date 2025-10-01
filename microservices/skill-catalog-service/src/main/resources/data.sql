@@ -7,4 +7,4 @@ INSERT INTO skills (id, name) VALUES
     ('e1f3a7b8-9c2d-4f6e-8b1a-5d3f7c2e4a9b', 'node.js'),
     ('a9b8c7d6-5e4f-3a2b-1c0d-9e8f7a6b5c4d', 'sql'),
     ('d2c3b4a5-6e7f-8a9b-0c1d-2e3f4a5b6c7d', 'aws')
-    ON CONFLICT (id) DO NOTHING;
+    ON CONFLICT DO NOTHING;

@@ -13,10 +13,6 @@ logging:
     org.springframework.resilience: TRACE
     web: TRACE
 
-management.endpoint.health.show-details: "ALWAYS"
-management.endpoints.web.exposure.include: "*"
-management.health.circuitbreakers.enabled: true
-
 server:
   port: 8093
 

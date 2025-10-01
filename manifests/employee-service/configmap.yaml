@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: employee-service-config
+  namespace: osaan-dev
+data:
+  POSTGRESQL_HOST: employee-postgres
