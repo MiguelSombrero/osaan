@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/skills", version = "1")
+@RequestMapping(value = "/v1/skills")
 class SkillController {
 
     private final SkillService service;

@@ -4,8 +4,9 @@ logging:
     org.springframework.jdbc: DEBUG
     web: TRACE
 
-management.endpoint.health.show-details: "ALWAYS"
-management.endpoints.web.exposure.include: "*"
+management:
+  zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans
+  tracing.sampling.probability: 1.0
 
 server:
   port: 8094

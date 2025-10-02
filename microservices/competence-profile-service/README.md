@@ -13,7 +13,7 @@ curl -X POST http://localhost:8093/v1/competences/d8f1a6c4-75e2-49b7-a3f1-8e7c2d
 ### Search employees with skill and rating
 
 ```bash
-curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=4
+curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=2
 ```
 
 ## For developer
