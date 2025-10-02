@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailhog-dep
+  namespace: osaan-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailhog
+  template:
+    metadata:
+      labels:
+        app: mailhog
+    spec:
+      containers:
+        - name: mailhog
+          image: mailhog/mailhog
+          ports:
+            - containerPort: 1025  # SMTP
+            - containerPort: 8025  # Web UI
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailhog-svc
+  namespace: osaan-dev
+spec:
+  selector:
+    app: mailhog
+  ports:
+    - name: smtp
+      port: 1025
+      targetPort: 1025
+    - name: http
+      port: 8025
+      targetPort: 8025
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: mailhog-ui
+  namespace: osaan-dev
+spec:
+  to:
+    kind: Service
+    name: mailhog-svc
+  port:
+    targetPort: http
+  tls:
+    termination: edge

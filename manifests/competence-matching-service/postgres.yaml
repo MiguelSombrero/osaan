@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: competence-matching-postgres
+  namespace: osaan-dev
+spec:
+  serviceName: competence-matching-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: competence-matching-postgres
+  template:
+    metadata:
+      labels:
+        app: competence-matching-postgres
+    spec:
+      imagePullSecrets:
+      - name: redhat-registry-pull-secret
+      containers:
+        - name: osaan-postgres
+          image: registry.redhat.io/rhel10/postgresql-16:latest
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: competence-matching-postgres
+  namespace: osaan-dev
+spec:
+  selector:
+    app: competence-matching-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  clusterIP: None

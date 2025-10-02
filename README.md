@@ -42,37 +42,27 @@ kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/d
 kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
 ```
 
-## Usage
+## Usage (OpenShift)
 
-### Add Skills
+Default skills and employees is created on startup. You can create competence profiles for employees and subscribe for new skills.
+
+### Add subscription for skill
 
 ```bash
-curl -X POST http://localhost:8092/v1/skills \
+curl -k -X POST https://competence-matching-service-route-osaan-dev.apps-crc.testing/v1/subscriptions \
   -H "Content-Type: application/json" \
-  -d '{"name":"React"}'
+  -d '{"skill":"java","rating":5,"email":"anna.korhonen@example.com"}'
 ```
 
-### Add Employees
+### Add competence to employee
 
 ```bash
-curl -X POST http://localhost:8091/v1/employees \
+curl -k -X POST https://competence-profile-service-route-osaan-dev.apps-crc.testing/v1/competences/d8f1a6c4-75e2-49b7-a3f1-8e7c2d49f3b2 \
   -H "Content-Type: application/json" \
-  -d '{"firstName":"John","lastName":"Doe","email":"john.doe@test.com"}'
+  -d '[{"skillId":"a3f8c2de-4b19-4f7d-9c72-6a0f4b1d93c5","rating":5}]'
 ```
 
-### Add skills to employees
-
-```bash
-curl -X POST http://localhost:8093/v1/competences \
-  -H "Content-Type: application/json" \
-  -d '[{"employeeId":"52718fc1-2455-4994-b699-82ae5a9d4c9f","skillId":"cc8d8374-ee8f-45e7-9dea-39fa99969ac6","rating":2}]'
-```
-
-### Get employees with skill
-
-```bash
-curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=2
-```
+This fires SkillCreatedEvent and if there is subscriptions for that skill level, email is sent to subscribers.
 
 ## Notes and instructions
 
