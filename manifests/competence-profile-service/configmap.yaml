@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: competence-profile-service-config
+  namespace: osaan-dev
+data:
+  POSTGRESQL_HOST: competence-profile-postgres
+  EMPLOYEE_SERVICE_URL: http://employee-svc:80
+  SKILL_SERVICE_URL: http://skill-catalog-svc:80

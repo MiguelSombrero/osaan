@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: competence-profile-service-dep
+  namespace: osaan-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: competence-profile-service
+  template:
+    metadata:
+      labels:
+        app: competence-profile-service
+    spec:
+      containers:
+        - name: competence-profile-service
+          image: miguelsombrero/competence-profile-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: competence-profile-service-config
+            - secretRef:
+                name: postgres-secret
+          env:
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: username
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: password
+            - name: SPRING_RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: port
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: host
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

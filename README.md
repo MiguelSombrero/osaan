@@ -2,46 +2,9 @@
 
 Knowledge management system
 
-## Install
+## Run with Docker Compose
 
-You can run it from IDE, from Docker Compose or deploy it to Kubertenes cluster
-
-### Deploy to OpenShift Local
-
-#### Start cluster
-
-```bash
-crc start
-```
-
-#### Login to cluster
-
-```bash
-oc login -u kubeadmin https://api.crc.testing:6443 
-```
-
-#### Install operators
-
-In fresh cluster, install required Operators.
-
-SealedSecrets:
-
-```bash
-kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
-```
-
-#### Create SealedSecrets
-
-Example:
-
-```bash
-oc get secret postgres-secret -n osaan-dev -o yaml | kubeseal \
-  --controller-namespace=kube-system \
-  --controller-name=sealed-secrets-controller \
-  --format=yaml > manifests/platform/sealedsecret.yaml
-```
-
-### Run with Docker Compose
+Prerequisites: microservices are build with maven
 
 ```bash
 docker compose build
@@ -49,6 +12,34 @@ docker compose build
 
 ```bash
 docker compose up -d
+```
+
+## Install to OpenShift Local
+
+Prerequisites: OpenShift Local is installed on your machine.
+
+### Start cluster
+
+```bash
+crc start
+```
+
+### Login to cluster
+
+```bash
+oc login -u kubeadmin https://api.crc.testing:6443 
+```
+
+### Install RabbitMQ Operator
+
+```bash
+kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+```
+
+#### Install SealedSecrets Operator
+
+```bash
+kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
 ```
 
 ## Usage
@@ -81,4 +72,17 @@ curl -X POST http://localhost:8093/v1/competences \
 
 ```bash
 curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=2
+```
+
+## Notes and instructions
+
+### How to create SealedSecrets from Secrets
+
+Example:
+
+```bash
+oc get secret postgres-secret -n osaan-dev -o yaml | kubeseal \
+  --controller-namespace=kube-system \
+  --controller-name=sealed-secrets-controller \
+  --format=yaml > manifests/platform/sealedsecret.yaml
 ```

@@ -1,0 +1,23 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq
+  namespace: osaan-dev
+spec:
+  replicas: 1
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+  persistence:
+    storage: 1Gi
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            securityContext: {}
+            containers: []

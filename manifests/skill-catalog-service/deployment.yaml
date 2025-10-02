@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skill-catalog-service-dep
+  namespace: osaan-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skill-catalog-service
+  template:
+    metadata:
+      labels:
+        app: skill-catalog-service
+    spec:
+      containers:
+        - name: skill-catalog-service
+          image: miguelsombrero/skill-catalog-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: skill-catalog-service-config
+            - secretRef:
+                name: postgres-secret
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

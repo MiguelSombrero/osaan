@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: skill-catalog-service-config
+  namespace: osaan-dev
+data:
+  POSTGRESQL_HOST: skill-catalog-postgres
