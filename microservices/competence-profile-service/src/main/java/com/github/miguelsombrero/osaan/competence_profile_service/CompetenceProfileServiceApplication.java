@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-//@EnableResilientMethods
 @ComponentScan(basePackages = "com.github.miguelsombrero.osaan")
 public class CompetenceProfileServiceApplication {
 

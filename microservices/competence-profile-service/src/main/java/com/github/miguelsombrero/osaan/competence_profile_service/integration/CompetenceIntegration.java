@@ -1,13 +1,15 @@
 package com.github.miguelsombrero.osaan.competence_profile_service.integration;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.retry.annotation.Recover;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -32,11 +34,6 @@ public class CompetenceIntegration {
         this.client = clientBuilder.build();
     }
 
-    //    @Retryable(
-//            includes = {HttpServerErrorException.class, ResourceAccessException.class, RestClientException.class},
-//            maxAttempts = 3,
-//            delay = 1000,
-//            multiplier = 2)
     public Optional<Employee> getEmployee(UUID employeeId) {
         try {
             Employee employee = client.get()
@@ -48,6 +45,13 @@ public class CompetenceIntegration {
         } catch (HttpClientErrorException.NotFound e) {
             return Optional.empty();
         }
+    }
+
+    public Skill findSkillById(UUID skillId) {
+        return client.get()
+                .uri(skillCatalogServiceUrl + "/v1/skills/{skillId}", skillId)
+                .retrieve()
+                .body(Skill.class);
     }
 
     public Skill findSkillByName(String name) {
@@ -62,25 +66,9 @@ public class CompetenceIntegration {
                 .body(Skill.class);
     }
 
-    public Skill findSkillById(UUID skillId) {
-        return client.get()
-                .uri(skillCatalogServiceUrl + "/v1/skills/{skillId}", skillId)
-                .retrieve()
-                .body(Skill.class);
-    }
-
-    //TODO: Not yet working?
-//    @CircuitBreaker(
-//            retryFor = {HttpServerErrorException.class, ResourceAccessException.class, RestClientException.class},
-//            maxAttempts = 3,
-//            openTimeout = 5000,
-//            resetTimeout = 10000,
-//            recover = "getEmployeesFallbackValue")
-//    @Retryable(
-//            includes = {RestClientException.class},
-//            maxAttempts = 3,
-//            delay = 1000,
-//            multiplier = 2)
+    @Retry(name = "competence")
+    @TimeLimiter(name = "competence")
+    @CircuitBreaker(name = "competence", fallbackMethod = "getEmployeesFallbackValue")
     public List<Employee> getEmployees(List<UUID> employeeIds) {
         String url = UriComponentsBuilder
                 .fromUriString(employeeServiceUrl + "/v1/employees")
@@ -93,10 +81,8 @@ public class CompetenceIntegration {
                 });
     }
 
-    @Recover
-    private List<Employee> getEmployeesFallbackValue(RestClientException ex, List<UUID> employeeIds) {
-        log.error("Error fetching employees with ids {}: {}", employeeIds, ex.getMessage());
+    private List<Employee> getEmployeesFallbackValue(List<UUID> employeeIds, CallNotPermittedException ex) {
+        log.info("Error fetching employees with ids {}: {}", employeeIds, ex.getMessage());
         return List.of();
     }
-
 }

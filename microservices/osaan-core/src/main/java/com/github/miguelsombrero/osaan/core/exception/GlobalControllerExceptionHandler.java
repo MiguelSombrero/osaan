@@ -5,19 +5,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.ZonedDateTime;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestControllerAdvice
 class GlobalControllerExceptionHandler {
 
+    @ExceptionHandler(HttpClientErrorException.NotFound.class)
+    public ProblemDetail handleNotFoundExceptions(HttpClientErrorException.NotFound ex) {
+        return createProblemDetail(NOT_FOUND, ex);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ProblemDetail handleResourceNotFoundExceptions(ResourceNotFoundException ex) {
         return createProblemDetail(NOT_FOUND, ex);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ProblemDetail handleHttpClientErrorExceptionExceptions(HttpClientErrorException ex) {
+        return createProblemDetail(BAD_REQUEST, ex);
     }
 
     @ExceptionHandler(Exception.class)

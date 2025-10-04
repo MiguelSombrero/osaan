@@ -16,8 +16,38 @@ spring:
     init:
       mode: always
 
-management:
-  endpoint.health.show-details: "ALWAYS"
-  endpoints.web.exposure.include: "*"
-  zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans
-  tracing.sampling.probability: 1.0
+resilience4j.timelimiter:
+  instances:
+    competence:
+      timeoutDuration: 2s
+
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 3
+      waitDuration: 1s
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException$InternalServerError
+  instances:
+    competence:
+      baseConfig: default
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      allowHealthIndicatorToFail: false
+      registerHealthIndicator: true
+      slidingWindowSize: 5
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException$InternalServerError
+      ignoreExceptions:
+        - com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException
+        - org.springframework.web.client.HttpClientErrorException$NotFound
+  instances:
+    competence:
+      baseConfig: default
+

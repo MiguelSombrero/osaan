@@ -1,6 +1,12 @@
 # osaan
 
-Knowledge management system
+Osaan is knowledge management system for enterprises.
+
+Basic use case:
+
+- You have employees and they have skills
+- Skills can be seen as competences, for example "My Java skill is 4 out of 5"
+- Recruiter wants to find all Java specialists with at least 4/5 
 
 ## Run with Docker Compose
 
@@ -16,13 +22,15 @@ docker compose up -d
 
 ## Install to OpenShift Local
 
-Prerequisites: OpenShift Local is installed on your machine.
+Prerequisites: [OpenShift Local (CRC)](https://developers.redhat.com/products/openshift-local/overview) is installed on your machine.
 
 ### Start cluster
 
 ```bash
 crc start
 ```
+
+Or create new cluster if not already.
 
 ### Login to cluster
 
@@ -33,14 +41,30 @@ oc login -u kubeadmin https://api.crc.testing:6443
 ### Install RabbitMQ Operator
 
 ```bash
-kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+oc apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 ```
 
 #### Install SealedSecrets Operator
 
 ```bash
-kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
+oc apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
 ```
+
+#### Install Red Hat Operators
+
+Install operators that are to be found in Red Har Marketplace
+
+```bash
+oc apply -f manifests/platform/subscriptions.yaml
+```
+
+#### Install Istio
+
+**NOTE: There is a bug in OpenShift 4.19.8 which prevents of installin Istio. Have to wait an update to CRC. Error is:**
+
+**Error: failed to install manifests: failed to update resource with server-side apply for obj NetworkAttachmentDefinition/default/istio-cni: network-attachment-definitions.k8s.cni.cncf.io "istio-cni" is forbidden: expression 'oldObject == null || object == null || object.spec != oldObject.spec' resulted in error: no such key: spec**
+
+Install Istio according to [documentation](https://istio.io/latest/docs/setup/platform-setup/openshift/).
 
 ## Usage (OpenShift)
 

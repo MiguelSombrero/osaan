@@ -4,3 +4,4 @@ metadata:
   name: osaan-dev
   labels:
     name: osaan-dev
+    istio-injection: enabled

@@ -34,7 +34,7 @@ class CompetenceService {
         this.producer = producer;
     }
 
-    List<Competence> saveCompetences(UUID employeeId, List<Competence> competences) {
+    public List<Competence> saveCompetences(UUID employeeId, List<Competence> competences) {
         if (integration.getEmployee(employeeId).isEmpty()) {
             log.error("Employee with id {} does not exist", employeeId);
             throw new ResourceNotFoundException("Employee not found");
@@ -66,7 +66,7 @@ class CompetenceService {
     }
 
 
-    List<Employee> searchBySkillAndRating(String skillName, Optional<Integer> minRating) {
+    public List<Employee> searchBySkillAndRating(String skillName, Optional<Integer> minRating) {
         Skill skill = integration.findSkillByName(skillName);
 
         List<Competence> profiles = minRating
