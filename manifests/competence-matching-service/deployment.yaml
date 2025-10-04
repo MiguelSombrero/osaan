@@ -3,6 +3,11 @@ kind: Deployment
 metadata:
   name: competence-matching-service-dep
   namespace: osaan-dev
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "4004"
+    prometheus.io/scheme: http
+    prometheus.io/path: "/actuator/prometheus"
 spec:
   replicas: 1
   selector:

@@ -1,3 +1,10 @@
+management:
+  server.port: 4004
+  endpoint.health.show-details: "ALWAYS"
+  endpoints.web.exposure.include: "*"
+  endpoint.health.probes.enabled: true
+  metrics.tags.application: ${spring.application.name}
+
 spring:
   application:
     name: skill-catalog-service

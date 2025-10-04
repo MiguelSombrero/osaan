@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'employee-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['employee-service:4004']
+
+  - job_name: 'skill-catalog-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['skill-catalog-service:4004']
+
+  - job_name: 'competence-profile-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['competence-profile-service:4004']
+
+  - job_name: 'competence-matching-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['competence-matching-service:4004']

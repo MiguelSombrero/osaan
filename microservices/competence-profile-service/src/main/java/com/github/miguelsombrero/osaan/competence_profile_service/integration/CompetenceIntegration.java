@@ -3,7 +3,6 @@ package com.github.miguelsombrero.osaan.competence_profile_service.integration;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -67,7 +66,6 @@ public class CompetenceIntegration {
     }
 
     @Retry(name = "competence")
-    @TimeLimiter(name = "competence")
     @CircuitBreaker(name = "competence", fallbackMethod = "getEmployeesFallbackValue")
     public List<Employee> getEmployees(List<UUID> employeeIds) {
         String url = UriComponentsBuilder

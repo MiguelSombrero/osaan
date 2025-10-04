@@ -1,0 +1,127 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 165946350,
+  "links": [],
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "HTTP Request Rate",
+      "targets": [
+        {
+          "expr": "rate(http_server_requests_seconds_count[1m])",
+          "legendFormat": "{{uri}} {{method}}",
+          "refId": "A"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP Request Latency (95th percentile)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, uri, method))",
+          "legendFormat": "{{uri}} {{method}}",
+          "refId": "B"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "JVM Memory Used",
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+          "legendFormat": "Heap",
+          "refId": "C"
+        },
+        {
+          "expr": "jvm_memory_used_bytes{area=\"nonheap\"}",
+          "legendFormat": "Non-Heap",
+          "refId": "D"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "JVM GC Pause Duration",
+      "targets": [
+        {
+          "expr": "rate(jvm_gc_pause_seconds_sum[5m])",
+          "legendFormat": "GC Pause",
+          "refId": "E"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Database Query Time",
+      "targets": [
+        {
+          "expr": "rate(jdbc_connections_seconds_sum[1m])",
+          "legendFormat": "Queries",
+          "refId": "F"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Active DB Connections",
+      "targets": [
+        {
+          "expr": "jdbc_connections_active",
+          "legendFormat": "Active Connections",
+          "refId": "G"
+        }
+      ],
+      "datasource": "Prometheus"
+    },
+    {
+      "type": "timeseries",
+      "title": "Uptime",
+      "targets": [
+        {
+          "expr": "system_uptime_seconds",
+          "legendFormat": "Uptime (s)",
+          "refId": "H"
+        }
+      ],
+      "datasource": "Prometheus"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["spring", "micrometer", "prometheus"],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Spring Boot Micrometer Overview",
+  "version": 1
+}

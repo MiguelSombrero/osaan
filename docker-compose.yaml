@@ -1,7 +1,4 @@
 services:
-  # -----------------
-  # Common services
-  # -----------------
   mailhog:
     image: mailhog/mailhog
     container_name: osaan-mailhog
@@ -42,6 +39,27 @@ services:
     ports:
       - 9411:9411
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
   # -----------------
   # Microservices
   # -----------------
@@ -54,6 +72,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8091:8080"
+      - "4001:4004"
 
   skill-catalog-service:
     build: ./microservices/skill-catalog-service
@@ -64,6 +83,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8092:8080"
+      - "4002:4004"
 
   competence-profile-service:
     build: ./microservices/competence-profile-service
@@ -75,6 +95,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8093:8080"
+      - "4003:4004"
 
   competence-matching-service:
     build: ./microservices/competence-matching-service
@@ -87,6 +108,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8094:8080"
+      - "4004:4004"
 
 volumes:
   osaan-data:
