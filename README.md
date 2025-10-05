@@ -1,16 +1,48 @@
 # osaan
 
-Osaan is knowledge management system for enterprises.
+Osaan is my hobby project for studying different aspects of microservice development.
 
-Basic use case:
+Osaan is knowledge management system and it tries to answer guestion:
 
-- You have employees and they have skills
-- Skills can be seen as competences, for example "My Java skill is 4 out of 5"
-- Recruiter wants to find all Java specialists with at least 4/5 
+"I need to create a team with different skill sets. I need one Java professional with at least 4/5 knowledge and two React professionals of 3/5 knowledge.
+How do I find those people inside my company?"
 
-## Run with Docker Compose
+## Stack
 
-Prerequisites: microservices are build with maven
+- Microservices - Spring Boot
+- Databases - PostgreSQL
+- Domain events - RabbitMQ
+- Tracing - Micrometer Tracing, Zipkin
+- Monitoring - Prometheus, Grafana
+- Resilience - Resilience4j
+
+## UI
+
+Osaan system does not contain UI yet, but there are multiple management UI:s for development:
+
+- Mail: http://localhost:8025
+- Zipkin: http://localhost:9411
+- RabbitMQ: http://localhost:15672 (guest/guest)
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3000
+
+Addresses are for localhost development. In Kubernetes, see Route/Gateway definitions.
+
+## Run
+
+There is 3 options for running Osaan system:
+
+1) From IDE
+2) Docker Dompose
+3) OpenShift (Kubernetes)
+
+### 1) From IDE
+
+Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in root, which will start the necessary dependencies for that service.
+
+### 2) Docker Compose
+
+Prerequisites: microservices are build with maven (Dockerfile does not build applicaitons, only copies `/target/*.jar` to build image)
 
 ```bash
 docker compose build
@@ -20,45 +52,43 @@ docker compose build
 docker compose up -d
 ```
 
-## Install to OpenShift Local
+### 3) OpenShift Local
 
-Prerequisites: [OpenShift Local (CRC)](https://developers.redhat.com/products/openshift-local/overview) is installed on your machine.
+Prerequisites: [OpenShift Local (CRC)](https://developers.redhat.com/products/openshift-local/overview) is installed on your machine and cluster is created.
 
-### Start cluster
+#### Start cluster
 
 ```bash
 crc start
 ```
 
-Or create new cluster if not already.
-
-### Login to cluster
+#### Login to cluster
 
 ```bash
 oc login -u kubeadmin https://api.crc.testing:6443 
 ```
 
-### Install RabbitMQ Operator
+#### Install Operators
+
+RabbitMQ Operator:
 
 ```bash
 oc apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 ```
 
-#### Install SealedSecrets Operator
+SealedSecrets Operator:
 
 ```bash
 oc apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
 ```
 
-#### Install Red Hat Operators
-
-Install operators that are to be found in Red Har Marketplace
+Operators that are to be found in Red Har Marketplace:
 
 ```bash
 oc apply -f manifests/platform/subscriptions.yaml
 ```
 
-#### Install Istio
+Istio:
 
 **NOTE: There is a bug in OpenShift 4.19.8 which prevents of installin Istio. Have to wait an update to CRC. Error is:**
 
@@ -66,9 +96,25 @@ oc apply -f manifests/platform/subscriptions.yaml
 
 Install Istio according to [documentation](https://istio.io/latest/docs/setup/platform-setup/openshift/).
 
-## Usage (OpenShift)
+#### Deploy
 
-Default skills and employees is created on startup. You can create competence profiles for employees and subscribe for new skills.
+First install Operators and all the platform specific resources to cluster:
+
+```bash
+oc apply -f manifests/platform
+```
+
+After installation is complete, deploy microservices with Kustomization:
+
+```bash
+oc apply -k .
+```
+
+## Use (OpenShift)
+
+Default skills and employees is created on startup, for details look up `src/main/resources/data.sql` scripts of microservices.
+
+You can create competence profiles for employees and subscribe for new skills.
 
 ### Add subscription for skill
 

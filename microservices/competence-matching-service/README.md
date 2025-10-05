@@ -9,7 +9,7 @@ Microservice for finding employees with certain skills and ratings.
 ```bash
 curl -X POST http://localhost:8094/v1/subscriptions \
   -H "Content-Type: application/json" \
-  -d '{"skill":"python","rating":4,"email":"anna.korhonen@example.com"}'
+  -d '{"skill":"python","rating":3,"email":"anna.korhonen@example.com"}'
 ```
 
 ### Get all subscriptions

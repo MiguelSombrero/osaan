@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/common/namespace-osaan.yaml
+  - manifests/common/postgres-secret.yaml
+  - manifests/common/mailhog.yaml
+  - manifests/common/rabbitmq.yaml
+  - manifests/employee-service/configmap.yaml
+  - manifests/employee-service/postgres.yaml
+  - manifests/employee-service/deployment.yaml
+  - manifests/employee-service/service.yaml
+  - manifests/employee-service/route.yaml
+  - manifests/skill-catalog-service/configmap.yaml
+  - manifests/skill-catalog-service/postgres.yaml
+  - manifests/skill-catalog-service/deployment.yaml
+  - manifests/skill-catalog-service/service.yaml
+  - manifests/skill-catalog-service/route.yaml
+  - manifests/competence-profile-service/configmap.yaml
+  - manifests/competence-profile-service/postgres.yaml
+  - manifests/competence-profile-service/deployment.yaml
+  - manifests/competence-profile-service/service.yaml
+  - manifests/competence-profile-service/route.yaml
+  - manifests/competence-matching-service/configmap.yaml
+  - manifests/competence-matching-service/postgres.yaml
+  - manifests/competence-matching-service/deployment.yaml
+  - manifests/competence-matching-service/service.yaml
+  - manifests/competence-matching-service/route.yaml
