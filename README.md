@@ -30,11 +30,11 @@ Addresses are for localhost development. In Kubernetes, see Route/Gateway defini
 
 ## Run
 
-There is 3 options for running Osaan system:
+There are 3 options for running Osaan system:
 
 1) From IDE
 2) Docker Dompose
-3) OpenShift (Kubernetes)
+3) Kubernetes cluster
 
 ### 1) From IDE
 
@@ -52,20 +52,16 @@ docker compose build
 docker compose up -d
 ```
 
-### 3) OpenShift Local
+### 3) Kubernetes
 
-Prerequisites: [OpenShift Local (CRC)](https://developers.redhat.com/products/openshift-local/overview) is installed on your machine and cluster is created.
+These instructions are k3d specific but can be applied to other Kubernetes distributions as well. 
 
-#### Start cluster
+#### Create cluster
 
-```bash
-crc start
-```
-
-#### Login to cluster
+Create cluster with 2 agents and port 9080/9443 open from the cluster:
 
 ```bash
-oc login -u kubeadmin https://api.crc.testing:6443 
+k3d cluster create k3d-osaan-dev --api-port 6550 -p '9080:80@loadbalancer' -p '9443:443@loadbalancer' --agents 2 --k3s-arg '--disable=traefik@server:*'
 ```
 
 #### Install Operators
@@ -73,44 +69,28 @@ oc login -u kubeadmin https://api.crc.testing:6443
 RabbitMQ Operator:
 
 ```bash
-oc apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 ```
 
 SealedSecrets Operator:
 
 ```bash
-oc apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
-```
-
-Operators that are to be found in Red Har Marketplace:
-
-```bash
-oc apply -f manifests/platform/subscriptions.yaml
+kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
 ```
 
 Istio:
 
-**NOTE: There is a bug in OpenShift 4.19.8 which prevents of installin Istio. Have to wait an update to CRC. Error is:**
+Install Istio according to [documentation](https://istio.io/latest/docs/setup/platform-setup/k3d/).
 
-**Error: failed to install manifests: failed to update resource with server-side apply for obj NetworkAttachmentDefinition/default/istio-cni: network-attachment-definitions.k8s.cni.cncf.io "istio-cni" is forbidden: expression 'oldObject == null || object == null || object.spec != oldObject.spec' resulted in error: no such key: spec**
+## Deploy
 
-Install Istio according to [documentation](https://istio.io/latest/docs/setup/platform-setup/openshift/).
-
-#### Deploy
-
-First install Operators and all the platform specific resources to cluster:
+Deploy microservices with Kustomization:
 
 ```bash
-oc apply -f manifests/platform
+kubectl apply -k .
 ```
 
-After installation is complete, deploy microservices with Kustomization:
-
-```bash
-oc apply -k .
-```
-
-## Use (OpenShift)
+## Use (k3d)
 
 Default skills and employees is created on startup, for details look up `src/main/resources/data.sql` scripts of microservices.
 
@@ -119,7 +99,7 @@ You can create competence profiles for employees and subscribe for new skills.
 ### Add subscription for skill
 
 ```bash
-curl -k -X POST https://competence-matching-service-route-osaan-dev.apps-crc.testing/v1/subscriptions \
+curl -X POST http://localhost:9080/v1/subscriptions \
   -H "Content-Type: application/json" \
   -d '{"skill":"java","rating":5,"email":"anna.korhonen@example.com"}'
 ```
@@ -127,22 +107,49 @@ curl -k -X POST https://competence-matching-service-route-osaan-dev.apps-crc.tes
 ### Add competence to employee
 
 ```bash
-curl -k -X POST https://competence-profile-service-route-osaan-dev.apps-crc.testing/v1/competences/d8f1a6c4-75e2-49b7-a3f1-8e7c2d49f3b2 \
+curl -X POST http://localhost:9080/v1/competences/d8f1a6c4-75e2-49b7-a3f1-8e7c2d49f3b2 \
   -H "Content-Type: application/json" \
   -d '[{"skillId":"a3f8c2de-4b19-4f7d-9c72-6a0f4b1d93c5","rating":5}]'
 ```
 
 This fires SkillCreatedEvent and if there is subscriptions for that skill level, email is sent to subscribers.
 
+### Search employees with skill and rating
+
+```bash
+curl -X GET http://localhost:9080/v1/competences/search?skill=Python&rating=2
+```
+
 ## Notes and instructions
 
 ### How to create SealedSecrets from Secrets
 
-Example:
+Create image pull Secret to file:
 
 ```bash
-oc get secret postgres-secret -n osaan-dev -o yaml | kubeseal \
-  --controller-namespace=kube-system \
-  --controller-name=sealed-secrets-controller \
-  --format=yaml > manifests/platform/sealedsecret.yaml
+kubectl create secret generic redhat-registry-pull-secret \
+--from-file=.dockerconfigjson=$(echo ~/Downloads/pull-secret.txt) \
+--type=kubernetes.io/dockerconfigjson \
+--namespace osaan-dev \
+--dry-run=client -o yaml > secret.yaml
+```
+
+OR create "normal" Secret to file:
+
+```bash
+kubectl create secret generic postgres-secret \
+--from-literal=POSTGRESQL_DATABASE=osaan-db \
+--from-literal=POSTGRESQL_USER=osaan-user \
+--from-literal=POSTGRESQL_PASSWORD=osaan-password \
+--namespace osaan-dev \
+--dry-run=client -o yaml > secret.yaml
+```
+
+Create SealedSecret from Secret:
+
+```bash
+kubeseal \
+--controller-namespace=kube-system \
+--controller-name=sealed-secrets-controller \
+-o yaml < secret.yaml > postgres-secret.yaml
 ```

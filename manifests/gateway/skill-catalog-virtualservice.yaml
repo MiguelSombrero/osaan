@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: skill-catalog-vs
+  namespace: osaan-dev
+spec:
+  gateways:
+  - osaan-gateway
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        prefix: /v1/skills
+    route:
+    - destination:
+        host: skill-catalog-svc
+        port:
+          number: 80

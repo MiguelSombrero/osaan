@@ -42,17 +42,3 @@ spec:
     - name: http
       port: 8025
       targetPort: 8025
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: mailhog-ui
-  namespace: osaan-dev
-spec:
-  to:
-    kind: Service
-    name: mailhog-svc
-  port:
-    targetPort: http
-  tls:
-    termination: edge
