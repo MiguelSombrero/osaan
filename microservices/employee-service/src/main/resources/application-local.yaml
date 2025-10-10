@@ -1,14 +1,13 @@
 logging:
   level:
-    org:
-      hibernate:
-        stat: DEBUG
-        SQL: DEBUG
-      springframework:
-        jdbc: DEBUG
+    com.github.miguelsombrero.osaan: TRACE
+    org.hibernate.stat: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.jdbc: DEBUG
     web: DEBUG
 
 management:
+  server.port: 4004
   zipkin.tracing.endpoint: http://localhost:9411/api/v2/spans
   tracing.sampling.probability: 1.0
 

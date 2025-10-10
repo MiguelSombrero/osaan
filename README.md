@@ -60,7 +60,9 @@ There are 3 options for running Osaan system:
 
 ### 1) IDE
 
-Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in root, which will start the necessary dependencies for that service.
+Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in the project root, which will start the necessary dependencies for that service.
+
+Start `competence-matching-service` first as its `compose.yaml` file contains all the shared dependecies like RabbitMQ.
 
 ### 2) Docker Compose
 

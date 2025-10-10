@@ -8,10 +8,8 @@ skill:
 
 logging:
   level:
-    org.springframework.web.client.RestClient: DEBUG
-    org.springframework.jdbc: DEBUG
-    org.springframework.resilience: TRACE
-    web: TRACE
+    org.springframework.resilience: DEBUG
+    com.github.miguelsombrero.osaan: DEBUG
 
 management:
   zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans

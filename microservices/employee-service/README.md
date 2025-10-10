@@ -5,7 +5,7 @@
 Create employee
 
 ```bash
-curl -X POST http://localhost:8091/v1/employees -H "Content-Type: application/json" -d '{"firstName":"Miika","lastName":"Somero","email":"miika@test.com"}'
+curl -i -X POST http://localhost:8091/v1/admin/employees -H "Content-Type: application/json" -d '{"firstName":"Kimmo","lastName":"Mehulainen","email":"kimmo@test.com"}'
 ```
 
 ### GET employees
