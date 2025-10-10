@@ -7,3 +7,4 @@ data:
   POSTGRESQL_HOST: competence-matching-postgres
   SPRING_MAIL_HOST: mailhog-svc
   SPRING_MAIL_PORT: "1025"
+  management.zipkin.tracing.endpoint: http://jaeger-collector.istio-system:9411/api/v2/spans

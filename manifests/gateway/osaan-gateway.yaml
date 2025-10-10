@@ -1,0 +1,59 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: osaan-gateway
+  namespace: osaan-dev
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "osaan.local"
+    port:
+      number: 80
+      name: http
+      protocol: HTTP
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: osaan-vs
+  namespace: osaan-dev
+spec:
+  gateways:
+  - osaan-gateway
+  hosts:
+  - "osaan.local"
+  http:
+  - match:
+    - uri:
+        prefix: /v1/competences
+    route:
+    - destination:
+        host: competence-profile-svc
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /v1/subscriptions
+    route:
+    - destination:
+        host: competence-matching-svc
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /v1/employees
+    route:
+    - destination:
+        host: employee-svc
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /v1/skills
+    route:
+    - destination:
+        host: skill-catalog-svc
+        port:
+          number: 80

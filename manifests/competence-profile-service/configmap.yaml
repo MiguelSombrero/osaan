@@ -7,3 +7,4 @@ data:
   POSTGRESQL_HOST: competence-profile-postgres
   EMPLOYEE_SERVICE_URL: http://employee-svc:80
   SKILL_SERVICE_URL: http://skill-catalog-svc:80
+  management.zipkin.tracing.endpoint: http://jaeger-collector.istio-system:9411/api/v2/spans

@@ -5,3 +5,4 @@ metadata:
   namespace: osaan-dev
 data:
   POSTGRESQL_HOST: skill-catalog-postgres
+  management.zipkin.tracing.endpoint: http://jaeger-collector.istio-system:9411/api/v2/spans

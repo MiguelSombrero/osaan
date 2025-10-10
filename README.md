@@ -12,13 +12,16 @@ How do I find those people inside my company?"
 - Microservices - Spring Boot
 - Databases - PostgreSQL
 - Domain events - RabbitMQ
-- Tracing - Micrometer Tracing, Zipkin
+- Tracing - Micrometer Tracing, Zipkin (local), Jaeger (Kubernetes)
 - Monitoring - Prometheus, Grafana
 - Resilience - Resilience4j
+- Service Mesh - Istio (Kubernetes)
 
 ## UI
 
 Osaan system does not contain UI yet, but there are multiple management UI:s for development:
+
+### Local
 
 - Mail: http://localhost:8025
 - Zipkin: http://localhost:9411
@@ -26,17 +29,36 @@ Osaan system does not contain UI yet, but there are multiple management UI:s for
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000
 
-Addresses are for localhost development. In Kubernetes, see Route/Gateway definitions.
+### Kubernetes
+
+- Kiali: http://kiali.localhost:9080
+- Grafana: http://grafana.localhost:9080
+- Jaeger: http://jaeger.localhost:9080
+- Prometheus: http://prometheus.localhost:9080
+- RabbitMQ: http://rabbit.localhost:9080
+- Mailhog: http://mail.localhost:9080
+
+In order to subdomain work add to your local `/etc/hosts`file:
+
+```
+  127.0.0.1 osaan.local
+  127.0.0.1 grafana.local
+  127.0.0.1 mail.local
+  127.0.0.1 kiali.local
+  27.0.0.1 prometheus.local
+  127.0.0.1 rabbit.local
+  127.0.0.1 jaeger.local
+```
 
 ## Run
 
 There are 3 options for running Osaan system:
 
-1) From IDE
+1) IDE
 2) Docker Dompose
-3) Kubernetes cluster
+3) Kubernetes
 
-### 1) From IDE
+### 1) IDE
 
 Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in root, which will start the necessary dependencies for that service.
 
@@ -56,33 +78,29 @@ docker compose up -d
 
 These instructions are k3d specific but can be applied to other Kubernetes distributions as well. 
 
-#### Create cluster
+Create cluster and install all necessary operators etc. with script:
 
-Create cluster with 2 agents and port 9080/9443 open from the cluster:
+```bash
+  ./setup-cluster.sh
+```
+
+OR create cluster manually with command:
 
 ```bash
 k3d cluster create k3d-osaan-dev --api-port 6550 -p '9080:80@loadbalancer' -p '9443:443@loadbalancer' --agents 2 --k3s-arg '--disable=traefik@server:*'
 ```
 
-#### Install Operators
-
-RabbitMQ Operator:
-
-```bash
-kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
-```
-
-SealedSecrets Operator:
-
-```bash
-kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml
-```
-
-Istio:
-
-Install Istio according to [documentation](https://istio.io/latest/docs/setup/platform-setup/k3d/).
+AND install selected operators from `./setup-cluster.sh` script.
 
 ## Deploy
+
+Before deploying to newly created cluster, you have to recreate all the SealedSecrets. For instructions, see [How to create SealedSecrets from Secrets](#how-to-create-sealedSecrets-from-secrets)
+
+SealedSecrets that needs to be recreated:
+
+```
+manifests/common/postgres-secret.yaml
+```
 
 Deploy microservices with Kustomization:
 
@@ -99,7 +117,7 @@ You can create competence profiles for employees and subscribe for new skills.
 ### Add subscription for skill
 
 ```bash
-curl -X POST http://localhost:9080/v1/subscriptions \
+curl -X POST http://osaan.local:9080/v1/subscriptions \
   -H "Content-Type: application/json" \
   -d '{"skill":"java","rating":5,"email":"anna.korhonen@example.com"}'
 ```
@@ -107,7 +125,7 @@ curl -X POST http://localhost:9080/v1/subscriptions \
 ### Add competence to employee
 
 ```bash
-curl -X POST http://localhost:9080/v1/competences/d8f1a6c4-75e2-49b7-a3f1-8e7c2d49f3b2 \
+curl -X POST http://osaan.local:9080/v1/competences/d8f1a6c4-75e2-49b7-a3f1-8e7c2d49f3b2 \
   -H "Content-Type: application/json" \
   -d '[{"skillId":"a3f8c2de-4b19-4f7d-9c72-6a0f4b1d93c5","rating":5}]'
 ```
@@ -117,30 +135,20 @@ This fires SkillCreatedEvent and if there is subscriptions for that skill level,
 ### Search employees with skill and rating
 
 ```bash
-curl -X GET http://localhost:9080/v1/competences/search?skill=Python&rating=2
+curl -X GET http://osaan.local:9080/v1/competences/search?skill=Python&rating=2
 ```
 
 ## Notes and instructions
 
 ### How to create SealedSecrets from Secrets
 
-Create image pull Secret to file:
-
-```bash
-kubectl create secret generic redhat-registry-pull-secret \
---from-file=.dockerconfigjson=$(echo ~/Downloads/pull-secret.txt) \
---type=kubernetes.io/dockerconfigjson \
---namespace osaan-dev \
---dry-run=client -o yaml > secret.yaml
-```
-
-OR create "normal" Secret to file:
+Create Secret to file:
 
 ```bash
 kubectl create secret generic postgres-secret \
---from-literal=POSTGRESQL_DATABASE=osaan-db \
---from-literal=POSTGRESQL_USER=osaan-user \
---from-literal=POSTGRESQL_PASSWORD=osaan-password \
+--from-literal=POSTGRES_DB=osaan-db \
+--from-literal=POSTGRES_USER=osaan-user \
+--from-literal=POSTGRES_PASSWORD=osaan-password \
 --namespace osaan-dev \
 --dry-run=client -o yaml > secret.yaml
 ```
