@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAccessTokenFromSession, refreshAccessToken } from './token.js';
+import { getAccessTokenFromSession, refreshAccessToken } from '../middleware/token.js';
 
 const TARGET = process.env.TARGET_API || 'http://localhost:8092';
 

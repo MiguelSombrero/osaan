@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { callDownstream } from '../proxy.js';
-import { requireLogin } from '../auth.js';
+import { callDownstream } from '../services/proxyService.js';
+import { requireLogin } from '../middleware/auth.js';
 
 const router = Router();
 router.use(requireLogin());

@@ -116,5 +116,42 @@ services:
       - "8094:8080"
       - "4004:4004"
 
+  osaan-admin-backend:
+    build: ./ui/osaan-admin-ui/backend
+    container_name: osaan-admin-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - TARGET_API=http://skill-catalog-service:8092
+      - SESSION_SECRET=mysecret
+      - CORS_ENABLED=true
+      - CORS_ORIGIN=http://localhost:8080
+      - REDIS_ENABLED=true
+      - REDIS_URL=redis://redis:6379
+      - KEYCLOAK_ENABLED=false
+    depends_on:
+      - osaan-redis
+
+  osaan-admin-ui:
+    build: ./ui/osaan-admin-ui/frontend
+    container_name: osaan-admin-ui
+    ports:
+      - "8080:80"
+    environment:
+      - VITE_API_BASE=http://osaan-admin-backend:3001/api
+    depends_on:
+      - osaan-admin-backend
+
+  osaan-redis:
+    image: redis:8-alpine
+    container_name: osaan-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
 volumes:
   osaan-data:
+  redis-data:

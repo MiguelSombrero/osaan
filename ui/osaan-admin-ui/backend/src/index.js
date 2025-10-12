@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import { app } from './server.js';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
@@ -8,6 +7,8 @@ if (process.env.NODE_ENV !== 'production') {
 console.log('Environment:', process.env.NODE_ENV);
 
 const PORT = process.env.PORT || 3000;
+
+const { app } = await import('./server.js');
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
