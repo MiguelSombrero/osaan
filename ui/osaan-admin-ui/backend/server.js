@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import cors from 'cors';
-import RedisStoreFactory from 'connect-redis';
+import { RedisStore } from 'connect-redis';
 import { redis, redisEnabled } from './redisClient.js';
 import { setupAuth } from './auth.js';
 import adminSkills from './routes/adminSkills.js';
@@ -19,14 +19,20 @@ app.use(express.json());
 app.use(cookieParser());
 
 if (redisEnabled && redis) {
-  const RedisStore = RedisStoreFactory(session);
-  app.use(session({
-    store: new RedisStore({ client: redis }),
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { httpOnly: true, secure: false, sameSite: 'lax' }
-  }));
+  const store = new RedisStore({
+    client: redis,
+    prefix: 'osaan:',
+  });
+
+  app.use(
+    session({
+      store: new RedisStore({ client: redis }),
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: { httpOnly: true, secure: false, sameSite: 'lax' }
+    })
+  );
   console.log('[Session] Redis store enabled');
 } else {
   app.use(session({
