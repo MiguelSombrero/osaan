@@ -1,0 +1,209 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Skill Catalog Service API",
+    "description": "API for managing skills",
+    "contact": {
+      "name": "Miguel Sombrero"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://raw.githubusercontent.com/MiguelSombrero/osaan/refs/heads/main/LICENSE?token=GHSAT0AAAAAADI246M5X7R6KOEGQGCQX3GY2HJDVBA"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8092",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "AdminSkills",
+      "description": "REST API for admin operations on skills"
+    }
+  ],
+  "paths": {
+    "/v1/admin/skills": {
+      "post": {
+        "tags": [
+          "AdminSkills"
+        ],
+        "summary": "Create Skill",
+        "description": "Creates new skill and returns created skill with generated ID.",
+        "operationId": "createSkill",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Skill"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/skills/": {
+      "get": {
+        "tags": [
+          "AdminSkills"
+        ],
+        "summary": "Get skills",
+        "description": "Get all skills.",
+        "operationId": "getSkills",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Skill"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Skill"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Skill"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/skills/{skillId}": {
+      "delete": {
+        "tags": [
+          "AdminSkills"
+        ],
+        "summary": "Delete skill",
+        "description": "Delete skill by ID",
+        "operationId": "deleteSkill",
+        "parameters": [
+          {
+            "name": "skillId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Skill": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the skill. Generated by the database",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the skill",
+            "example": "Java"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    }
+  }
+}

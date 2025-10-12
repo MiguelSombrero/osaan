@@ -1,6 +1,6 @@
 # osaan
 
-Osaan is my hobby project for studying different aspects of microservice development.
+Osaan is my hobby project for studying different aspects of fullstack development in microservice landscape.
 
 Osaan is knowledge management system and it tries to answer guestion:
 
@@ -8,6 +8,17 @@ Osaan is knowledge management system and it tries to answer guestion:
 How do I find those people inside my company?"
 
 ## Stack
+
+### Frontend
+
+- UI - React, Typecript, Material UI
+- Backend - Node, Express
+- Application state - Zustand
+- Data fetching - Tanstack Query
+- Session - Redis
+- Authentication - OAuth2, Keycloak
+
+### Backend
 
 - Microservices - Spring Boot
 - Databases - PostgreSQL
@@ -19,9 +30,22 @@ How do I find those people inside my company?"
 
 ## UI
 
-Osaan system does not contain UI yet, but there are multiple management UI:s for development:
+Osaan system contains two different UIs:
 
-### Local
+### Osaan Admin UI
+
+WORK IN PROGGRESS!
+
+### Osaan UI
+
+NOT IMPLEMENTED YET!
+
+
+### Management UIs
+
+Tthere are also multiple management UI:s for development:
+
+#### Local
 
 - Mail: http://localhost:8025
 - Zipkin: http://localhost:9411
@@ -29,7 +53,7 @@ Osaan system does not contain UI yet, but there are multiple management UI:s for
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000
 
-### Kubernetes
+#### Kubernetes
 
 - Kiali: http://kiali.localhost:9080
 - Grafana: http://grafana.localhost:9080

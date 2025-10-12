@@ -1,0 +1,17 @@
+{
+  "name": "osaan-admin-ui-monorepo-example",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm:backend:start\" \"npm:frontend:start\"",
+    "dev": "concurrently -n \"BACK,FRONT\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm:backend:dev\" \"npm:frontend:dev\"",
+    "backend:start": "npm --prefix backend run start",
+    "backend:dev": "npm run dev --prefix backend",
+    "frontend:start": "npm --prefix frontend run dev",
+    "frontend:dev": "npm run dev --prefix frontend",
+    "generate:client": "npm --prefix frontend run generate:client",
+    "lint:all": "eslint 'frontend/src/**/*.{ts,tsx}' 'backend/src/**/*.{js,ts}'"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

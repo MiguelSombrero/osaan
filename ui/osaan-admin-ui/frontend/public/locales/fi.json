@@ -1,0 +1,9 @@
+{
+  "skills": "Osaamiset",
+  "employees": "Työnäkijät",
+  "addSkill": "Lisää osaaminen",
+  "skillName": "Osaamisen nimi",
+  "add": "Lisää",
+  "delete": "Poista",
+  "noSkills": "Ei osaamisia"
+}

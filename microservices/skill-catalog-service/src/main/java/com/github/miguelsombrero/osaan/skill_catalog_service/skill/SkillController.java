@@ -1,6 +1,8 @@
 package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +31,10 @@ class SkillController {
             summary = "Get skill",
             description = "Get skill by ID")
     @GetMapping("/{skillId}")
-    public Skill getSkill(@PathVariable UUID skillId) {
+    public Skill getSkill(
+            @Parameter(in = ParameterIn.PATH, required = true, example = "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8")
+            @PathVariable UUID skillId
+    ) {
         return service.getSkill(skillId);
     }
 
@@ -37,7 +42,10 @@ class SkillController {
             summary = "Search skill",
             description = "Search skill by name")
     @GetMapping
-    public Skill searchSkillByName(@RequestParam String name) {
+    public Skill searchSkillByName(
+            @Parameter(in = ParameterIn.QUERY, required = true, example = "Java")
+            @RequestParam String name
+    ) {
         return service.searchByName(name);
     }
 

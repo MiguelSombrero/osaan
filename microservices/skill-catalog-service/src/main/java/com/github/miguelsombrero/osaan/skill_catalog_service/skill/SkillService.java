@@ -3,6 +3,7 @@ package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,4 +34,12 @@ class SkillService {
         return mapper.entityToApi(entity);
     }
 
+    public List<Skill> getSkills() {
+        return repository.findAll().stream()
+                .map(mapper::entityToApi).toList();
+    }
+
+    public void deleteSkill(UUID skillId) {
+        repository.deleteById(skillId);
+    }
 }
