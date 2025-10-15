@@ -14,7 +14,13 @@ app.use(cookieParser());
 app.use(corsMiddleware());
 app.use(createSession());
 
-setupAuth(app);
+const keycloakEnabled = process.env.KEYCLOAK_ENABLED === 'true';
+if (keycloakEnabled) {
+  setupAuth(app);
+  console.log('[Auth] Keycloak enabled');
+} else {
+  console.log('[Auth] Keycloak disabled');
+}
 
 app.get('/login', (req, res) => res.oidc?.login?.());
 app.get('/logout', (req, res) => res.oidc?.logout?.());

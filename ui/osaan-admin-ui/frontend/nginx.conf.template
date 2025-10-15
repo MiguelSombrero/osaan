@@ -10,6 +10,10 @@ server {
   }
 
   location /api/ {
-    proxy_pass http://osaan-admin-backend:3001;
+    rewrite ^(.*)/$ $1 break;
+    
+    proxy_pass ${API_URL}/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
   }
 }

@@ -2,7 +2,7 @@ import { AdminSkillsApi, type Skill } from './generated/api';
 import { Configuration } from './generated/configuration';
 
 const config = new Configuration({
-  basePath: import.meta.env.VITE_API_BASE || 'http://localhost:3000/api',
+  basePath: '/api',
   baseOptions: { withCredentials: true },
 });
 

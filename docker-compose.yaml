@@ -124,12 +124,12 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - TARGET_API=http://skill-catalog-service:8092
+      - TARGET_API=http://skill-catalog-service:8080
       - SESSION_SECRET=mysecret
       - CORS_ENABLED=true
       - CORS_ORIGIN=http://localhost:8080
       - REDIS_ENABLED=true
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://osaan-redis:6379
       - KEYCLOAK_ENABLED=false
     depends_on:
       - osaan-redis
@@ -140,7 +140,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      - VITE_API_BASE=http://osaan-admin-backend:3001/api
+      - API_URL=http://osaan-admin-backend:3001/api
     depends_on:
       - osaan-admin-backend
 

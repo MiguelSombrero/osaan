@@ -1,10 +1,10 @@
 employee:
   service:
-    url: http://localhost:8091
+    url: http://localhost:8091/api
 
 skill:
   service:
-    url: http://localhost:8092
+    url: http://localhost:8092/api
 
 logging:
   level:
