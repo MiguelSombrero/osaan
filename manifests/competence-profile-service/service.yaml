@@ -7,7 +7,12 @@ spec:
   selector:
     app: competence-profile-service
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 8080
+    - name: management
+      protocol: TCP
+      port: 4004
+      targetPort: 4004
   type: ClusterIP

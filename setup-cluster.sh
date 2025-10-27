@@ -3,10 +3,15 @@ set -euo pipefail
 
 CLUSTER_NAME="k3d-osaan-dev"
 EXPECTED_CONTEXT="k3d-${CLUSTER_NAME}"
+REDIS_PASS=""
 
 echo "===================================================="
 echo "  Setting up local Kubernetes cluster: ${CLUSTER_NAME}"
 echo "===================================================="
+
+# --- 0. Kysy asennuksessa tarvittavat salasanat ---
+read -s -p "Give Redis password: " REDIS_PASS
+echo ""
 
 # --- 1. Tarkista että k3d on asennettu ---
 if ! command -v k3d >/dev/null 2>&1; then
@@ -104,6 +109,31 @@ echo ""
 echo "==> Installing cert-manager..."
 kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/v1.19.0/cert-manager.yaml"
 wait_for_deployments "cert-manager"
+
+# --- 10. Redis ---
+echo ""
+echo "=== Creating namespace osaan-dev ==="
+kubectl create namespace osaan-dev --dry-run=client -o yaml | kubectl apply -f -
+
+echo ""
+echo "=== 🔐 Creating Redis secret ==="
+kubectl create secret generic redis-secret \
+  -n osaan-dev \
+  --from-literal=redis-password="$REDIS_PASS" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+echo ""
+echo "=== 🧰 Installing Redis (Bitnami)..."
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm upgrade --install redis bitnami/redis \
+  --namespace osaan-dev \
+  --set architecture=standalone \
+  --set auth.enabled=true \
+  --set auth.existingSecret=redis-secret \
+  --set master.service.ports.redis=6379 \
+  --wait
+wait_for_deployments "osaan-dev"
 
 echo ""
 echo "===================================================="

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: osaan-admin-backend-dep
+  namespace: osaan-dev
+  #annotations:
+  #  prometheus.io/scrape: "true"
+  #  prometheus.io/port: "4004"
+  #  prometheus.io/scheme: http
+  #  prometheus.io/path: "/actuator/prometheus"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: osaan-admin-backend
+  template:
+    metadata:
+      labels:
+        app: osaan-admin-backend
+    spec:
+      containers:
+        - name: osaan-admin-backend
+          image: miguelsombrero/osaan-admin-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3001
+          # readinessProbe:
+          #   httpGet:
+          #     path: /actuator/readiness
+          #     port: 4004
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 5
+          #   timeoutSeconds: 2
+          #   failureThreshold: 3
+          # livenessProbe:
+          #   httpGet:
+          #     path: /actuator/liveness
+          #     port: 4004
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          #   timeoutSeconds: 2
+          #   failureThreshold: 3
+          envFrom:
+            - configMapRef:
+                name: osaan-admin-backend-config
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: redis-password
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

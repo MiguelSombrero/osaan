@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: osaan-admin-backend-config
+  namespace: osaan-dev
+data:
+  NODE_ENV: production
+  PORT: '3001'
+  TARGET_API: http://skill-catalog-service:8080
+  CORS_ENABLED: 'true'
+  CORS_ORIGIN: http://localhost:8080
+  SESSION_SECRET: mysecret
+  REDIS_ENABLED: 'true'
+  REDIS_HOST: redis-master
+  REDIS_PORT: '6379'
+  KEYCLOAK_ENABLED: 'false'
