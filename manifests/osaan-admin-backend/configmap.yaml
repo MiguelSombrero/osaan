@@ -6,7 +6,7 @@ metadata:
 data:
   NODE_ENV: production
   PORT: '3001'
-  TARGET_API: http://skill-catalog-service:8080
+  TARGET_API: http://skill-catalog-svc:80
   CORS_ENABLED: 'true'
   CORS_ORIGIN: http://localhost:8080
   SESSION_SECRET: mysecret

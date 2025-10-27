@@ -6,5 +6,4 @@ metadata:
 data:
   POSTGRESQL_HOST: skill-catalog-postgres
   TRACING_ENDPOINT: http://jaeger-collector.istio-system:9411/api/v2/spans
-  LOGGING_LEVEL_WEB: DEBUG
-  LOGGING_LEVEL_APPLICATION: DEBUG
+  LOGGING_LEVEL_APPLICATION: TRACE

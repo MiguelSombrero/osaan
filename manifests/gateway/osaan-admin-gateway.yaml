@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: osaan-admin-gateway
+  namespace: osaan-dev
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "osaan.admin.local"
+    port:
+      number: 80
+      name: http
+      protocol: HTTP
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: osaan-admin-vs
+  namespace: osaan-dev
+spec:
+  gateways:
+  - osaan-admin-gateway
+  hosts:
+  - "osaan.admin.local"
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: osaan-admin-ui-svc
+        port:
+          number: 80

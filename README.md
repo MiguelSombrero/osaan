@@ -34,16 +34,23 @@ Osaan system contains two different UIs:
 
 ### Osaan Admin UI
 
-WORK IN PROGGRESS!
+Osaan Admin UI is for creating new skills and adding employees.
+
+#### Local
+
+- Admin UI: http://localhost:8080
+
+#### Kubernetes
+
+- Admin UI: http://osaan.admin.local:9080
 
 ### Osaan UI
 
 NOT IMPLEMENTED YET!
 
-
 ### Management UIs
 
-Tthere are also multiple management UI:s for development:
+There are also multiple management UI:s for development:
 
 #### Local
 
@@ -55,21 +62,22 @@ Tthere are also multiple management UI:s for development:
 
 #### Kubernetes
 
-- Kiali: http://kiali.localhost:9080
-- Grafana: http://grafana.localhost:9080
-- Jaeger: http://jaeger.localhost:9080
-- Prometheus: http://prometheus.localhost:9080
-- RabbitMQ: http://rabbit.localhost:9080
-- Mailhog: http://mail.localhost:9080
+- Kiali: http://kiali.local:9080
+- Grafana: http://grafana.local:9080
+- Jaeger: http://jaeger.local:9080
+- Prometheus: http://prometheus.local:9080
+- RabbitMQ: http://rabbit.local:9080
+- Mailhog: http://mail.local:9080
 
 In order to subdomain work add to your local `/etc/hosts`file:
 
 ```
+  127.0.0.1 osaan.admin.local
   127.0.0.1 osaan.local
   127.0.0.1 grafana.local
   127.0.0.1 mail.local
   127.0.0.1 kiali.local
-  27.0.0.1 prometheus.local
+  127.0.0.1 prometheus.local
   127.0.0.1 rabbit.local
   127.0.0.1 jaeger.local
 ```

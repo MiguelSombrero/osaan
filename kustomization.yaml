@@ -27,6 +27,10 @@ resources:
   - manifests/gateway/kiali-gateway.yaml
   - manifests/gateway/mail-gateway.yaml
   - manifests/gateway/osaan-gateway.yaml
+  - manifests/gateway/osaan-admin-gateway.yaml
   - manifests/osaan-admin-backend/configmap.yaml
   - manifests/osaan-admin-backend/deployment.yaml
   - manifests/osaan-admin-backend/service.yaml
+  - manifests/osaan-admin-ui/configmap.yaml
+  - manifests/osaan-admin-ui/deployment.yaml
+  - manifests/osaan-admin-ui/service.yaml

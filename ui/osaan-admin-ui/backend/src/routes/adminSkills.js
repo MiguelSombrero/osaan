@@ -1,12 +1,12 @@
-import { Router } from 'express';
+import express from 'express';
 import { callDownstream } from '../services/proxyService.js';
 import { requireLogin } from '../middleware/auth.js';
 
-const router = Router();
+const router = express.Router();
 router.use(requireLogin());
 
 router.get('/v1/admin/skills', async (req, res) => {
-  const r = await callDownstream(req, 'GET', '/v1/admin/skills');
+  const r = await callDownstream(req, 'GET', '/v1/admin/skills/');
   res.status(r.status).send(r.data);
 });
 

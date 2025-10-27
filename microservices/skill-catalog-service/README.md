@@ -2,6 +2,12 @@
 
 ## Usage
 
+### Get skills
+
+```bash
+curl -X GET http://localhost:8092/v1/admin/skills
+```
+
 ### Add skill
 
 ```bash
