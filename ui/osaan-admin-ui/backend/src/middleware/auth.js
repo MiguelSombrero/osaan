@@ -1,5 +1,6 @@
 import { auth } from 'express-openid-connect';
 import { appConfig, isKeycloakEnabled } from '../config/env.js';
+import { createSession } from '../config/session.js';
 
 export function setupAuth(app) {
   if (!isKeycloakEnabled) {
@@ -7,13 +8,8 @@ export function setupAuth(app) {
     return;
   }
 
-  const { keycloak, session, baseUrl } = appConfig;
-
-  if (!session.secret) {
-    throw new Error('[Auth] Keycloak enabled but no session secret configured');
-  }
-
-  app.set('trust proxy', 1);
+  const { keycloak, baseUrl } = appConfig;
+  const { sessionMiddleware, store, secret, cookie } = createSession();
 
   const config = {
     authRequired: false,
@@ -21,7 +17,7 @@ export function setupAuth(app) {
     idpLogout: true,
     issuerBaseURL: keycloak.issuerBaseUrl,
     baseURL: baseUrl,
-    secret: session.secret,
+    secret,
     clientID: keycloak.clientId,
     clientSecret: keycloak.clientSecret,
     authorizationParams: {
@@ -29,15 +25,17 @@ export function setupAuth(app) {
       scope: 'openid profile email',
     },
     session: {
+      name: 'osaan.sid',
+      store,
       rolling: true,
-      cookie: {
-        sameSite: 'Lax',
-        secure: session.cookieSecure,
-      },
+      cookie,
     },
   };
 
+  app.set('trust proxy', 1);
+  app.use(sessionMiddleware);
   app.use(auth(config));
+
   console.log('[Auth] Keycloak enabled');
 }
 

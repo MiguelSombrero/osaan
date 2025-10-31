@@ -20,7 +20,7 @@
     "express": "^5.1.0",
     "express-openid-connect": "^2.19.2",
     "express-session": "^1.18.2",
-    "ioredis": "^5.8.1",
+    "redis": "^5.9.0",
     "morgan": "^1.10.1"
   },
   "devDependencies": {

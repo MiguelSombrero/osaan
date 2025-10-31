@@ -3,7 +3,6 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { corsMiddleware } from './config/cors.js';
 import { setupAuth, requireLogin } from './middleware/auth.js';
-import { createSession } from './config/session.js';
 import adminSkills from './routes/adminSkills.js';
 import { appConfig } from './config/env.js';
 import { tokenMiddleware } from './middleware/tokenMiddleware.js';
@@ -14,7 +13,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(corsMiddleware());
-app.use(createSession());
 
 setupAuth(app);
 
