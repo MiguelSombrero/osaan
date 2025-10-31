@@ -126,7 +126,7 @@ export const AdminSkillsApiAxiosParamCreator = function (configuration?: Configu
          * @throws {RequiredError}
          */
         getSkills: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1/admin/skills/`;
+            const localVarPath = `/v1/admin/skills`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;

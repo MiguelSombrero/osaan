@@ -8,7 +8,7 @@
     "build": "vite build",
     "start": "vite build && vite preview",
     "preview": "vite preview",
-    "generate:client": "npx @openapitools/openapi-generator-cli generate -i ../backend/openapi/skill-api.yaml -g typescript-axios -o src/api/generated",
+    "generate:client": "npx @openapitools/openapi-generator-cli generate -i ../backend/src/openapi/skill-api.yaml -g typescript-axios -o src/api/generated",
     "test": "vitest",
     "test:watch": "vitest watch",
     "lint": "eslint 'src/**/*.{ts,tsx}' --max-warnings=0",

@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ['skill-api.yaml', '**/skill-api.yaml'],
   env: {
     browser: true,
     es2021: true,
@@ -23,8 +24,8 @@ module.exports = {
   rules: {
     'no-unused-vars': 'warn',
     'react/react-in-jsx-scope': 'off',
-    'semi': 'off',
-    '@typescript-eslint/semi': ['error', 'always']
+    semi: 'off',
+    '@typescript-eslint/semi': ['error', 'always'],
   },
 
   overrides: [
@@ -38,4 +39,4 @@ module.exports = {
       },
     },
   ],
-}
+};

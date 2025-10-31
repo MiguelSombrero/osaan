@@ -6,7 +6,7 @@ All URIs are relative to *http://localhost:8092*
 |------------- | ------------- | -------------|
 |[**createSkill**](#createskill) | **POST** /v1/admin/skills | Create Skill|
 |[**deleteSkill**](#deleteskill) | **DELETE** /v1/admin/skills/{skillId} | Delete skill|
-|[**getSkills**](#getskills) | **GET** /v1/admin/skills/ | Get skills|
+|[**getSkills**](#getskills) | **GET** /v1/admin/skills | Get skills|
 
 # **createSkill**
 > Skill createSkill(skill)

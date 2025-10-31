@@ -1,0 +1,54 @@
+{
+  "id": "osaan",
+  "realm": "osaan",
+  "displayName": "Osaan",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "osaan-admin-ui",
+      "name": "Osaan Admin UI",
+      "secret": "osaan-admin-secret",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:3001/*",
+        "http://localhost:3000/*",
+        "http://localhost:8085/*",
+        "http://localhost:5173/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3001",
+        "http://localhost:8085",
+        "http://localhost:3000",
+        "http://localhost:5173"
+      ],
+      "publicClient": false,
+      "bearerOnly": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:8085/*##http://localhost:3000/*##http://localhost:3001/*##http://keycloak:8443/*"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "requiredActions": []
+    }
+  ]
+}

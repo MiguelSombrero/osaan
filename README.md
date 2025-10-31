@@ -34,13 +34,16 @@ Osaan system contains two different UIs:
 
 ### Osaan Admin UI
 
-Osaan Admin UI is for creating new skills and adding employees.
+Osaan Admin UI is for admins to create new skills and adding employees.
 
-#### Local
+See [Osaan Admin UI documentation](https://github.com/MiguelSombrero/osaan/blob/main/ui/osaan-admin-ui/README.md) for more details on how to develop Osaan Admin UI.
 
-- Admin UI: http://localhost:8080
+## Local
 
-#### Kubernetes
+- With Vite (npm run dev): http://localhost:5173 (Login → admin/admin)
+- With Docker Compose (docker compose up --build -d): http://localhost:8085 (Login → admin/admin)
+
+## Kubernetes
 
 - Admin UI: http://osaan.admin.local:9080
 
@@ -57,6 +60,7 @@ There are also multiple management UI:s for development:
 - Mail: http://localhost:8025
 - Zipkin: http://localhost:9411
 - RabbitMQ: http://localhost:15672 (guest/guest)
+- Keycloak: https://localhost:8443 (admin/admin)
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000
 
@@ -80,15 +84,16 @@ In order to subdomain work add to your local `/etc/hosts`file:
   127.0.0.1 prometheus.local
   127.0.0.1 rabbit.local
   127.0.0.1 jaeger.local
+  127.0.0.1 keycloak
 ```
 
 ## Run
 
 There are 3 options for running Osaan system:
 
-1) IDE
-2) Docker Dompose
-3) Kubernetes
+1. IDE
+2. Docker Dompose
+3. Kubernetes
 
 ### 1) IDE
 
@@ -110,7 +115,7 @@ docker compose up -d
 
 ### 3) Kubernetes
 
-These instructions are k3d specific but can be applied to other Kubernetes distributions as well. 
+These instructions are k3d specific but can be applied to other Kubernetes distributions as well.
 
 Create cluster and install all necessary operators etc. with script:
 

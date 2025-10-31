@@ -2,23 +2,29 @@ import session from 'express-session';
 import { RedisStore } from 'connect-redis';
 import { redis, redisEnabled } from './redis.js';
 
+function resolveCookieOptions() {
+  return {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'Lax',
+  };
+}
+
 export function createSession() {
+  const cookie = resolveCookieOptions();
+
   if (redisEnabled && redis) {
-    console.log('[Session] Redis store enabled');
+    console.log('[Session] Redis store enabled (secure cookie:', cookie.secure, ')');
 
     return session({
       store: new RedisStore({
         client: redis,
         prefix: 'osaan:',
       }),
-      secret: process.env.SESSION_SECRET || 'super-secret',
+      secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-      },
+      cookie,
     });
   }
 
@@ -27,5 +33,6 @@ export function createSession() {
     secret: process.env.SESSION_SECRET || 'dev-secret',
     resave: false,
     saveUninitialized: false,
+    cookie,
   });
 }
