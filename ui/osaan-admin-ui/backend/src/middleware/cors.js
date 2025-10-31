@@ -1,5 +1,5 @@
 import cors from 'cors';
-import { appConfig } from './env.js';
+import { appConfig } from '../config/env.js';
 
 export function corsMiddleware() {
   if (!appConfig.cors.enabled) {

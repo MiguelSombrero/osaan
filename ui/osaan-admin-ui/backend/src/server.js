@@ -1,11 +1,13 @@
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { corsMiddleware } from './config/cors.js';
-import { setupAuth, requireLogin } from './middleware/auth.js';
+import { corsMiddleware } from './middleware/cors.js';
+import { setupAuth } from './middleware/auth.js';
 import adminSkills from './routes/adminSkills.js';
 import { appConfig } from './config/env.js';
-import { tokenMiddleware } from './middleware/tokenMiddleware.js';
+import { tokenMiddleware } from './middleware/token.js';
+import pkg from 'express-openid-connect';
+const { requiresAuth } = pkg;
 
 export const app = express();
 
@@ -29,7 +31,7 @@ app.get('/api/user', (req, res) => {
   res.json({ authenticated: true, user: req.oidc?.user || null });
 });
 
-app.use('/api', requireLogin(), tokenMiddleware, adminSkills);
+app.use('/api', requiresAuth(), tokenMiddleware, adminSkills);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 

@@ -1,7 +1,7 @@
 import session from 'express-session';
 import { RedisStore } from 'connect-redis';
-import { appConfig } from './env.js';
-import { redis, redisEnabled } from './redis.js';
+import { appConfig } from '../config/env.js';
+import { redis, redisEnabled } from '../config/redis.js';
 
 export function createSession() {
   const cookie = { httpOnly: true, sameSite: 'Lax', secure: appConfig.session.cookieSecure };

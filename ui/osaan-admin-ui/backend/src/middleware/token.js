@@ -1,16 +1,14 @@
-import axios from 'axios';
-import { appConfig } from '../config/env.js';
+export async function tokenMiddleware(req, res, next) {
+  const accessToken = req.oidc?.accessToken;
 
-export function getRefreshTokenFromSession(req) {
-  return req.session?.tokens?.refresh_token || null;
-}
+  try {
+    if (accessToken?.isExpired?.()) {
+      await accessToken.refresh();
+    }
+  } catch (err) {
+    console.error('[TokenMiddleware] Token refresh failed:', err.message);
+    return res.redirect('/api/login');
+  }
 
-export function setTokensToSession(req, tokens) {
-  req.session.tokens = {
-    access_token: tokens.access_token,
-    refresh_token: tokens.refresh_token ?? getRefreshTokenFromSession(req),
-    expires_in: tokens.expires_in,
-    token_type: tokens.token_type || 'Bearer',
-    obtained_at: Date.now(),
-  };
+  next();
 }
