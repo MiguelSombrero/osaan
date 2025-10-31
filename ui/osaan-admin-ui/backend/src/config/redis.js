@@ -1,24 +1,19 @@
 import Redis from 'ioredis';
+import { appConfig } from './env.js';
 
-const enabled = process.env.REDIS_ENABLED === 'true';
+const { redis: redisConfig } = appConfig;
 
 let redis = null;
-if (enabled) {
-  const host = process.env.REDIS_HOST || 'localhost';
-  const port = process.env.REDIS_PORT || 6379;
-  const password = process.env.REDIS_PASSWORD || null;
-
-  const options = {
-    host,
-    port,
-    password,
-    // tls: { rejectUnauthorized: false } // jos käytät TLS:ää
-  };
-
-  redis = new Redis(options);
+if (redisConfig.enabled) {
+  redis = new Redis({
+    host: redisConfig.host,
+    port: redisConfig.port,
+    password: redisConfig.password,
+  });
 
   redis.on('connect', () => console.log('[Redis] connected'));
   redis.on('error', (err) => console.error('[Redis] error', err));
 }
 
-export { redis, enabled as redisEnabled };
+export { redis };
+export const redisEnabled = redisConfig.enabled;

@@ -1,28 +1,15 @@
 import axios from 'axios';
-import { getAccessTokenFromSession, refreshAccessToken } from '../middleware/token.js';
-
-const TARGET = process.env.TARGET_API || 'http://localhost:8092';
+import { appConfig, isKeycloakEnabled } from '../config/env.js';
 
 export async function callDownstream(req, method, path, data) {
-  let accessToken = getAccessTokenFromSession(req);
+  const token = req.oidc?.accessToken?.access_token;
+  const type = req.oidc?.accessToken?.token_type || 'Bearer';
 
-  const run = async token =>
-    axios.request({
-      method,
-      url: `${TARGET}${path}`,
-      data,
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      validateStatus: () => true,
-    });
-
-  let resp = await run(accessToken);
-  if ((resp.status === 401 || resp.status === 403) && process.env.KEYCLOAK_ENABLED === 'true') {
-    try {
-      const newToken = await refreshAccessToken(req);
-      resp = await run(newToken);
-    } catch {
-      return resp;
-    }
-  }
-  return resp;
+  return axios.request({
+    method,
+    url: `${appConfig.targetApi}${path}`,
+    data,
+    headers: token && isKeycloakEnabled ? { Authorization: `${type} ${token}` } : undefined,
+    validateStatus: () => true,
+  });
 }

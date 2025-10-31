@@ -1,14 +1,15 @@
 import cors from 'cors';
+import { appConfig } from './env.js';
 
 export function corsMiddleware() {
-  if (process.env.CORS_ENABLED === 'true') {
-    console.log('[CORS] Enabled for', process.env.CORS_ORIGIN);
-    return cors({
-      origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-      credentials: true
-    });
-  } else {
+  if (!appConfig.cors.enabled) {
     console.log('[CORS] Disabled (handled by proxy)');
-    return (req, res, next) => next();
+    return (_req, _res, next) => next();
   }
+
+  console.log('[CORS] Enabled for', appConfig.cors.origin);
+  return cors({
+    origin: appConfig.cors.origin,
+    credentials: true,
+  });
 }
