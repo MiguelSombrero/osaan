@@ -1,11 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - manifests/platform/certificate/selfsigned-issuer.yaml
+  - manifests/platform/certificate/osaan-certificate.yaml
+  - manifests/platform/keycloak/keycloak-cert.yaml
+  - manifests/platform/keycloak/keycloak.yaml
+  - manifests/platform/keycloak/keycloak-realm-import.yaml
+  - manifests/platform/istio.yaml
   - manifests/common/namespace-osaan.yaml
   - manifests/common/postgres-secret.yaml
   - manifests/common/mailhog.yaml
   - manifests/common/rabbitmq.yaml
-#  - manifests/common/redis-secret.yaml
   - manifests/employee-service/configmap.yaml
   - manifests/employee-service/postgres.yaml
   - manifests/employee-service/deployment.yaml
@@ -24,6 +29,7 @@ resources:
   - manifests/competence-matching-service/service.yaml
   - manifests/gateway/grafana-gateway.yaml
   - manifests/gateway/jaeger-gateway.yaml
+  - manifests/gateway/keycloak-gateway.yaml
   - manifests/gateway/kiali-gateway.yaml
   - manifests/gateway/mail-gateway.yaml
   - manifests/gateway/osaan-gateway.yaml

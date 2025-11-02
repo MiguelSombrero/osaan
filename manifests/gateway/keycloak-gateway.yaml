@@ -1,0 +1,47 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: keycloak-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "keycloak.local"
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: osaan-certificate
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: keycloak-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - "keycloak.local"
+  gateways:
+  - keycloak-gateway
+  http:
+  - route:
+    - destination:
+        host: osaan-keycloak-service.keycloak.svc.cluster.local
+        port:
+          number: 8443
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: keycloak-dr
+  namespace: istio-system
+spec:
+  host: osaan-keycloak-service.keycloak.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: SIMPLE
+      insecureSkipVerify: true

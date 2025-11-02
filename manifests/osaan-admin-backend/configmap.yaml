@@ -5,12 +5,20 @@ metadata:
   namespace: osaan-dev
 data:
   NODE_ENV: production
-  PORT: '3001'
+  PORT: "3001"
+  #NODE_TLS_REJECT_UNAUTHORIZED: "0"
   TARGET_API: http://skill-catalog-svc:80
-  CORS_ENABLED: 'true'
-  CORS_ORIGIN: http://localhost:8080
+  SESSION_COOKIE_SECURE: "false"
   SESSION_SECRET: mysecret
-  REDIS_ENABLED: 'true'
+  CORS_ENABLED: "true"
+  CORS_ORIGIN: http://osaan.admin.local:9080
+  REDIS_ENABLED: "true"
   REDIS_HOST: redis-master
-  REDIS_PORT: '6379'
-  KEYCLOAK_ENABLED: 'false'
+  REDIS_PORT: "6379"
+  BASE_URL: http://osaan-admin-backend-svc:80
+  LOGIN_REDIRECT_URL: http://osaan.admin.local:9080/skills
+  LOGOUT_REDIRECT_URL: http://osaan.admin.local:9080
+  KEYCLOAK_ENABLED: "true"
+  KEYCLOAK_ISSUER_BASE_URL: http://osaan-keycloak-service.keycloak.svc.cluster.local:8080/realms/osaan
+  KEYCLOAK_CLIENT_ID: osaan-admin-ui
+  KEYCLOAK_CLIENT_SECRET: osaan-admin-secret

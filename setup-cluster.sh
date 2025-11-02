@@ -124,8 +124,8 @@ kubectl create secret generic redis-secret \
 
 echo ""
 echo "=== 🧰 Installing Redis (Bitnami)..."
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
+helm repo add bitnami https://charts.bitnami.com/bitnami >/dev/null 2>&1
+helm repo update >/dev/null 2>&1
 helm upgrade --install redis bitnami/redis \
   --namespace osaan-dev \
   --set architecture=standalone \
@@ -134,6 +134,17 @@ helm upgrade --install redis bitnami/redis \
   --set master.service.ports.redis=6379 \
   --wait
 wait_for_deployments "osaan-dev"
+
+# --- 11. Keycloak ---
+echo ""
+echo "=== Installing Keycloak ..."
+kubectl create namespace keycloak --dry-run=client -o yaml \
+  | kubectl label --local -f - istio-injection=enabled -o yaml \
+  | kubectl apply -f -
+kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/keycloaks.k8s.keycloak.org-v1.yml
+kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
+kubectl -n keycloak apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/kubernetes.yml
+wait_for_deployments "keycloak"
 
 echo ""
 echo "===================================================="

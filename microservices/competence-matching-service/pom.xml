@@ -175,4 +175,11 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/miguelsombrero/osaan</url>
+        </repository>
+    </repositories>
+
 </project>

@@ -4,4 +4,4 @@ metadata:
   name: osaan-admin-ui-config
   namespace: osaan-dev
 data:
-  API_URL: http://osaan-admin-backend-svc/api
+  API_URL: http://osaan-admin-backend-svc

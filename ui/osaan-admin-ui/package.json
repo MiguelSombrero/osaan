@@ -1,5 +1,5 @@
 {
-  "name": "osaan-admin-ui-monorepo-example",
+  "name": "osaan-admin-ui",
   "private": true,
   "scripts": {
     "start": "concurrently \"npm:backend:start\" \"npm:frontend:start\"",

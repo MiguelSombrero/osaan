@@ -1,0 +1,18 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: osaan-keycloak
+  namespace: keycloak
+spec:
+  instances: 1
+  db:
+    vendor: dev-mem
+  hostname:
+    hostname: keycloak.local
+  http:
+    tlsSecret: keycloak-tls
+  additionalOptions:
+    - name: KC_BOOTSTRAP_ADMIN_USERNAME
+      value: admin
+    - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+      value: admin
