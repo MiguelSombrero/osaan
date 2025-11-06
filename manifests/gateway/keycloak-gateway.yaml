@@ -32,7 +32,7 @@ spec:
     - destination:
         host: osaan-keycloak-service.keycloak.svc.cluster.local
         port:
-          number: 8443
+          number: 8080
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
@@ -43,5 +43,4 @@ spec:
   host: osaan-keycloak-service.keycloak.svc.cluster.local
   trafficPolicy:
     tls:
-      mode: SIMPLE
-      insecureSkipVerify: true
+      mode: DISABLE

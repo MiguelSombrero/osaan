@@ -8,11 +8,12 @@ spec:
   db:
     vendor: dev-mem
   hostname:
-    hostname: keycloak.local
+    hostname: https://keycloak.local:9443
+    admin: https://keycloak.local:9443
+    strict: false
+    backchannelDynamic: true
   http:
-    tlsSecret: keycloak-tls
-  additionalOptions:
-    - name: KC_BOOTSTRAP_ADMIN_USERNAME
-      value: admin
-    - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-      value: admin
+    httpEnabled: true
+    httpPort: 8080
+  proxy:
+    headers: xforwarded
