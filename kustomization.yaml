@@ -4,6 +4,8 @@ resources:
   - manifests/platform/certificate/selfsigned-issuer.yaml
   - manifests/platform/certificate/osaan-certificate.yaml
   - manifests/platform/keycloak/keycloak-cert.yaml
+  - manifests/platform/keycloak/keycloak-postgres-secret.yaml
+  - manifests/platform/keycloak/keycloak-postgres.yaml
   - manifests/platform/keycloak/keycloak.yaml
   - manifests/platform/keycloak/keycloak-realm-import.yaml
   - manifests/platform/istio.yaml

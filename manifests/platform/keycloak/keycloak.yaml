@@ -6,7 +6,16 @@ metadata:
 spec:
   instances: 1
   db:
-    vendor: dev-mem
+    vendor: postgres
+    host: keycloak-postgres-svc.keycloak.svc.cluster.local
+    port: 5432
+    usernameSecret:
+      name: keycloak-postgres-secret
+      key: POSTGRES_USER
+    passwordSecret:
+      name: keycloak-postgres-secret
+      key: POSTGRES_PASSWORD
+    database: keycloak
   hostname:
     hostname: https://keycloak.local:9443
     admin: https://keycloak.local:9443
