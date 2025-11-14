@@ -4,7 +4,6 @@ metadata:
   name: employee-service-config
   namespace: osaan-dev
 data:
-  POSTGRESQL_HOST: employee-postgres
   TRACING_ENDPOINT: http://jaeger-collector.istio-system:9411/api/v2/spans
   LOGGING_LEVEL_WEB: DEBUG
   LOGGING_LEVEL_APPLICATION: DEBUG

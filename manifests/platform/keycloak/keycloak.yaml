@@ -17,10 +17,9 @@ spec:
       key: POSTGRES_PASSWORD
     database: keycloak
   hostname:
-    hostname: https://keycloak.local:9443
-    admin: https://keycloak.local:9443
+    hostname: https://keycloak.local
+    admin: https://keycloak.local
     strict: false
-    backchannelDynamic: true
   http:
     httpEnabled: true
     httpPort: 8080

@@ -43,8 +43,27 @@ spec:
           envFrom:
             - configMapRef:
                 name: skill-catalog-service-config
-            - secretRef:
-                name: postgres-secret
+          env:
+            - name: POSTGRESQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: osaan-db-pguser-osaan-user
+                  key: host
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: osaan-db-pguser-osaan-user
+                  key: dbname
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: osaan-db-pguser-osaan-user
+                  key: password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: osaan-db-pguser-osaan-user
+                  key: user
           resources:
             requests:
               memory: "256Mi"

@@ -25,6 +25,7 @@ if ! k3d cluster list | grep -q "${CLUSTER_NAME}"; then
   k3d cluster create "${CLUSTER_NAME}" \
     --api-port 6550 \
     -p '9080:80@loadbalancer' \
+    -p '443:443@loadbalancer' \
     -p '9443:443@loadbalancer' \
     --agents 2 \
     --k3s-arg '--disable=traefik@server:*'
@@ -80,14 +81,12 @@ wait_for_deployments "kube-system"
 echo ""
 echo "==> Installing Istio..."
 kubectl create namespace istio-system --dry-run=client -o yaml | kubectl apply -f -
-
 istioctl install -y -n istio-system \
   --set meshConfig.accessLogFile=/dev/stdout \
   --set meshConfig.accessLogEncoding=JSON \
   --set meshConfig.enableTracing=true \
   --set meshConfig.defaultConfig.tracing.sampling=100 \
   --set profile=default
-
 wait_for_deployments "istio-system"
 
 # --- 8. Istio integrations ---
@@ -95,13 +94,11 @@ echo ""
 echo "==> Installing Istio integrations (Kiali, Jaeger, Prometheus, Grafana)..."
 istio_version=$(istioctl version --short --remote=false | awk '{print $3}')
 echo "Detected Istio version: ${istio_version}"
-
 base_url="https://raw.githubusercontent.com/istio/istio/${istio_version}/samples/addons"
 kubectl apply -n istio-system -f "${base_url}/kiali.yaml"
 kubectl apply -n istio-system -f "${base_url}/jaeger.yaml"
 kubectl apply -n istio-system -f "${base_url}/prometheus.yaml"
 kubectl apply -n istio-system -f "${base_url}/grafana.yaml"
-
 wait_for_deployments "istio-system"
 
 # --- 9. cert-manager ---
@@ -112,18 +109,12 @@ wait_for_deployments "cert-manager"
 
 # --- 10. Redis ---
 echo ""
-echo "=== Creating namespace osaan-dev ==="
+echo "=== 🧰 Installing Redis (Bitnami)..."
 kubectl create namespace osaan-dev --dry-run=client -o yaml | kubectl apply -f -
-
-echo ""
-echo "=== 🔐 Creating Redis secret ==="
 kubectl create secret generic redis-secret \
   -n osaan-dev \
   --from-literal=redis-password="$REDIS_PASS" \
   --dry-run=client -o yaml | kubectl apply -f -
-
-echo ""
-echo "=== 🧰 Installing Redis (Bitnami)..."
 helm repo add bitnami https://charts.bitnami.com/bitnami >/dev/null 2>&1
 helm repo update >/dev/null 2>&1
 helm upgrade --install redis bitnami/redis \
@@ -145,6 +136,14 @@ kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resourc
 kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
 kubectl -n keycloak apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/kubernetes.yml
 wait_for_deployments "keycloak"
+
+# --- 12. Postgres Operator and cluster ---
+echo ""
+echo "=== Installing CrunchyData Postgres Operator ..."
+kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
+kubectl apply -f manifests/platform/postgres/postgres.yaml
+wait_for_deployments "postgres-operator"
 
 echo ""
 echo "===================================================="

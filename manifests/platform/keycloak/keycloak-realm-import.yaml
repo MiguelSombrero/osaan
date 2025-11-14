@@ -17,12 +17,11 @@ spec:
         enabled: true
         protocol: openid-connect
         redirectUris:
-          - https://keycloak.local:9443/*
-          - http://osaan.admin.local:9080/*
+          - https://osaan.admin.local/*
+          - https://osaan.admin.local:9443/*
         webOrigins:
-          - https://keycloak.local:9443/*
-          - http://osaan.admin.local:9080/*
-          - http://osaan-admin-backend-svc:80
+          - https://osaan.admin.local
+          - https://osaan.admin.local:9443
         publicClient: false
         bearerOnly: false
         directAccessGrantsEnabled: false
@@ -31,8 +30,7 @@ spec:
         implicitFlowEnabled: false
         attributes:
           post.logout.redirect.uris: >-
-            http://osaan.admin.local:9080/*##
-            https://keycloak.local:9443/*
+            https://osaan.admin.local/*##https://osaan.admin.local:9443/*##
     users:
       - username: admin
         enabled: true

@@ -45,7 +45,7 @@ See [Osaan Admin UI documentation](https://github.com/MiguelSombrero/osaan/blob/
 
 ## Kubernetes
 
-- Admin UI: http://osaan.admin.local:9080
+- Admin UI: https://osaan.admin.local:9443
 
 ### Osaan UI
 
@@ -85,6 +85,7 @@ In order to subdomain work add to your local `/etc/hosts`file:
   127.0.0.1 rabbit.local
   127.0.0.1 jaeger.local
   127.0.0.1 keycloak
+  127.0.0.1 keycloak.local
 ```
 
 ## Run
@@ -132,14 +133,6 @@ k3d cluster create k3d-osaan-dev --api-port 6550 -p '9080:80@loadbalancer' -p '9
 AND install selected operators from `./setup-cluster.sh` script.
 
 ## Deploy
-
-Before deploying to newly created cluster, you have to recreate all the SealedSecrets. For instructions, see [How to create SealedSecrets from Secrets](#how-to-create-sealedSecrets-from-secrets)
-
-SealedSecrets that needs to be recreated:
-
-```
-manifests/common/postgres-secret.yaml
-```
 
 Deploy microservices with Kustomization:
 
