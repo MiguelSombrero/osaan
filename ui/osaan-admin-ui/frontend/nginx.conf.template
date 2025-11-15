@@ -18,4 +18,10 @@ server {
     proxy_buffers 4 256k;
     proxy_busy_buffers_size 256k;
   }
+
+  location = /health {
+    access_log off;
+    add_header Content-Type text/plain;
+    return 200 'ok';
+  }
 }
