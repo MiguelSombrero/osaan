@@ -1,6 +1,11 @@
 import { auth } from 'express-openid-connect';
+import pkg from 'express-openid-connect';
 import { appConfig, isKeycloakEnabled } from '../config/env.js';
 import { createSession } from './session.js';
+
+const { requiresAuth } = pkg;
+
+export const authMiddleware = isKeycloakEnabled ? requiresAuth() : (_req, _res, next) => next();
 
 export function setupAuth(app) {
   if (!isKeycloakEnabled) {

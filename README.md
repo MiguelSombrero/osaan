@@ -194,3 +194,7 @@ kubeseal \
 --controller-name=sealed-secrets-controller \
 -o yaml < secret.yaml > postgres-secret.yaml
 ```
+
+## Bugs and issues
+
+1. Tracing is not working for osaan-admin-backend (Jaeger not showing spans)
