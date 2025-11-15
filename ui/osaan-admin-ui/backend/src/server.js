@@ -6,6 +6,7 @@ import { setupAuth } from './middleware/auth.js';
 import adminSkills from './routes/adminSkills.js';
 import { appConfig } from './config/env.js';
 import { tokenMiddleware } from './middleware/token.js';
+import { register } from './metrics.js';
 import pkg from 'express-openid-connect';
 const { requiresAuth } = pkg;
 
@@ -34,6 +35,17 @@ app.get('/api/user', (req, res) => {
 app.use('/api', requiresAuth(), tokenMiddleware, adminSkills);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+
+app.get('/metrics', async (_req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    const metrics = await register.metrics();
+    res.send(metrics);
+  } catch (err) {
+    console.error('[Metrics error]', err);
+    res.status(500).end();
+  }
+});
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
