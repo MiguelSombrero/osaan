@@ -19,8 +19,19 @@ app.use(corsMiddleware());
 
 setupAuth(app);
 
-app.get('/api/login', (_req, res) => res.oidc?.login({ returnTo: appConfig.loginRedirectUrl }));
-app.get('/api/logout', (_req, res) => res.oidc?.logout({ returnTo: appConfig.logoutRedirectUrl }));
+app.get('/api/login', (_req, res) => {
+  if (!appConfig.keycloak.enabled) {
+    return res.status(404).json({ error: 'Login disabled' });
+  }
+  return res.oidc?.login({ returnTo: appConfig.loginRedirectUrl });
+});
+
+app.get('/api/logout', (_req, res) => {
+  if (!appConfig.keycloak.enabled) {
+    return res.status(200).json({ message: 'Logout noop (auth disabled)' });
+  }
+  return res.oidc?.logout({ returnTo: appConfig.logoutRedirectUrl });
+});
 
 app.get('/api/user', (req, res) => {
   if (!appConfig.keycloak.enabled) {

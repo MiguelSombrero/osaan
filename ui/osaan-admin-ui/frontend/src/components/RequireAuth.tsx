@@ -5,7 +5,7 @@ export function RequireAuth({ children }: PropsWithChildren) {
   const { data, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && data && !data.authenticated) {
+    if (!isLoading && data && !data.authenticated && !data?.authDisabled) {
       login();
     }
   }, [isLoading, data]);
