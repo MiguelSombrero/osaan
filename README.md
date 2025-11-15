@@ -72,8 +72,9 @@ There are also multiple management UI:s for development:
 - Prometheus: http://prometheus.local:9080
 - RabbitMQ: http://rabbit.local:9080
 - Mailhog: http://mail.local:9080
+- Keycloak: https://keycloak.local:9443
 
-In order to subdomain work add to your local `/etc/hosts`file:
+For subdomain to work add to your local `/etc/hosts`file:
 
 ```
   127.0.0.1 osaan.admin.local

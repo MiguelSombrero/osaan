@@ -7,13 +7,13 @@ spec:
   hosts:
     - keycloak.local
   location: MESH_EXTERNAL
-  resolution: STATIC
+  resolution: DNS
   ports:
     - number: 443
       name: https
       protocol: TLS
   endpoints:
-    - address: 0.0.0.0
+    - address: istio-ingressgateway.istio-system.svc.cluster.local
       ports:
         https: 443
 ---

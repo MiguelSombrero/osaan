@@ -65,19 +65,6 @@ wait_for_deployments() {
   kubectl -n "$namespace" wait --timeout=600s --for=condition=available deployment --all || true
 }
 
-write_keycloak_network_env() {
-  local ingress_ip
-  ingress_ip=$(kubectl -n istio-system get svc istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
-  if [[ -z "$ingress_ip" ]]; then
-    echo "❌ Could not detect istio-ingressgateway ClusterIP."
-    return 1
-  fi
-
-  cat > manifests/common/keycloak-network.env <<EOF
-KEYCLOAK_INGRESS_IP=${ingress_ip}
-EOF
-  echo "✅ Recorded Keycloak ingress IP (${ingress_ip}) to manifests/common/keycloak-network.env"
-}
 
 # --- 5. RabbitMQ Operator ---
 echo ""
@@ -103,9 +90,6 @@ istioctl install -y -n istio-system \
   --set profile=default \
   --set meshConfig.defaultConfig.proxyMetadata.ISTIO_META_DNS_CAPTURE=true
 wait_for_deployments "istio-system"
-
-# --- 7b. Päivitä Keycloak ingress -IP tiedostoon ---
-write_keycloak_network_env
 
 # --- 8. Istio integrations ---
 echo ""
