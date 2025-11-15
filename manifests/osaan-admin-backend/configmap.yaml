@@ -19,6 +19,6 @@ data:
   LOGIN_REDIRECT_URL: https://osaan.admin.local:9443/skills
   LOGOUT_REDIRECT_URL: https://osaan.admin.local:9443
   KEYCLOAK_ENABLED: "true"
-  KEYCLOAK_ISSUER_BASE_URL: https://keycloak.local:9443/realms/osaan
+  KEYCLOAK_ISSUER_BASE_URL: https://keycloak.local/realms/osaan
   KEYCLOAK_CLIENT_ID: osaan-admin-ui
   KEYCLOAK_CLIENT_SECRET: osaan-admin-secret

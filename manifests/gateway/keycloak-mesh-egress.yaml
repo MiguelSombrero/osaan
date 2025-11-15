@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: keycloak-local-mesh
+  namespace: osaan-dev
+spec:
+  hosts:
+    - keycloak.local
+  location: MESH_EXTERNAL
+  resolution: STATIC
+  ports:
+    - number: 443
+      name: https
+      protocol: TLS
+  endpoints:
+    - address: 10.43.98.1
+      ports:
+        https: 443
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: keycloak-local-mesh
+  namespace: osaan-dev
+spec:
+  hosts:
+    - keycloak.local
+  gateways:
+    - mesh
+  tls:
+    - match:
+        - sniHosts:
+            - keycloak.local
+      route:
+        - destination:
+            host: osaan-keycloak-service.keycloak.svc.cluster.local
+            port:
+              number: 8443

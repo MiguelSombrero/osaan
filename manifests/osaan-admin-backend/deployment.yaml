@@ -19,7 +19,7 @@ spec:
         app: osaan-admin-backend
     spec:
       hostAliases:
-        - ip: 10.43.203.123
+        - ip: 10.43.98.1
           hostnames:
             - keycloak.local
       containers:

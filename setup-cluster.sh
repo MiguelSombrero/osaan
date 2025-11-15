@@ -110,7 +110,7 @@ wait_for_deployments "cert-manager"
 # --- 10. Redis ---
 echo ""
 echo "=== 🧰 Installing Redis (Bitnami)..."
-kubectl create namespace osaan-dev --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -f manifests/common/namespace-osaan.yaml
 kubectl create secret generic redis-secret \
   -n osaan-dev \
   --from-literal=redis-password="$REDIS_PASS" \
@@ -144,6 +144,29 @@ kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl ap
 kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
 kubectl apply -f manifests/platform/postgres/postgres.yaml
 wait_for_deployments "postgres-operator"
+
+# --- 13. Patch backend deployment with Istio gateway IP for keycloak.local resolution ---
+echo ""
+echo "=== Patching backend deployment with Istio gateway IP..."
+# Wait for deployment to exist
+echo "Waiting for backend deployment to be created..."
+kubectl -n osaan-dev wait --for=condition=available --timeout=60s deployment/osaan-admin-backend-dep 2>/dev/null || true
+
+ISTIO_GATEWAY_IP=$(kubectl -n istio-system get svc istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
+if [[ -n "$ISTIO_GATEWAY_IP" ]]; then
+  echo "Istio gateway ClusterIP: $ISTIO_GATEWAY_IP"
+  # Replace the placeholder IP in hostAliases
+  kubectl -n osaan-dev patch deployment osaan-admin-backend-dep --type='json' \
+    -p="[{\"op\": \"replace\", \"path\": \"/spec/template/spec/hostAliases/0/ip\", \"value\": \"$ISTIO_GATEWAY_IP\"}]" \
+    || kubectl -n osaan-dev patch deployment osaan-admin-backend-dep --type='json' \
+    -p="[{\"op\": \"add\", \"path\": \"/spec/template/spec/hostAliases\", \"value\": [{\"ip\": \"$ISTIO_GATEWAY_IP\", \"hostnames\": [\"keycloak.local\"]}]}]"
+  echo "✅ Backend deployment patched with hostAliases (IP: $ISTIO_GATEWAY_IP)"
+  # Restart the deployment to apply the change
+  kubectl -n osaan-dev rollout restart deployment/osaan-admin-backend-dep
+  echo "✅ Backend deployment restarted to apply hostAliases"
+else
+  echo "⚠️  Could not get Istio gateway IP, you may need to manually set hostAliases"
+fi
 
 echo ""
 echo "===================================================="

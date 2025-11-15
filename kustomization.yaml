@@ -9,7 +9,6 @@ resources:
   - manifests/platform/keycloak/keycloak.yaml
   - manifests/platform/keycloak/keycloak-realm-import.yaml
   - manifests/platform/istio.yaml
-  - manifests/common/namespace-osaan.yaml
   - manifests/common/mailhog.yaml
   - manifests/common/rabbitmq.yaml
   - manifests/employee-service/configmap.yaml
@@ -27,6 +26,7 @@ resources:
   - manifests/gateway/grafana-gateway.yaml
   - manifests/gateway/jaeger-gateway.yaml
   - manifests/gateway/keycloak-gateway.yaml
+  - manifests/gateway/keycloak-mesh-egress.yaml
   - manifests/gateway/kiali-gateway.yaml
   - manifests/gateway/mail-gateway.yaml
   - manifests/gateway/osaan-gateway.yaml
