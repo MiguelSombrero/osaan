@@ -18,10 +18,6 @@ spec:
       labels:
         app: osaan-admin-backend
     spec:
-      hostAliases:
-        - ip: 10.43.98.1
-          hostnames:
-            - keycloak.local
       containers:
         - name: osaan-admin-backend
           image: miguelsombrero/osaan-admin-backend:latest

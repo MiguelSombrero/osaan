@@ -1,5 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+configMapGenerator:
+  - name: keycloak-network-config
+    namespace: osaan-dev
+    envs:
+      - manifests/common/keycloak-network.env
+generatorOptions:
+  disableNameSuffixHash: true
 resources:
   - manifests/platform/certificate/selfsigned-issuer.yaml
   - manifests/platform/certificate/osaan-certificate.yaml
@@ -37,3 +44,14 @@ resources:
   - manifests/osaan-admin-ui/configmap.yaml
   - manifests/osaan-admin-ui/deployment.yaml
   - manifests/osaan-admin-ui/service.yaml
+replacements:
+  - source:
+      kind: ConfigMap
+      name: keycloak-network-config
+      fieldPath: data.KEYCLOAK_INGRESS_IP
+    targets:
+      - select:
+          kind: ServiceEntry
+          name: keycloak-local-mesh
+        fieldPaths:
+          - spec.endpoints.0.address

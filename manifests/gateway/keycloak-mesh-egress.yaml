@@ -13,7 +13,7 @@ spec:
       name: https
       protocol: TLS
   endpoints:
-    - address: 10.43.98.1
+    - address: 0.0.0.0
       ports:
         https: 443
 ---

@@ -65,6 +65,20 @@ wait_for_deployments() {
   kubectl -n "$namespace" wait --timeout=600s --for=condition=available deployment --all || true
 }
 
+write_keycloak_network_env() {
+  local ingress_ip
+  ingress_ip=$(kubectl -n istio-system get svc istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
+  if [[ -z "$ingress_ip" ]]; then
+    echo "❌ Could not detect istio-ingressgateway ClusterIP."
+    return 1
+  fi
+
+  cat > manifests/common/keycloak-network.env <<EOF
+KEYCLOAK_INGRESS_IP=${ingress_ip}
+EOF
+  echo "✅ Recorded Keycloak ingress IP (${ingress_ip}) to manifests/common/keycloak-network.env"
+}
+
 # --- 5. RabbitMQ Operator ---
 echo ""
 echo "==> Installing RabbitMQ Cluster Operator..."
@@ -86,8 +100,12 @@ istioctl install -y -n istio-system \
   --set meshConfig.accessLogEncoding=JSON \
   --set meshConfig.enableTracing=true \
   --set meshConfig.defaultConfig.tracing.sampling=100 \
-  --set profile=default
+  --set profile=default \
+  --set meshConfig.defaultConfig.proxyMetadata.ISTIO_META_DNS_CAPTURE=true
 wait_for_deployments "istio-system"
+
+# --- 7b. Päivitä Keycloak ingress -IP tiedostoon ---
+write_keycloak_network_env
 
 # --- 8. Istio integrations ---
 echo ""
@@ -142,31 +160,8 @@ echo ""
 echo "=== Installing CrunchyData Postgres Operator ..."
 kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
-kubectl apply -f manifests/platform/postgres/postgres.yaml
 wait_for_deployments "postgres-operator"
-
-# --- 13. Patch backend deployment with Istio gateway IP for keycloak.local resolution ---
-echo ""
-echo "=== Patching backend deployment with Istio gateway IP..."
-# Wait for deployment to exist
-echo "Waiting for backend deployment to be created..."
-kubectl -n osaan-dev wait --for=condition=available --timeout=60s deployment/osaan-admin-backend-dep 2>/dev/null || true
-
-ISTIO_GATEWAY_IP=$(kubectl -n istio-system get svc istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
-if [[ -n "$ISTIO_GATEWAY_IP" ]]; then
-  echo "Istio gateway ClusterIP: $ISTIO_GATEWAY_IP"
-  # Replace the placeholder IP in hostAliases
-  kubectl -n osaan-dev patch deployment osaan-admin-backend-dep --type='json' \
-    -p="[{\"op\": \"replace\", \"path\": \"/spec/template/spec/hostAliases/0/ip\", \"value\": \"$ISTIO_GATEWAY_IP\"}]" \
-    || kubectl -n osaan-dev patch deployment osaan-admin-backend-dep --type='json' \
-    -p="[{\"op\": \"add\", \"path\": \"/spec/template/spec/hostAliases\", \"value\": [{\"ip\": \"$ISTIO_GATEWAY_IP\", \"hostnames\": [\"keycloak.local\"]}]}]"
-  echo "✅ Backend deployment patched with hostAliases (IP: $ISTIO_GATEWAY_IP)"
-  # Restart the deployment to apply the change
-  kubectl -n osaan-dev rollout restart deployment/osaan-admin-backend-dep
-  echo "✅ Backend deployment restarted to apply hostAliases"
-else
-  echo "⚠️  Could not get Istio gateway IP, you may need to manually set hostAliases"
-fi
+kubectl apply -f manifests/platform/postgres/postgres.yaml
 
 echo ""
 echo "===================================================="
