@@ -114,7 +114,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        service: ${{ fromJSON(needs.detect-changes.outputs.changed_services) }}
+        service: ${{ fromJson(needs.detect-changes.outputs.changed_services) }}
 
     steps:
       - name: Checkout
