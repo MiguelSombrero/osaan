@@ -36,8 +36,8 @@ jobs:
           if [ "${{ github.event_name }}" != "push" ] || [ -z "${{ github.event.before }}" ]; then
             CORE_CHANGED=true
             SERVICES_JSON='["competence-matching-service","competence-profile-service","employee-service","skill-catalog-service"]'
-            echo "core_changed=$CORE_CHANGED" >> "$GITHUB_OUTPUT"
-            echo "changed_services=$SERVICES_JSON" >> "$GITHUB_OUTPUT"
+            printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
+            printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -48,7 +48,7 @@ jobs:
             CORE_CHANGED=true
           fi
 
-          SERVICES_JSON="[]"
+          SERVICES_JSON='[]'
           SERVICES=$(echo "$CHANGED_FILES" \
             | grep -oE '^microservices/[^/]+/' \
             | cut -d'/' -f2 \
@@ -56,11 +56,14 @@ jobs:
             | grep -v 'osaan-core' || true)
 
           for SVC in $SERVICES; do
-            SERVICES_JSON=$(echo "$SERVICES_JSON" | jq --arg svc "$SVC" '. + [$svc]')
+            SERVICES_JSON=$(echo "$SERVICES_JSON" | jq -c --arg svc "$SVC" '. + [$svc]')
           done
 
-          echo "core_changed=$CORE_CHANGED" >> "$GITHUB_OUTPUT"
-          echo "changed_services=$SERVICES_JSON" >> "$GITHUB_OUTPUT"
+          # Ensure compact single-line JSON
+          SERVICES_JSON=$(echo "$SERVICES_JSON" | jq -c '.')
+
+          printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
+          printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
 
   build-core:
     name: Build & Publish osaan-core
