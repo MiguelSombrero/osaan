@@ -107,7 +107,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/miguelsombrero/osaan</url>
+            <url>https://maven.pkg.github.com/MiguelSombrero/osaan</url>
         </repository>
     </distributionManagement>
 
