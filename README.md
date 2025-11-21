@@ -60,9 +60,9 @@ There are also multiple management UI:s for development:
 - Mail: http://localhost:8025
 - Zipkin: http://localhost:9411
 - RabbitMQ: http://localhost:15672 (guest/guest)
-- Keycloak: https://localhost:8443 (admin/admin)
+- Keycloak: https://localhost:8443 (admin/admin) (docker compose only)
 - Prometheus: http://localhost:9090
-- Grafana: http://localhost:3000
+- Grafana: http://localhost:3000 (admin/admin)
 
 #### Kubernetes
 
@@ -99,9 +99,7 @@ There are 3 options for running Osaan system:
 
 ### 1) IDE
 
-Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in the project root, which will start the necessary dependencies for that service.
-
-Start `competence-matching-service` first as its `compose.yaml` file contains all the shared dependecies like RabbitMQ.
+Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in the project root, which will start the necessary dependencies for that service. Start `competence-matching-service` first as its `compose.yaml` file contains all the shared dependecies like RabbitMQ.
 
 ### 2) Docker Compose
 
@@ -195,6 +193,14 @@ kubeseal \
 -o yaml < secret.yaml > postgres-secret.yaml
 ```
 
-## Bugs and issues
+## Bugs, issues and TODOs
 
-1. Tracing is not working for osaan-admin-backend (Jaeger not showing spans)
+- CI/CD pipelines
+
+- ArgoCD for GitOps
+
+- Authentication on microservices
+
+- Integration tests for microservices
+
+- Tracing is not working for osaan-admin-backend (Jaeger not showing spans)

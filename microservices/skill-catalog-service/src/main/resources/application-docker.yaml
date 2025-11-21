@@ -3,7 +3,6 @@ logging:
     org:
       springframework:
         jdbc: DEBUG
-    web: DEBUG
 
 management:
   zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans
@@ -13,3 +12,5 @@ spring.datasource:
   url: jdbc:postgresql://osaan-db:5432/postgres
   username: postgres
   password: osaan_pass
+
+ISSUER_URI: https://keycloak:8443/realms/osaan

@@ -1,5 +1,10 @@
 package com.github.miguelsombrero.osaan.skill_catalog_service.config;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.OAuthFlow;
+import io.swagger.v3.oas.annotations.security.OAuthFlows;
+import io.swagger.v3.oas.annotations.security.OAuthScope;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -10,6 +15,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@SecurityScheme(
+        name = "bearer",
+        type = SecuritySchemeType.OAUTH2,
+        bearerFormat = "JWT",
+        scheme = "bearer",
+        flows = @OAuthFlows(
+                authorizationCode = @OAuthFlow(
+                        authorizationUrl = "${api.security.oauth2.authorization-url}",
+                        tokenUrl = "${api.security.oauth2.token-url}"
+                )
+        )
+)
 public class OpenApiConfig {
 
     private final String apiVersion;

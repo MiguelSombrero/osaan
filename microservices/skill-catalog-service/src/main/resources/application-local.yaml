@@ -1,13 +1,15 @@
 logging:
   level:
     com.github.miguelsombrero.osaan: TRACE
-    org.springframework.jdbc: DEBUG
+    org.springframework:
+      jdbc: DEBUG
+      security: DEBUG
     web: DEBUG
 
 management:
   server.port: 4002
-  zipkin.tracing.endpoint: http://localhost:9411/api/v2/spans
-  tracing.sampling.probability: 1.0
 
 server:
   port: 8092
+
+APP_AUTH_DISABLED: true

@@ -7,8 +7,6 @@ import adminSkills from './routes/adminSkills.js';
 import { appConfig } from './config/env.js';
 import { tokenMiddleware } from './middleware/token.js';
 import { register } from './metrics.js';
-import pkg from 'express-openid-connect';
-const { requiresAuth } = pkg;
 
 export const app = express();
 

@@ -10,6 +10,14 @@ spec:
     realm: osaan
     displayName: Osaan
     enabled: true
+    roles:
+      realm:
+        - name: ADMIN
+          description: Administrator role for Osaan
+        - name: MANAGER
+          description: Manager or project leader role for Osaan
+        - name: USER
+          description: Regular user role for Osaan
     clients:
       - clientId: osaan-admin-ui
         name: Osaan Admin UI
@@ -43,3 +51,19 @@ spec:
             value: admin
             temporary: false
         requiredActions: []
+        realmRoles:
+          - ADMIN
+
+      - username: user
+        enabled: true
+        emailVerified: true
+        firstName: Regular
+        lastName: User
+        email: user@example.com
+        credentials:
+          - type: password
+            value: user
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER

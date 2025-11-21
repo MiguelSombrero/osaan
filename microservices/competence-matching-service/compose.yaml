@@ -7,3 +7,30 @@ services:
       - 'POSTGRES_USER=myuser'
     ports:
       - '5432'
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"     # SMTP port
+      - "8025:8025"     # Web UI port
+    environment:
+      - MH_STORAGE=maildir
+      - MH_MAILDIR_PATH=/maildir
+    volumes:
+      - ./maildir:/maildir
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Management UI
+
+  zipkin:
+    image: 'openzipkin/zipkin:2.24.0'
+    restart: always
+    mem_limit: 1024m
+    environment:
+      - 'STORAGE_TYPE=mem'
+    ports:
+      - '9411:9411'

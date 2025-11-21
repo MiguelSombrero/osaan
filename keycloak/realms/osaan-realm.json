@@ -3,6 +3,22 @@
   "realm": "osaan",
   "displayName": "Osaan",
   "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "ADMIN",
+        "description": "Administrator role for Osaan"
+      },
+      {
+        "name": "MANAGER",
+        "description": "Manager or project leader role for Osaan"
+      },
+      {
+        "name": "USER",
+        "description": "Regular user role for Osaan"
+      }
+    ]
+  },
   "clients": [
     {
       "clientId": "osaan-admin-ui",
@@ -31,6 +47,28 @@
       "attributes": {
         "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:8085/*##http://localhost:3000/*##http://localhost:3001/*##http://keycloak:8443/*"
       }
+    },
+    {
+      "clientId": "osaan-swagger",
+      "name": "Osaan Swagger",
+      "secret": "osaan-swagger-secret",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:8092/swagger-ui/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8092"
+      ],
+      "publicClient": false,
+      "bearerOnly": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:8092/*"
+      }
     }
   ],
   "users": [
@@ -48,7 +86,29 @@
           "temporary": false
         }
       ],
-      "requiredActions": []
+      "requiredActions": [],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "username": "user",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Regular",
+      "lastName": "User",
+      "email": "user@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [],
+      "realmRoles": [
+        "USER"
+      ]
     }
   ]
 }

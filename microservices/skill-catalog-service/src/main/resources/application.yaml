@@ -7,6 +7,17 @@ api:
     url: https://raw.githubusercontent.com/MiguelSombrero/osaan/refs/heads/main/LICENSE?token=GHSAT0AAAAAADI246M5X7R6KOEGQGCQX3GY2HJDVBA
   contact:
     name: Miguel Sombrero
+  security:
+    oauth2:
+      authorizationUrl: ${ISSUER_URI:https://keycloak.local/realms/osaan}/protocol/openid-connect/auth
+      tokenUrl: ${ISSUER_URI:https://keycloak.local/realms/osaan}/protocol/openid-connect/token
+      scopes:
+        read: Grants read access
+        write: Grants write access
+
+app:
+  auth:
+    disabled: ${APP_AUTH_DISABLED:false}
 
 logging:
   level:
@@ -31,6 +42,11 @@ spring:
     url: jdbc:postgresql://${POSTGRESQL_HOST}:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI:https://keycloak.local/realms/osaan}
   sql:
     init:
       mode: always

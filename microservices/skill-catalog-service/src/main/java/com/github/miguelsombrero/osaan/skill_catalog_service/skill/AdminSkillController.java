@@ -5,8 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -15,9 +18,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/v1/admin/skills")
+@SecurityRequirement(name = "bearer")
 @Tag(name = "AdminSkills", description = "REST API for admin operations on skills")
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "403", description = "Forbidden"),
+        @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
 })
 class AdminSkillController {
@@ -31,7 +38,7 @@ class AdminSkillController {
     @GetMapping
     @ApiResponse(responseCode = "200", description = "OK")
     @Operation(summary = "Get skills", description = "Get all skills.")
-    public List<Skill> getSkills() {
+    public List<Skill> getSkills(@AuthenticationPrincipal Jwt jwt) {
         return service.getSkills();
     }
 
