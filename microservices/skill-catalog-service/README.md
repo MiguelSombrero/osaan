@@ -30,7 +30,7 @@ curl -X GET http://localhost:8092/v1/skills?name=Python
 
 ### Build and push multi-arch image
 
-Requires login to Docker Hub. Run command in todo-app directory
+Requires login to Docker Hub. Run command in todo-app directory.
 
 ```bash
 docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-skill-catalog-service:latest --push .
