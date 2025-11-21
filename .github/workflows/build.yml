@@ -23,6 +23,8 @@ jobs:
     outputs:
       core_changed: ${{ steps.detect.outputs.core_changed }}
       changed_services: ${{ steps.detect.outputs.changed_services }}
+      admin_backend_changed: ${{ steps.detect.outputs.admin_backend_changed }}
+      admin_frontend_changed: ${{ steps.detect.outputs.admin_frontend_changed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,8 +39,12 @@ jobs:
           if [ "${{ github.event_name }}" != "push" ] || [ -z "${{ github.event.before }}" ]; then
             CORE_CHANGED=true
             SERVICES_JSON='["competence-matching-service","competence-profile-service","employee-service","skill-catalog-service"]'
+            ADMIN_BACKEND_CHANGED=true
+            ADMIN_FRONTEND_CHANGED=true
             printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
             printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
+            printf 'admin_backend_changed=%s\n' "$ADMIN_BACKEND_CHANGED" >> "$GITHUB_OUTPUT"
+            printf 'admin_frontend_changed=%s\n' "$ADMIN_FRONTEND_CHANGED" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -63,8 +69,20 @@ jobs:
           # Ensure compact single-line JSON
           SERVICES_JSON=$(echo "$SERVICES_JSON" | jq -c '.')
 
+          ADMIN_BACKEND_CHANGED=false
+          if echo "$CHANGED_FILES" | grep -qE '^ui/osaan-admin-ui/backend/'; then
+            ADMIN_BACKEND_CHANGED=true
+          fi
+
+          ADMIN_FRONTEND_CHANGED=false
+          if echo "$CHANGED_FILES" | grep -qE '^ui/osaan-admin-ui/frontend/'; then
+            ADMIN_FRONTEND_CHANGED=true
+          fi
+
           printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
           printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
+          printf 'admin_backend_changed=%s\n' "$ADMIN_BACKEND_CHANGED" >> "$GITHUB_OUTPUT"
+          printf 'admin_frontend_changed=%s\n' "$ADMIN_FRONTEND_CHANGED" >> "$GITHUB_OUTPUT"
 
   build-core:
     name: Build & Publish osaan-core
@@ -148,6 +166,11 @@ jobs:
   build-and-push-admin-ui:
     name: Build & Push admin UI images
     runs-on: ubuntu-latest
+    needs:
+      - detect-changes
+    if: >
+      needs.detect-changes.outputs.admin_backend_changed == 'true' ||
+      needs.detect-changes.outputs.admin_frontend_changed == 'true'
     permissions:
       contents: read
 
@@ -168,6 +191,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push admin UI backend image
+        if: needs.detect-changes.outputs.admin_backend_changed == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./ui/osaan-admin-ui/backend
@@ -179,6 +203,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-admin-ui-backend:${{ github.sha }}
 
       - name: Build and push admin UI frontend image
+        if: needs.detect-changes.outputs.admin_frontend_changed == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./ui/osaan-admin-ui/frontend
