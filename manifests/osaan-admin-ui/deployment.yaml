@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: osaan-admin-ui
-          image: miguelsombrero/osaan-admin-ui:latest
+          image: miguelsombrero/osaan-admin-ui-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

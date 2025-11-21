@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: osaan-admin-backend
-          image: miguelsombrero/osaan-admin-backend:latest
+          image: miguelsombrero/osaan-admin-ui-backend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3001

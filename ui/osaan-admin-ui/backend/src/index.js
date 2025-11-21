@@ -15,5 +15,5 @@ const { app } = await import('./server.js');
 console.log('Environment:', appConfig.env);
 
 app.listen(appConfig.port, () => {
-  console.log(`Server listening on port ${appConfig.port}`);
+  console.log(`Server listening on port: ${appConfig.port}`);
 });
