@@ -20,7 +20,7 @@ curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=2
 
 ### Build and push multi-arch image
 
-Requires login to Docker Hub. Run command in todo-app directory
+Requires login to Docker Hub. Run command in todo-app directory.
 
 ```bash
 docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-competence-profile-service:latest --push .
