@@ -5,6 +5,7 @@ import LeftNav from './components/LeftNav';
 import SkillsPage from './pages/SkillsPage';
 import EmployeesPage from './pages/EmployeesPage';
 import TopBar from './components/TopBar';
+import { RequireAuth } from './components/RequireAuth';
 
 export default function App() {
   return (
@@ -16,8 +17,22 @@ export default function App() {
         <Box component="main" sx={{ flex: 1, p: 3 }}>
           <Routes>
             <Route path="/" element={<Navigate to="/skills" replace />} />
-            <Route path="/skills" element={<SkillsPage />} />
-            <Route path="/employees" element={<EmployeesPage />} />
+            <Route
+              path="/skills"
+              element={
+                <RequireAuth>
+                  <SkillsPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/employees"
+              element={
+                <RequireAuth>
+                  <EmployeesPage />
+                </RequireAuth>
+              }
+            />
           </Routes>
         </Box>
       </Box>

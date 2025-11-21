@@ -197,6 +197,8 @@ kubeseal \
 
 - CI/CD pipelines
 
+- Osaan-admin-ui role based rendering (only ADMINs)
+
 - Localization in osaan-admin-ui
 
 - Keycloak to use postgres-cluster
