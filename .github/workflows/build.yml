@@ -214,3 +214,76 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-admin-ui-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-admin-ui-frontend:${{ github.sha }}
+
+  update-kustomize-images:
+    name: Update kustomization image tags
+    runs-on: ubuntu-latest
+    needs:
+      - detect-changes
+      - build-and-push-services
+      - build-and-push-admin-ui
+    if: >
+      needs.detect-changes.outputs.changed_services != '[]' ||
+      needs.detect-changes.outputs.admin_backend_changed == 'true' ||
+      needs.detect-changes.outputs.admin_frontend_changed == 'true'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Update microservice image tags in kustomization.yaml
+        env:
+          CHANGED_SERVICES: ${{ needs.detect-changes.outputs.changed_services }}
+          GIT_SHA: ${{ github.sha }}
+        run: |
+          echo "Changed services: $CHANGED_SERVICES"
+          for svc in $(echo "$CHANGED_SERVICES" | jq -r '.[]'); do
+            IMAGE_BASE="miguelsombrero/osaan-${svc}"
+            echo "Updating $IMAGE_BASE to tag $GIT_SHA"
+            yq -i "
+              (.images[] | select(.name == \"$IMAGE_BASE\") | .newTag) = \"$GIT_SHA\"
+            " kustomization.yaml
+          done
+
+      - name: Update admin backend/frontend image tags in kustomization.yaml
+        env:
+          GIT_SHA: ${{ github.sha }}
+          ADMIN_BACKEND_CHANGED: ${{ needs.detect-changes.outputs.admin_backend_changed }}
+          ADMIN_FRONTEND_CHANGED: ${{ needs.detect-changes.outputs.admin_frontend_changed }}
+        run: |
+          if [ "$ADMIN_BACKEND_CHANGED" = "true" ]; then
+            yq -i '
+              (.images[] | select(.name == "miguelsombrero/osaan-admin-ui-backend") | .newTag) = env(GIT_SHA)
+            ' kustomization.yaml
+          fi
+
+          if [ "$ADMIN_FRONTEND_CHANGED" = "true" ]; then
+            yq -i '
+              (.images[] | select(.name == "miguelsombrero/osaan-admin-ui-frontend") | .newTag) = env(GIT_SHA)
+            ' kustomization.yaml
+          fi
+
+      - name: Commit and push kustomization changes
+        env:
+          GIT_SHA: ${{ github.sha }}
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add kustomization.yaml
+          git commit -m "chore: update kustomization images for $GIT_SHA"
+          git push

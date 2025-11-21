@@ -29,3 +29,17 @@ resources:
   - manifests/osaan-admin-ui/configmap.yaml
   - manifests/osaan-admin-ui/deployment.yaml
   - manifests/osaan-admin-ui/service.yaml
+
+images:
+  - name: miguelsombrero/osaan-employee-service
+    newTag: latest
+  - name: miguelsombrero/osaan-skill-catalog-service
+    newTag: latest
+  - name: miguelsombrero/osaan-competence-profile-service
+    newTag: latest
+  - name: miguelsombrero/osaan-competence-matching-service
+    newTag: latest
+  - name: miguelsombrero/osaan-admin-ui-backend
+    newTag: latest
+  - name: miguelsombrero/osaan-admin-ui-frontend
+    newTag: latest
