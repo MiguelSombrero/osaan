@@ -177,7 +177,7 @@
     <repositories>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/miguelsombrero/osaan</url>
+            <url>https://maven.pkg.github.com/MiguelSombrero/osaan</url>
         </repository>
         <repository>
             <id>spring-snapshots</id>
