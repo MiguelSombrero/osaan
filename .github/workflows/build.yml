@@ -2,7 +2,7 @@ name: Build & Publish Osaan System
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
     paths:
       - 'microservices/osaan-core/**'
       - 'microservices/competence-matching-service/**'
@@ -88,6 +88,7 @@ jobs:
     name: Build & Publish osaan-core
     runs-on: ubuntu-latest
     needs: detect-changes
+    if: needs.detect-changes.outputs.core_changed == 'true' || needs.detect-changes.outputs.changed_services != '[]'
     permissions:
       contents: read
       packages: write
