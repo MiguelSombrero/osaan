@@ -65,11 +65,6 @@ jobs:
           printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
           printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
 
-          echo "core_changed=$CORE_CHANGED"
-          echo "changed_services=$SERVICES_JSON"
-          echo "CHANGED_FILES:"
-          echo "$CHANGED_FILES"
-
   build-core:
     name: Build & Publish osaan-core
     runs-on: ubuntu-latest
@@ -104,12 +99,7 @@ jobs:
     needs:
       - detect-changes
       - build-core
-    if: >
-      needs.detect-changes.outputs.changed_services != '[]' &&
-      (
-        needs.detect-changes.outputs.core_changed == 'false' ||
-        needs.build-core.result == 'success'
-      )
+    if: needs.detect-changes.outputs.changed_services != '[]'
     permissions:
       contents: read
     strategy:
