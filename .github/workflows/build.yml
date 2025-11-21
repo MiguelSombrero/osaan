@@ -18,6 +18,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,11 +31,9 @@ jobs:
           cache: maven
           server-id: github
           server-username: GITHUB_ACTOR
-          server-password: ${{ secrets.GITHUB_TOKEN }}
+          server-password: GITHUB_TOKEN
 
       - name: Build and publish osaan-core
         run: |
           cd microservices/osaan-core
           mvn -B clean deploy -DskipTests
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
