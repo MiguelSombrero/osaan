@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: employee-service
-          image: miguelsombrero/employee-service:latest
+          image: miguelsombrero/osaan-employee-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

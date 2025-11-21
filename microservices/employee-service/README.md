@@ -33,7 +33,7 @@ curl -X GET http://localhost:8080/v1/employees/eaaaaaaa-ae13-41f8-9db3-4a15b7b74
 Requires login to Docker Hub. Run command in todo-app directory.
 
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/employee-service:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-employee-service:latest --push .
 ```
 
 If you got error "Multi-platform build is not supported for the docker driver", you need to switch `buildx` driver to

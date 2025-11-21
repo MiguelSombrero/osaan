@@ -85,6 +85,7 @@ jobs:
           context: ./microservices/${{ matrix.service }}
           file: ./microservices/${{ matrix.service }}/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-${{ matrix.service }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-${{ matrix.service }}:${{ github.sha }}

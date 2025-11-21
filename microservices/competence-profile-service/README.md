@@ -23,7 +23,7 @@ curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=2
 Requires login to Docker Hub. Run command in todo-app directory.
 
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/competence-profile-service:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-competence-profile-service:latest --push .
 ```
 
 If you got error "Multi-platform build is not supported for the docker driver", you need to switch `buildx` driver to

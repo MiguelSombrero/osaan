@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: competence-matching-service
-          image: miguelsombrero/competence-matching-service:latest
+          image: miguelsombrero/osaan-competence-matching-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

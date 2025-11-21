@@ -25,7 +25,7 @@ curl -X GET http://localhost:8094/v1/subscriptions
 Requires login to Docker Hub. Run command in todo-app directory.
 
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/competence-matching-service:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-competence-matching-service:latest --push .
 ```
 
 If you got error "Multi-platform build is not supported for the docker driver", you need to switch `buildx` driver to
