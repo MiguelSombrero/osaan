@@ -126,7 +126,6 @@ helm upgrade --install redis bitnami/redis \
   --set auth.existingSecret=redis-secret \
   --set master.service.ports.redis=6379 \
   --wait
-wait_for_deployments "osaan-dev"
 
 # --- 11. Keycloak ---
 echo ""
@@ -145,7 +144,30 @@ echo "=== Installing CrunchyData Postgres Operator ..."
 kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
 wait_for_deployments "postgres-operator"
-kubectl apply -f manifests/platform/postgres/postgres.yaml
+
+# --- 13. Deploying platform specific resources ---
+kubectl apply -R -f manifests/platform/
+wait_for_deployments "keycloak"
+wait_for_deployments "istio-system"
+
+# --- 14. Creating Keycloak truststore Secret for osaan-dev ---
+echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
+
+kubectl -n cert-manager wait certificate/ca-cert \
+  --for=condition=Ready --timeout=120s
+
+kubectl -n cert-manager get secret ca-secret \
+  -o jsonpath='{.data.tls\.crt}' | base64 -d \
+  | keytool -importcert \
+      -alias osaan-ca \
+      -keystore /tmp/keycloak-truststore-k3d.jks \
+      -storepass changeit \
+      -noprompt \
+      -file /dev/stdin
+
+kubectl -n osaan-dev create secret generic keycloak-truststore \
+  --from-file=keycloak-truststore.jks=/tmp/keycloak-truststore-k3d.jks \
+  --dry-run=client -o yaml | kubectl apply -f -
 
 echo ""
 echo "===================================================="

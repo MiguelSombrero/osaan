@@ -197,6 +197,10 @@ kubeseal \
 
 - CI/CD pipelines
 
+- Localization in osaan-admin-ui
+
+- Keycloak to use postgres-cluster
+
 - ArgoCD for GitOps
 
 - Authentication on microservices
