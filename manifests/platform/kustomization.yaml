@@ -9,6 +9,5 @@ resources:
   - keycloak/keycloak-cert.yaml
   - keycloak/keycloak-postgres.yaml
   - keycloak/keycloak-realm-import.yaml
-  - argocd/argocd-platform.yaml
   - argocd/argocd-osaan.yaml
   - istio/istio.yaml
