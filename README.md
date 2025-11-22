@@ -7,7 +7,8 @@ Osaan is my hobby project for studying different aspects of fullstack developmen
 Osaan is knowledge management system and it tries to answer guestion:
 
 I'm a project manager and need to create a team with different skill sets. I need for example:
-- Java professional with > 4/5 knowledge 
+
+- Java professional with > 4/5 knowledge
 - Two React professionals with > 3/5 knowledge
 - Someone with any knowledge of PL/1
 
@@ -87,6 +88,7 @@ There are also multiple management UI:s for development:
 - RabbitMQ: http://rabbit.local:9080
 - Mailhog: http://mail.local:9080
 - Keycloak: https://keycloak.local:9443
+- ArgoCD: https://argocd.local:9443
 
 For subdomain to work add to your local `/etc/hosts`file:
 
@@ -101,6 +103,7 @@ For subdomain to work add to your local `/etc/hosts`file:
   127.0.0.1 jaeger.local
   127.0.0.1 keycloak
   127.0.0.1 keycloak.local
+  127.0.0.1 argocd.local
 ```
 
 ## Run
@@ -147,7 +150,9 @@ AND install selected operators from `./setup-cluster.sh` script.
 
 ## Deploy
 
-Deploy microservices with Kustomization:
+ArgoCD that was installed previous step will sync all the resources in `kustomization.yaml` file to the cluster.
+
+You can apply manifests manually with command:
 
 ```bash
 kubectl apply -k .

@@ -15,6 +15,7 @@ spec:
     - prometheus.local
     - rabbit.local
     - jaeger.local
+    - argocd.local
   issuerRef:
     name: ca-issuer
     kind: ClusterIssuer
