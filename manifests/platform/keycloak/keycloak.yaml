@@ -7,15 +7,15 @@ spec:
   instances: 1
   db:
     vendor: postgres
-    host: keycloak-postgres-svc.keycloak.svc.cluster.local
+    host: osaan-db-primary.osaan-dev.svc
     port: 5432
     usernameSecret:
-      name: keycloak-postgres-secret
-      key: POSTGRES_USER
+      name: osaan-db-pguser-keycloak-user
+      key: user
     passwordSecret:
-      name: keycloak-postgres-secret
-      key: POSTGRES_PASSWORD
-    database: keycloak
+      name: osaan-db-pguser-keycloak-user
+      key: password
+    database: keycloak-db
   hostname:
     hostname: https://keycloak.local
     admin: https://keycloak.local
