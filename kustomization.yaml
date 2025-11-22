@@ -29,12 +29,11 @@ resources:
   - manifests/osaan-admin-ui/configmap.yaml
   - manifests/osaan-admin-ui/deployment.yaml
   - manifests/osaan-admin-ui/service.yaml
-
 images:
   - name: miguelsombrero/osaan-employee-service
     newTag: latest
   - name: miguelsombrero/osaan-skill-catalog-service
-    newTag: latest
+    newTag: 770fe858abcc318e313a97ff521353f3e2c3ec21
   - name: miguelsombrero/osaan-competence-profile-service
     newTag: latest
   - name: miguelsombrero/osaan-competence-matching-service
