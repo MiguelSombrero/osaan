@@ -145,12 +145,19 @@ kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl ap
 kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
 wait_for_deployments "postgres-operator"
 
-# --- 13. Deploying platform specific resources ---
+# --- 13 Installing ArgoCD ---
+echo ""
+echo "==> Installing ArgoCD..."
+kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+wait_for_deployments "argocd"
+
+# --- 14. Deploying platform specific resources ---
 kubectl apply -R -f manifests/platform/
 wait_for_deployments "keycloak"
 wait_for_deployments "istio-system"
 
-# --- 14. Creating Keycloak truststore Secret for osaan-dev ---
+# --- 15. Creating Keycloak truststore Secret for osaan-dev ---
 echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
 
 kubectl -n cert-manager wait certificate/ca-cert \

@@ -2,10 +2,19 @@
 
 Osaan is my hobby project for studying different aspects of fullstack development in microservice landscape.
 
+**This project is not production ready! It is under slow development for hobby purposes.**
+
 Osaan is knowledge management system and it tries to answer guestion:
 
-"I need to create a team with different skill sets. I need one Java professional with at least 4/5 knowledge and two React professionals of 3/5 knowledge.
-How do I find those people inside my company?"
+I'm a project manager and need to create a team with different skill sets. I need for example:
+- Java professional with > 4/5 knowledge 
+- Two React professionals with > 3/5 knowledge
+- Someone with any knowledge of PL/1
+
+How do I find those people inside my company?
+
+With Osaan System you can (eventually) create skill profiles for employees, subscribe for specific skill profiles and
+get notified via email when matching profiles are added. You can create and manage teams for specific projects and needs.
 
 ## Stack
 
@@ -16,7 +25,7 @@ How do I find those people inside my company?"
 - Application state - Zustand
 - Data fetching - Tanstack Query
 - Session - Redis
-- Authentication - OAuth2, Keycloak
+- Authentication, IAM - OAuth2, Keycloak
 
 ### Backend
 
@@ -28,6 +37,11 @@ How do I find those people inside my company?"
 - Resilience - Resilience4j
 - Service Mesh - Istio (Kubernetes)
 
+### CI/CD
+
+- CI/CD - GitHub Actions
+- Deployment - ArgoCD
+
 ## UI
 
 Osaan system contains two different UIs:
@@ -38,12 +52,12 @@ Osaan Admin UI is for admins to create new skills and adding employees.
 
 See [Osaan Admin UI documentation](https://github.com/MiguelSombrero/osaan/blob/main/ui/osaan-admin-ui/README.md) for more details on how to develop Osaan Admin UI.
 
-## Local
+#### Local
 
 - With Vite (npm run dev): http://localhost:5173 (Login → admin/admin)
 - With Docker Compose (docker compose up --build -d): http://localhost:8085 (Login → admin/admin)
 
-## Kubernetes
+#### Kubernetes
 
 - Admin UI: https://osaan.admin.local:9443
 

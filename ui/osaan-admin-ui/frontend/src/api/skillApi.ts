@@ -1,6 +1,6 @@
 import { AdminSkillsApi, type Skill } from './generated/api';
 import { Configuration } from './generated/configuration';
-//
+
 const config = new Configuration({
   basePath: '/api',
   baseOptions: { withCredentials: true },
