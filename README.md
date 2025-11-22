@@ -152,7 +152,7 @@ AND install selected operators from `./setup-cluster.sh` script.
 
 ArgoCD that was installed previous step will sync all the resources in `kustomization.yaml` file to the cluster.
 
-You can apply manifests manually with command:
+If needed, you can apply manifests manually with command:
 
 ```bash
 kubectl apply -k .
@@ -214,15 +214,17 @@ kubeseal \
 
 ## Bugs, issues and TODOs
 
-- CI/CD pipelines
+- Refactoring routes etc. for osaan-admin-backend
+
+- Refactoring manifests and maybe using Helm
+
+- CI/CD relesea pipelines
 
 - Osaan-admin-ui role based rendering (only ADMINs)
 
 - Localization in osaan-admin-ui
 
 - Keycloak to use postgres-cluster
-
-- ArgoCD for GitOps
 
 - Authentication on microservices
 

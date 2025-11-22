@@ -152,6 +152,14 @@ kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 wait_for_deployments "argocd"
 
+echo "==> Configuring ArgoCD server to run in insecure mode (behind TLS ingress)..."
+kubectl -n argocd patch configmap argocd-cmd-params-cm \
+  --type merge \
+  -p '{"data":{"server.insecure":"true"}}'
+
+kubectl -n argocd rollout restart deployment argocd-server
+kubectl -n argocd rollout status deployment argocd-server
+
 # --- 14. Deploying platform specific resources ---
 kubectl apply -R -f manifests/platform/
 wait_for_deployments "keycloak"
@@ -159,6 +167,9 @@ wait_for_deployments "istio-system"
 
 # --- 15. Creating Keycloak truststore Secret for osaan-dev ---
 echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
+
+# Ensure we start fresh on each run
+rm -f /tmp/keycloak-truststore-k3d.jks
 
 kubectl -n cert-manager wait certificate/ca-cert \
   --for=condition=Ready --timeout=120s
