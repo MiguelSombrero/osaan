@@ -3,19 +3,23 @@ import { login, useAuth } from '../hooks/useAuth';
 
 export function RequireAuth({ children }: PropsWithChildren) {
   const { data, isLoading } = useAuth();
+  const isAuthenticated = data?.authenticated;
+  const isAuthDisabled = data?.authDisabled;
 
   useEffect(() => {
-    if (!isLoading && data && !data.authenticated && !data?.authDisabled) {
+    if (!isLoading && !isAuthenticated && !isAuthDisabled) {
       login();
     }
-  }, [isLoading, data]);
+  }, [isLoading, isAuthenticated, isAuthDisabled]);
 
   if (isLoading) return <div>Loading...</div>;
-  if (!data?.authenticated) {
-    if (data?.authDisabled) {
-      return <>{children}</>;
-    }
-    return null; // odotetaan redirecttiä
+
+  if (isAuthDisabled) {
+    return <>{children}</>;
+  }
+
+  if (!isAuthenticated) {
+    return null; // Waiting for redirect
   }
 
   return <>{children}</>;

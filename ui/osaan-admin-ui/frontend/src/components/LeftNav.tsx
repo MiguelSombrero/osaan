@@ -1,7 +1,8 @@
-import React from 'react'
 import { Drawer, List, ListItemButton, ListItemText } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { RequireAdmin } from './RequireAdmin'
+import { RequireAuth } from './RequireAuth'
 
 const drawerWidth = 240
 
@@ -12,12 +13,16 @@ export default function LeftNav() {
   return (
     <Drawer variant="permanent" anchor="left" sx={{ width: drawerWidth }}>
       <List sx={{ width: drawerWidth }}>
-        <ListItemButton onClick={() => navigate('/skills')}>
-          <ListItemText primary={t('skills')} />
-        </ListItemButton>
-        <ListItemButton onClick={() => navigate('/employees')}>
-          <ListItemText primary={t('employees')} />
-        </ListItemButton>
+        <RequireAdmin>
+          <ListItemButton onClick={() => navigate('/skills')}>
+            <ListItemText primary={t('skills')} />
+          </ListItemButton>
+        </RequireAdmin>
+        <RequireAuth>
+          <ListItemButton onClick={() => navigate('/employees')}>
+            <ListItemText primary={t('employees')} />
+          </ListItemButton>
+        </RequireAuth>
       </List>
     </Drawer>
   )

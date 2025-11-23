@@ -17,22 +17,12 @@ export function RequireRole({ children, role }: RequireRoleProps) {
 
   if (isLoading) return <div>Loading...</div>;
 
-  // Allow dev/test when auth is disabled
   if (data?.authDisabled) {
     return <>{children}</>;
   }
 
-  if (!data?.authenticated) {
-    return null; // Waiting for redirect
-  }
-
-  if (!hasRole) {
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2 style={{ color: '#d32f2f' }}>Access Denied</h2>
-        <p>You do not have the required permissions ({role}) to view this page.</p>
-      </div>
-    );
+  if (!data?.authenticated || !hasRole) {
+    return;
   }
 
   return <>{children}</>;
