@@ -214,8 +214,6 @@ kubeseal \
 
 ## Bugs, issues and TODOs
 
-- Refactoring routes etc. for osaan-admin-backend
-
 - Refactoring manifests and maybe using Helm
 
 - Optimize osaan-admin-ui Tanstack queries
@@ -225,8 +223,6 @@ kubeseal \
 - Osaan-admin-ui role based rendering (only ADMINs)
 
 - Localization in osaan-admin-ui
-
-- Keycloak to use postgres-cluster
 
 - Authentication on microservices
 

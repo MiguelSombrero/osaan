@@ -1,12 +1,12 @@
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import morgan from 'morgan';
-import cookieParser from 'cookie-parser';
-import { corsMiddleware } from './middleware/cors.js';
-import { setupAuth, authMiddleware } from './middleware/auth.js';
-import adminSkills from './routes/adminSkills.js';
-import { appConfig } from './config/env.js';
-import { tokenMiddleware } from './middleware/token.js';
 import { register } from './metrics.js';
+import { authMiddleware, setupAuth } from './middleware/auth.js';
+import { corsMiddleware } from './middleware/cors.js';
+import { tokenMiddleware } from './middleware/token.js';
+import skillsRoutes from './routes/adminSkills.js';
+import loginRoutes from './routes/login.js';
 
 export const app = express();
 
@@ -17,31 +17,9 @@ app.use(corsMiddleware());
 
 setupAuth(app);
 
-app.get('/api/login', (_req, res) => {
-  if (!appConfig.keycloak.enabled) {
-    return res.status(404).json({ error: 'Login disabled' });
-  }
-  return res.oidc?.login({ returnTo: appConfig.loginRedirectUrl });
-});
+app.use('/api', loginRoutes);
 
-app.get('/api/logout', (_req, res) => {
-  if (!appConfig.keycloak.enabled) {
-    return res.status(200).json({ message: 'Logout noop (auth disabled)' });
-  }
-  return res.oidc?.logout({ returnTo: appConfig.logoutRedirectUrl });
-});
-
-app.get('/api/user', (req, res) => {
-  if (!appConfig.keycloak.enabled) {
-    return res.status(200).json({ authenticated: false, user: null, authDisabled: true });
-  }
-
-  const isAuth = req.oidc?.isAuthenticated?.() || false;
-  if (!isAuth) return res.status(200).json({ authenticated: false });
-  res.json({ authenticated: true, user: req.oidc?.user || null });
-});
-
-app.use('/api', authMiddleware, tokenMiddleware, adminSkills);
+app.use('/api', authMiddleware, tokenMiddleware, skillsRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
