@@ -187,6 +187,12 @@ kubectl -n osaan-dev create secret generic keycloak-truststore \
   --from-file=keycloak-truststore.jks=/tmp/keycloak-truststore-k3d.jks \
   --dry-run=client -o yaml | kubectl apply -f -
 
+# --- 16. Deploying Kubernetes Reflector ---
+echo ""
+echo "=== Deploying Kubernetes Reflector ..."
+kubectl apply -f https://github.com/emberstack/kubernetes-reflector/releases/latest/download/reflector.yaml
+wait_for_deployments "kube-system"
+
 echo ""
 echo "===================================================="
 echo "✅ Cluster '${CLUSTER_NAME}' setup completed successfully!"

@@ -11,3 +11,18 @@ resources:
   - keycloak/keycloak-realm-import.yaml
   - argocd/argocd-osaan.yaml
   - istio/istio.yaml
+patches:
+  - patch: |-
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: osaan-db-pguser-osaan-user
+        namespace: osaan-dev
+        annotations:
+          reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+          reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "keycloak"
+          reflector.v1.k8s.emberstack.com/reflected-version: "1"
+    target:
+      kind: Secret
+      name: osaan-db-pguser-osaan-user
+      namespace: osaan-dev
