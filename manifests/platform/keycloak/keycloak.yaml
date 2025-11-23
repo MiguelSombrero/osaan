@@ -10,10 +10,10 @@ spec:
     host: osaan-db-primary.osaan-dev.svc
     port: 5432
     usernameSecret:
-      name: osaan-db-pguser-osaan-user
+      name: osaan-db-pguser-keycloakuser
       key: user
     passwordSecret:
-      name: osaan-db-pguser-osaan-user
+      name: osaan-db-pguser-keycloakuser
       key: password
     database: keycloakdb
   hostname:

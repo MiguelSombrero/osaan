@@ -11,7 +11,9 @@ spec:
     - name: osaan-user
       databases:
         - osaan-db # one DB for all microservices in development for simplicity
-        - keycloakdb
+    - name: keycloakuser
+      databases:
+        - keycloakdb 
   instances:
     - name: instance1
       dataVolumeClaimSpec:
