@@ -24,7 +24,33 @@ router.get('/user', (req, res) => {
 
   const isAuth = req.oidc?.isAuthenticated?.() || false;
   if (!isAuth) return res.status(200).json({ authenticated: false });
-  res.json({ authenticated: true, user: req.oidc?.user || null });
+
+  const accessToken = req.oidc.accessToken;
+  const tokenString = accessToken?.access_token || accessToken;
+  const decoded = decodeToken(tokenString);
+  
+  const roles = decoded?.realm_access?.roles || [];
+  const userInfo = req.oidc?.user || {};
+
+  const user = {
+    name: userInfo.name,
+    email: userInfo.email,
+    username: userInfo.preferred_username,
+    firstName: userInfo.given_name,
+    lastName: userInfo.family_name,
+  };
+
+  res.json({ authenticated: true, user, roles });
 });
+
+function decodeToken(token) {
+  if (!token) return null;
+  try {
+    return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+  } catch (e) {
+    console.error('Failed to decode token', e);
+    return null;
+  }
+}
 
 export default router;
