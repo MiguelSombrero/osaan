@@ -5,9 +5,7 @@ resources:
   - certificate/selfsigned-issuer.yaml
   - postgres/postgres.yaml
   - keycloak/keycloak.yaml
-  - keycloak/keycloak-postgres-secret.yaml
   - keycloak/keycloak-cert.yaml
-  - keycloak/keycloak-postgres.yaml
   - keycloak/keycloak-realm-import.yaml
   - argocd/argocd-osaan.yaml
   - istio/istio.yaml

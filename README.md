@@ -218,6 +218,8 @@ kubeseal \
 
 - Refactoring manifests and maybe using Helm
 
+- Optimize osaan-admin-ui Tanstack queries
+
 - CI/CD relesea pipelines
 
 - Osaan-admin-ui role based rendering (only ADMINs)

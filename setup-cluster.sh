@@ -177,9 +177,16 @@ wait_for_deployments "keycloak"
 wait_for_deployments "istio-system"
 wait_for_deployments "postgres-operator"
 wait_for_deployments "external-secrets"
+wait_for_deployments "cert-manager"
 
 # --- FINALLY: Creating Keycloak truststore Secret for osaan-dev ---
 echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
+
+# Wait for ca-cert resource to be created by ArgoCD
+echo "⏳ Waiting for Certificate 'ca-cert' to be created..."
+while ! kubectl -n cert-manager get certificate ca-cert >/dev/null 2>&1; do
+  sleep 2
+done
 
 # Ensure we start fresh on each run
 rm -f /tmp/keycloak-truststore-k3d.jks
