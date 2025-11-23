@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect } from 'react';
-import { useAuth, login } from '../hooks/useAuth';
+import { login, useAuth } from '../hooks/useAuth';
 
 export function RequireAuth({ children }: PropsWithChildren) {
   const { data, isLoading } = useAuth();

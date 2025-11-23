@@ -1,11 +1,12 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, Box } from '@mui/material';
-import { theme } from './theme';
+import { Box, CssBaseline, ThemeProvider } from '@mui/material';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import LeftNav from './components/LeftNav';
-import SkillsPage from './pages/SkillsPage';
-import EmployeesPage from './pages/EmployeesPage';
-import TopBar from './components/TopBar';
+import { RequireAdmin } from './components/RequireAdmin';
 import { RequireAuth } from './components/RequireAuth';
+import TopBar from './components/TopBar';
+import EmployeesPage from './pages/EmployeesPage';
+import SkillsPage from './pages/SkillsPage';
+import { theme } from './theme';
 
 export default function App() {
   return (
@@ -20,9 +21,9 @@ export default function App() {
             <Route
               path="/skills"
               element={
-                <RequireAuth>
+                <RequireAdmin>
                   <SkillsPage />
-                </RequireAuth>
+                </RequireAdmin>
               }
             />
             <Route

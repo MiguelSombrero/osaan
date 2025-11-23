@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SkillForm from '../skill/components/SkillForm';
