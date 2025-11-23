@@ -15,7 +15,7 @@ spec:
     passwordSecret:
       name: osaan-db-pguser-osaan-user
       key: password
-    database: keycloak-db
+    database: keycloakdb
   hostname:
     hostname: https://keycloak.local
     admin: https://keycloak.local

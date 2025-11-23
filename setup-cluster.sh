@@ -160,7 +160,25 @@ kubectl -n argocd patch configmap argocd-cmd-params-cm \
 kubectl -n argocd rollout restart deployment argocd-server
 kubectl -n argocd rollout status deployment argocd-server
 
-# --- 14. Creating Keycloak truststore Secret for osaan-dev ---
+# --- 14. Install External Secrets ---
+echo ""
+echo "=== Installing External Secrets ..."
+helm repo add external-secrets https://charts.external-secrets.io >/dev/null 2>&1
+helm repo update >/dev/null 2>&1
+helm upgrade --install external-secrets \
+   external-secrets/external-secrets \
+    -n external-secrets \
+    --create-namespace
+wait_for_deployments "external-secrets"
+
+# --- 15: Deploying platform specific resources ---
+kubectl apply -f manifests/platform/argocd/argocd-platform.yaml
+wait_for_deployments "keycloak"
+wait_for_deployments "istio-system"
+wait_for_deployments "postgres-operator"
+wait_for_deployments "external-secrets"
+
+# --- FINALLY: Creating Keycloak truststore Secret for osaan-dev ---
 echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
 
 # Ensure we start fresh on each run
@@ -181,24 +199,6 @@ kubectl -n cert-manager get secret ca-secret \
 kubectl -n osaan-dev create secret generic keycloak-truststore \
   --from-file=keycloak-truststore.jks=/tmp/keycloak-truststore-k3d.jks \
   --dry-run=client -o yaml | kubectl apply -f -
-
-# --- 15. Install External Secrets ---
-echo ""
-echo "=== Installing External Secrets ..."
-helm repo add external-secrets https://charts.external-secrets.io >/dev/null 2>&1
-helm repo update >/dev/null 2>&1
-helm install external-secrets \
-   external-secrets/external-secrets \
-    -n external-secrets \
-    --create-namespace
-wait_for_deployments "external-secrets"
-
-# --- FINALLY: Deploying platform specific resources ---
-kubectl apply -k manifests/platform/
-wait_for_deployments "keycloak"
-wait_for_deployments "istio-system"
-wait_for_deployments "postgres-operator"
-wait_for_deployments "external-secrets"
 
 echo ""
 echo "===================================================="
