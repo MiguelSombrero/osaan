@@ -42,3 +42,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Generated Clients ###
+ui/osaan-admin-ui/frontend/src/api/generated/
