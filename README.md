@@ -224,8 +224,6 @@ kubeseal \
 
 - Osaan-admin-ui role based rendering (only ADMINs)
 
-- Localization in osaan-admin-ui
-
 - Authentication on microservices
 
 - Integration tests for microservices
