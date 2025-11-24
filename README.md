@@ -214,8 +214,6 @@ kubeseal \
 
 ## Bugs, issues and TODOs
 
-- Generate client
-
 - Refactoring manifests and maybe using Helm
 
 - Optimize osaan-admin-ui Tanstack queries
