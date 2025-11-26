@@ -214,13 +214,13 @@ kubeseal \
 
 ## Bugs, issues and TODOs
 
+- Implement pagination and sorting in skill-catalog-service
+
+- Implement pagination and sorting in osaan-admin-ui
+
 - Refactoring manifests and maybe using Helm
 
-- Optimize osaan-admin-ui Tanstack queries
-
 - CI/CD relesea pipelines
-
-- Osaan-admin-ui role based rendering (only ADMINs)
 
 - Authentication on microservices
 

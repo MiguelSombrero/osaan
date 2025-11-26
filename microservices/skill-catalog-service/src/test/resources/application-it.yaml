@@ -1,0 +1,7 @@
+management:
+  server.port: 4002
+
+server:
+  port: 8092
+
+APP_AUTH_DISABLED: true
