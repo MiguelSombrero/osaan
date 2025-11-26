@@ -127,6 +127,9 @@ jobs:
       )
     permissions:
       contents: read
+      packages: read
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         service: ${{ fromJson(needs.detect-changes.outputs.changed_services) }}
