@@ -209,6 +209,11 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-admin-ui-backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-admin-ui-backend:${{ github.sha }}
 
+      - name: Generate API client for frontend
+        if: needs.detect-changes.outputs.admin_frontend_changed == 'true'
+        working-directory: ./ui/osaan-admin-ui/frontend
+        run: npm run generate:client
+
       - name: Build and push admin UI frontend image
         if: needs.detect-changes.outputs.admin_frontend_changed == 'true'
         uses: docker/build-push-action@v6
