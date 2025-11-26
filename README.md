@@ -218,6 +218,8 @@ kubeseal \
 
 - Implement pagination and sorting in osaan-admin-ui
 
+- Build pipeline optimization: do not update kustomization.yaml if pipeline fails
+
 - Refactoring manifests and maybe using Helm
 
 - CI/CD relesea pipelines
