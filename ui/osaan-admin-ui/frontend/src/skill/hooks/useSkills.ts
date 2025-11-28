@@ -2,12 +2,12 @@ import type { GetSkillsResponse } from '@/api/generated/api';
 import { skillApi } from '@/api/skillApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-export const useSkills = (sort?: string[]) => {
+export const useSkills = (sort?: string[], query?: string) => {
   const qc = useQueryClient();
 
   const q = useQuery<GetSkillsResponse>({
-    queryKey: ['skills', sort],
-    queryFn: () => skillApi.getSkills(sort),
+    queryKey: ['skills', sort, query],
+    queryFn: () => skillApi.getSkills(query, sort),
   });
 
   const create = useMutation({

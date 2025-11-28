@@ -9,8 +9,8 @@ const config = new Configuration({
 export const adminSkillsApi = new AdminSkillsApi(config);
 
 export const skillApi = {
-  async getSkills(sort?: string[]): Promise<GetSkillsResponse> {
-    const res = await adminSkillsApi.getSkills(sort);
+  async getSkills(query?: string, sort?: string[]): Promise<GetSkillsResponse> {
+    const res = await adminSkillsApi.getSkills(query, sort);
     return res.data;
   },
 

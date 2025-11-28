@@ -1,10 +1,12 @@
 package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 
-import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
 
 @Service
 class SkillService {
@@ -34,8 +36,14 @@ class SkillService {
         return mapper.entityToApi(entity);
     }
 
-    public GetSkillsResponse getSkills(Sort sort) {
-        return new GetSkillsResponse(repository.findAll(sort).stream()
+    public GetSkillsResponse getSkills(String query, Sort sort) {
+        List<SkillEntity> entities;
+        if (query != null && !query.isBlank()) {
+            entities = repository.findByNameContainingIgnoreCase(query, sort);
+        } else {
+            entities = repository.findAll(sort);
+        }
+        return new GetSkillsResponse(entities.stream()
                 .map(mapper::entityToApi).toList());
     }
 

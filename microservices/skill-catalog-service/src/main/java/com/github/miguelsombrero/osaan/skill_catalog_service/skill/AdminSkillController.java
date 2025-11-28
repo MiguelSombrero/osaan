@@ -42,11 +42,15 @@ class AdminSkillController {
     @Operation(summary = "Get skills", description = "Get all skills.")
     public GetSkillsResponse getSkills(
             @Parameter(in = ParameterIn.QUERY,
+                    description = "Filter skills by name (case-insensitive, partial match).",
+                    schema = @Schema(type = "string", example = "java"))
+            @RequestParam(required = false) String query,
+            @Parameter(in = ParameterIn.QUERY,
                     description = "Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
                     array = @ArraySchema(schema = @Schema(type = "string", example = "name,asc")))
             @SortDefault(sort = "name") @Nullable Sort sort
     ) {
-        return service.getSkills(sort);
+        return service.getSkills(query, sort);
     }
 
     @PostMapping
