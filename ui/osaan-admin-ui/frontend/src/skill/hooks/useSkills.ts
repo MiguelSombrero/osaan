@@ -19,14 +19,8 @@ export const useSkills = (sort?: string[], query?: string) => {
 
   const remove = useMutation({
     mutationFn: (id: string) => skillApi.deleteSkill(id).then(() => id),
-    onSuccess: (deletedId) => {
-      qc.setQueryData<GetSkillsResponse>(['skills'], (oldData) => {
-        if (!oldData || !oldData.skills) return oldData;
-        return {
-          ...oldData,
-          skills: oldData.skills.filter((skill) => skill.id !== deletedId),
-        };
-      });
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['skills'] });
     },
   });
 
