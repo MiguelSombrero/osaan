@@ -11,19 +11,13 @@ import {
   TableRow,
   TableSortLabel,
 } from '@mui/material'
-import { useState } from 'react'
 import { useSkills } from '../hooks/useSkills'
-
-type Order = 'asc' | 'desc'
+import { useSkillSort } from '../hooks/useSkillSort'
 
 export const SkillList: React.FC = () => {
-  const [order, setOrder] = useState<Order>('asc')
+  const { order, toggleSort } = useSkillSort()
   const { data, isLoading, remove } = useSkills([`name,${order}`])
   const skills: Skill[] = data?.skills ?? []
-
-  const handleSort = () => {
-    setOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))
-  }
 
   if (isLoading) return <div>Loading...</div>
   if (skills.length === 0) return <div>No skills</div>
@@ -34,7 +28,7 @@ export const SkillList: React.FC = () => {
         <TableHead>
           <TableRow>
             <TableCell>
-              <TableSortLabel active direction={order} onClick={handleSort}>
+              <TableSortLabel active direction={order} onClick={toggleSort}>
                 Name
               </TableSortLabel>
             </TableCell>
