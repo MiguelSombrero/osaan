@@ -2,15 +2,21 @@ import { Box, Button, TextField } from '@mui/material'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useDebounce } from '../../hooks/useDebounce'
 import { useSkillSearch } from '../hooks/useSkillSearch'
+import { useSkillSort } from '../hooks/useSkillSort'
 import { useSkills } from '../hooks/useSkills'
 
 type FormData = { name: string }
 
 export default function SkillForm() {
   const { t } = useTranslation()
-  const { create } = useSkills()
   const { searchTerm, updateSearch } = useSkillSearch()
+  const { order } = useSkillSort()
+  
+  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+  
+  const { create, data } = useSkills([`name,${order}`], debouncedSearchTerm)
   
   const { control, handleSubmit, reset, setValue } = useForm<FormData>({ 
     defaultValues: { name: searchTerm } 
@@ -24,8 +30,12 @@ export default function SkillForm() {
   const onSubmit = async (data: FormData) => {
     await create.mutateAsync(data.name)
     reset()
-    updateSearch('') // Clear search after adding
+    updateSearch('')
   }
+  
+  const isExactMatch = data?.skills?.some(
+    (skill) => skill.name.toLowerCase() === searchTerm.trim().toLowerCase()
+  )
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', gap: 2 }}>
@@ -45,7 +55,7 @@ export default function SkillForm() {
           />
         )}
       />
-      <Button variant="contained" type="submit" disabled={create.isPending}>
+      <Button variant="contained" type="submit" disabled={create.isPending || isExactMatch}>
         {t('add')}
       </Button>
     </Box>
