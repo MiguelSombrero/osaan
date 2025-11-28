@@ -13,15 +13,14 @@ import {
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../hooks/useDebounce'
+import { useSkillSearch } from '../hooks/useSkillSearch'
 import { useSkillSort } from '../hooks/useSkillSort'
 import { useSkills } from '../hooks/useSkills'
-
-import { useSkillStore } from '../store/store'
 
 export const SkillList: React.FC = () => {
   const { t } = useTranslation()
   const { order, toggleSort } = useSkillSort()
-  const { searchTerm } = useSkillStore()
+  const { searchTerm } = useSkillSearch()
   
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
