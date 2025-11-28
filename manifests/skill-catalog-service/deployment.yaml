@@ -64,6 +64,8 @@ spec:
                 secretKeyRef:
                   name: osaan-db-pguser-osaan-user
                   key: user
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://$(POSTGRESQL_HOST):5432/$(POSTGRES_DB)?sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
           volumeMounts:
             - name: keycloak-truststore
               mountPath: /opt/java/keycloak-truststore.jks

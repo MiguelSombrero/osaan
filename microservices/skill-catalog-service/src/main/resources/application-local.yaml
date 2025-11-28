@@ -13,3 +13,5 @@ server:
   port: 8092
 
 APP_AUTH_DISABLED: true
+API_DOCS_ENABLED: true
+SWAGGER_UI_ENABLED: true

@@ -14,3 +14,5 @@ spring.datasource:
   password: osaan_pass
 
 ISSUER_URI: https://keycloak:8443/realms/osaan
+API_DOCS_ENABLED: true
+SWAGGER_UI_ENABLED: true
