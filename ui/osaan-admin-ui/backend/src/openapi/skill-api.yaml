@@ -33,6 +33,21 @@
         "summary": "Get skills",
         "description": "Get all skills.",
         "operationId": "getSkills",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "example": "name,asc"
+              }
+            }
+          }
+        ],
         "responses": {
           "400": {
             "description": "Bad Request",

@@ -7,7 +7,7 @@ const router = express.Router();
 router.get(
   '/v1/admin/skills',
   asyncHandler(async (req, res) => {
-    const r = await callDownstream(req, 'GET', '/v1/admin/skills');
+    const r = await callDownstream(req, 'GET', '/v1/admin/skills', undefined, req.query);
     res.status(r.status).send(r.data);
   })
 );

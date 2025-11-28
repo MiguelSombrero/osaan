@@ -1,12 +1,6 @@
 package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.UUID;
-
+import com.github.miguelsombrero.osaan.skill_catalog_service.TestcontainersConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
-import com.github.miguelsombrero.osaan.skill_catalog_service.TestcontainersConfiguration;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("it")
 @Import(TestcontainersConfiguration.class)
@@ -52,6 +49,60 @@ class AdminSkillControllerIT {
         // data.sql defines at least 8 skills
         assertTrue(skills.size() >= 8, "expected at least 8 skills from data.sql");
         assertTrue(skills.stream().anyMatch(s -> "java".equalsIgnoreCase(s.getName())), "expected 'java' skill");
+    }
+
+    @Test
+    void getSkills_appliesDefaultSort_whenNoSortParameterProvided() {
+        List<Skill> skills = restTestClient.get()
+                .uri("/v1/admin/skills")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<@NotNull List<Skill>>() {
+                })
+                .returnResult()
+                .getResponseBody();
+
+        List<String> names = skills.stream()
+                .map(s -> s.getName().toLowerCase())
+                .toList();
+
+        boolean sortedAsc = true;
+        for (int i = 0; i < names.size() - 1; i++) {
+            if (names.get(i).compareTo(names.get(i + 1)) > 0) {
+                sortedAsc = false;
+                break;
+            }
+        }
+
+        assertTrue(sortedAsc, "expected skills to be sorted ascending by name by default");
+    }
+
+    @Test
+    void getSkills_sortByNameDesc_appliesDescendingOrder() {
+        List<Skill> skills = restTestClient.get()
+                .uri("/v1/admin/skills?sort=name,desc")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(new ParameterizedTypeReference<@NotNull List<Skill>>() {
+                })
+                .returnResult()
+                .getResponseBody();
+
+        List<String> names = skills.stream()
+                .map(s -> s.getName().toLowerCase())
+                .toList();
+
+        boolean sortedDesc = true;
+        for (int i = 0; i < names.size() - 1; i++) {
+            if (names.get(i).compareTo(names.get(i + 1)) < 0) {
+                sortedDesc = false;
+                break;
+            }
+        }
+
+        assertTrue(sortedDesc, "expected skills to be sorted descending by name when sort=name,desc is provided");
     }
 
     @Test

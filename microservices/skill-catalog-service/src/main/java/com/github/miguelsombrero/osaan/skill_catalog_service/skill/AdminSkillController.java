@@ -3,13 +3,16 @@ package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -38,13 +41,18 @@ class AdminSkillController {
     @GetMapping
     @ApiResponse(responseCode = "200", description = "OK")
     @Operation(summary = "Get skills", description = "Get all skills.")
-    public List<Skill> getSkills(@AuthenticationPrincipal Jwt jwt) {
-        return service.getSkills();
+    public List<Skill> getSkills(
+            @Parameter(in = ParameterIn.QUERY,
+                    description = "Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+                    array = @ArraySchema(schema = @Schema(type = "string", example = "name,asc")))
+            @SortDefault(sort = "name") @Nullable Sort sort
+    ) {
+        return service.getSkills(sort);
     }
 
     @PostMapping
-    @Operation(summary = "Create Skill", description = "Creates new skill and returns created skill with generated ID.")
     @ApiResponse(responseCode = "201", description = "Created")
+    @Operation(summary = "Create Skill", description = "Creates new skill and returns created skill with generated ID.")
     public ResponseEntity<Skill> createSkill(@RequestBody Skill skill) {
         Skill saved = service.saveSkill(skill);
         URI location = URI.create("/v1/admin/skills/" + saved.getId());

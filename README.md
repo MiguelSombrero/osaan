@@ -214,11 +214,13 @@ kubeseal \
 
 ## Bugs, issues and TODOs
 
-- Implement pagination and sorting in skill-catalog-service
+- Implement pagination in skill-catalog-service
 
-- Implement pagination and sorting in osaan-admin-ui
+- Implement pagination in osaan-admin-ui
 
 - Build pipeline optimization: do not update kustomization.yaml if pipeline fails
+
+- Change ArgoCD and keycloak initial admin passwords
 
 - Refactoring manifests and maybe using Helm
 
