@@ -1,6 +1,7 @@
 import type { Skill } from '@/api/generated/api'
 import DeleteIcon from '@mui/icons-material/Delete'
 import {
+  Box,
   IconButton,
   Paper,
   Table,
@@ -9,7 +10,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TableSortLabel
+  TableSortLabel,
+  Typography
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -49,10 +51,25 @@ export const SkillList: React.FC = () => {
         </TableHead>
         <TableBody>
           {skills.map((s) => (
-            <TableRow key={s.id}>
-              <TableCell>{s.name}</TableCell>
+            <TableRow key={s.id} hover>
+              <TableCell>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box 
+                    sx={{ 
+                      width: 8, 
+                      height: 8, 
+                      borderRadius: '50%', 
+                      bgcolor: 'secondary.main',
+                      display: 'inline-block'
+                    }} 
+                  />
+                  <Typography variant="body1" fontWeight={500} color="text.primary">
+                    {s.name}
+                  </Typography>
+                </Box>
+              </TableCell>
               <TableCell align="right">
-                <IconButton onClick={() => remove.mutate(s.id!)}>
+                <IconButton onClick={() => remove.mutate(s.id!)} color="default" size="small">
                   <DeleteIcon />
                 </IconButton>
               </TableCell>
