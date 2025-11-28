@@ -36,15 +36,17 @@ class AdminSkillControllerIT {
 
     @Test
     void getSkills_returnsAllSkills() {
-        List<Skill> skills = restTestClient.get()
+        GetSkillsResponse response = restTestClient.get()
                 .uri("/v1/admin/skills")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<@NotNull List<Skill>>() {
+                .expectBody(new ParameterizedTypeReference<@NotNull GetSkillsResponse>() {
                 })
                 .returnResult()
                 .getResponseBody();
+
+        List<Skill> skills = response.skills();
 
         // data.sql defines at least 8 skills
         assertTrue(skills.size() >= 8, "expected at least 8 skills from data.sql");
@@ -53,15 +55,17 @@ class AdminSkillControllerIT {
 
     @Test
     void getSkills_appliesDefaultSort_whenNoSortParameterProvided() {
-        List<Skill> skills = restTestClient.get()
+        GetSkillsResponse response = restTestClient.get()
                 .uri("/v1/admin/skills")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<@NotNull List<Skill>>() {
+                .expectBody(new ParameterizedTypeReference<@NotNull GetSkillsResponse>() {
                 })
                 .returnResult()
                 .getResponseBody();
+
+        List<Skill> skills = response.skills();
 
         List<String> names = skills.stream()
                 .map(s -> s.getName().toLowerCase())
@@ -80,15 +84,17 @@ class AdminSkillControllerIT {
 
     @Test
     void getSkills_sortByNameDesc_appliesDescendingOrder() {
-        List<Skill> skills = restTestClient.get()
+        GetSkillsResponse response = restTestClient.get()
                 .uri("/v1/admin/skills?sort=name,desc")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<@NotNull List<Skill>>() {
+                .expectBody(new ParameterizedTypeReference<@NotNull GetSkillsResponse>() {
                 })
                 .returnResult()
                 .getResponseBody();
+
+        List<Skill> skills = response.skills();
 
         List<String> names = skills.stream()
                 .map(s -> s.getName().toLowerCase())
@@ -133,15 +139,17 @@ class AdminSkillControllerIT {
                 .exchange()
                 .expectStatus().isNoContent();
 
-        List<Skill> skillsAfter = restTestClient.get()
+        GetSkillsResponse response = restTestClient.get()
                 .uri("/v1/admin/skills")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<@NotNull List<Skill>>() {
+                .expectBody(new ParameterizedTypeReference<@NotNull GetSkillsResponse>() {
                 })
                 .returnResult()
                 .getResponseBody();
+
+        List<Skill> skillsAfter = response.skills();
 
         assertTrue(skillsAfter.stream().noneMatch(s -> idToDelete.equals(s.getId())), "deleted skill should not be present");
     }

@@ -1,11 +1,11 @@
-import type { Skill } from '@/api/generated/api';
+import type { GetSkillsResponse } from '@/api/generated/api';
 import { skillApi } from '@/api/skillApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export const useSkills = (sort?: string[]) => {
   const qc = useQueryClient();
 
-  const q = useQuery<Skill[]>({
+  const q = useQuery<GetSkillsResponse>({
     queryKey: ['skills', sort],
     queryFn: () => skillApi.getSkills(sort),
   });
@@ -20,9 +20,13 @@ export const useSkills = (sort?: string[]) => {
   const remove = useMutation({
     mutationFn: (id: string) => skillApi.deleteSkill(id).then(() => id),
     onSuccess: (deletedId) => {
-      qc.setQueryData<Skill[]>(['skills'], (oldSkills = []) => 
-        oldSkills.filter(skill => skill.id !== deletedId)
-      );
+      qc.setQueryData<GetSkillsResponse>(['skills'], (oldData) => {
+        if (!oldData || !oldData.skills) return oldData;
+        return {
+          ...oldData,
+          skills: oldData.skills.filter((skill) => skill.id !== deletedId),
+        };
+      });
     },
   });
 

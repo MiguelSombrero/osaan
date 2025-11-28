@@ -1,4 +1,4 @@
-import { AdminSkillsApi, type Skill } from './generated/api';
+import { AdminSkillsApi, type GetSkillsResponse, type Skill } from './generated/api';
 import { Configuration } from './generated/configuration';
 
 const config = new Configuration({
@@ -9,7 +9,7 @@ const config = new Configuration({
 export const adminSkillsApi = new AdminSkillsApi(config);
 
 export const skillApi = {
-  async getSkills(sort?: string[]): Promise<Skill[]> {
+  async getSkills(sort?: string[]): Promise<GetSkillsResponse> {
     const res = await adminSkillsApi.getSkills(sort);
     return res.data;
   },

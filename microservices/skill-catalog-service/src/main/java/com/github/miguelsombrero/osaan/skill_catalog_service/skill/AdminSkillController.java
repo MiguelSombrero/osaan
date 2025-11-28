@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,7 +40,7 @@ class AdminSkillController {
     @GetMapping
     @ApiResponse(responseCode = "200", description = "OK")
     @Operation(summary = "Get skills", description = "Get all skills.")
-    public List<Skill> getSkills(
+    public GetSkillsResponse getSkills(
             @Parameter(in = ParameterIn.QUERY,
                     description = "Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
                     array = @ArraySchema(schema = @Schema(type = "string", example = "name,asc")))

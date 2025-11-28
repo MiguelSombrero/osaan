@@ -19,7 +19,7 @@ type Order = 'asc' | 'desc'
 export const SkillList: React.FC = () => {
   const [order, setOrder] = useState<Order>('asc')
   const { data, isLoading, remove } = useSkills([`name,${order}`])
-  const skills: Skill[] = data ?? []
+  const skills: Skill[] = data?.skills ?? []
 
   const handleSort = () => {
     setOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))

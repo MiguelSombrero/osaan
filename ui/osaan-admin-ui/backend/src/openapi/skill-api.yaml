@@ -54,10 +54,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Skill"
-                  }
+                  "$ref": "#/components/schemas/GetSkillsResponse"
                 }
               }
             }
@@ -67,10 +64,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Skill"
-                  }
+                  "$ref": "#/components/schemas/GetSkillsResponse"
                 }
               }
             }
@@ -80,10 +74,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Skill"
-                  }
+                  "$ref": "#/components/schemas/GetSkillsResponse"
                 }
               }
             }
@@ -93,10 +84,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Skill"
-                  }
+                  "$ref": "#/components/schemas/GetSkillsResponse"
                 }
               }
             }
@@ -106,10 +94,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Skill"
-                  }
+                  "$ref": "#/components/schemas/GetSkillsResponse"
                 }
               }
             }
@@ -119,10 +104,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Skill"
-                  }
+                  "$ref": "#/components/schemas/GetSkillsResponse"
                 }
               }
             }
@@ -330,6 +312,21 @@
         "required": [
           "name"
         ]
+      },
+      "GetSkillsResponse": {
+        "type": "object",
+        "description": "Response wrapper containing a list of skills",
+        "properties": {
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Skill",
+              "description": "List of skills",
+              "minItems": 0
+            },
+            "minItems": 0
+          }
+        }
       }
     },
     "securitySchemes": {
