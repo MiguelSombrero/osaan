@@ -6,6 +6,8 @@ type Order = 'asc' | 'desc'
 interface SkillState {
   order: Order
   setOrder: (order: Order) => void
+  searchTerm: string
+  setSearchTerm: (term: string) => void
 }
 
 export const useSkillStore = create<SkillState>()(
@@ -13,6 +15,8 @@ export const useSkillStore = create<SkillState>()(
     (set) => ({
       order: 'asc',
       setOrder: (order) => set({ order }),
+      searchTerm: '',
+      setSearchTerm: (searchTerm) => set({ searchTerm }),
     }),
     {
       name: 'skill-list-storage',
