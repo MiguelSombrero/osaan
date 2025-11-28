@@ -2,12 +2,12 @@ import { PropsWithChildren, useEffect } from 'react';
 import { login, useAuth } from '../hooks/useAuth';
 
 interface RequireRoleProps extends PropsWithChildren {
-  role: string;
+  role?: string;
 }
 
 export function RequireRole({ children, role }: RequireRoleProps) {
   const { data, isLoading } = useAuth();
-  const hasRole = data?.roles?.includes(role) ?? false;
+  const hasRole = role ? (data?.roles?.includes(role) ?? false) : true;
 
   useEffect(() => {
     if (!isLoading && data && !data.authenticated && !data?.authDisabled) {
@@ -21,7 +21,7 @@ export function RequireRole({ children, role }: RequireRoleProps) {
     return <>{children}</>;
   }
 
-  if (!data?.authenticated || !hasRole) {
+  if (!data?.authenticated || (role && !hasRole)) {
     return;
   }
 

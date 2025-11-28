@@ -1,26 +1,6 @@
-import { PropsWithChildren, useEffect } from 'react';
-import { login, useAuth } from '../hooks/useAuth';
+import { PropsWithChildren } from 'react';
+import { RequireRole } from './RequireRole';
 
 export function RequireAuth({ children }: PropsWithChildren) {
-  const { data, isLoading } = useAuth();
-  const isAuthenticated = data?.authenticated;
-  const isAuthDisabled = data?.authDisabled;
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated && !isAuthDisabled) {
-      login();
-    }
-  }, [isLoading, isAuthenticated, isAuthDisabled]);
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (isAuthDisabled) {
-    return <>{children}</>;
-  }
-
-  if (!isAuthenticated) {
-    return null; // Waiting for redirect
-  }
-
-  return <>{children}</>;
+  return <RequireRole role={undefined}>{children}</RequireRole>;
 }
