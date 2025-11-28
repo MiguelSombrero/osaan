@@ -35,7 +35,7 @@ export const SkillList: React.FC = () => {
   if (skills.length === 0 && !searchTerm) return <div>{t('noSkills')}</div>
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
       <Table>
         <TableHead>
           <TableRow>

@@ -1,3 +1,4 @@
+import AddIcon from '@mui/icons-material/Add'
 import { Box, Button, TextField } from '@mui/material'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -38,7 +39,7 @@ export default function SkillForm() {
   )
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', gap: 2 }}>
+    <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
       <Controller
         name="name"
         control={control}
@@ -48,6 +49,8 @@ export default function SkillForm() {
             {...field} 
             label={t('skillName')} 
             fullWidth 
+            variant="outlined"
+            placeholder={t('skillName')}
             onChange={(e) => {
               field.onChange(e)
               updateSearch(e.target.value)
@@ -55,7 +58,14 @@ export default function SkillForm() {
           />
         )}
       />
-      <Button variant="contained" type="submit" disabled={create.isPending || isExactMatch}>
+      <Button 
+        variant="contained" 
+        type="submit" 
+        size="large"
+        disabled={create.isPending || isExactMatch}
+        startIcon={<AddIcon />}
+        sx={{ height: 56, px: 4, whiteSpace: 'nowrap' }}
+      >
         {t('add')}
       </Button>
     </Box>

@@ -218,6 +218,18 @@ kubeseal \
 
 - Implement pagination in osaan-admin-ui
 
+- Error handling in osaan-admin-ui
+
+- Improve form validation and error messages in osaan-admin-ui
+
+- Add loading states and better user feedback in osaan-admin-ui
+
+- Add toast notifications for user actions in osaan-admin-ui
+
+- Add proper error boundaries and error recovery in osaan-admin-ui
+
+- Add accessibility improvements in osaan-admin-ui
+
 - Build pipeline optimization: do not update kustomization.yaml if pipeline fails
 
 - Change keycloak initial admin passwords
