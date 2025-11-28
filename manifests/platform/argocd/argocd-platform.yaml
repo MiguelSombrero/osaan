@@ -10,6 +10,11 @@ spec:
     targetRevision: dev
     path: manifests/platform
     kustomize: {}
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /status
   destination:
     server: https://kubernetes.default.svc
     namespace: osaan-dev

@@ -220,7 +220,7 @@ kubeseal \
 
 - Build pipeline optimization: do not update kustomization.yaml if pipeline fails
 
-- Change ArgoCD and keycloak initial admin passwords
+- Change keycloak initial admin passwords
 
 - Refactoring manifests and maybe using Helm
 

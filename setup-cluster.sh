@@ -12,6 +12,8 @@ echo "===================================================="
 # --- 0. Kysy asennuksessa tarvittavat salasanat ---
 read -s -p "Give Redis password: " REDIS_PASS
 echo ""
+read -s -p "Give ArgoCD admin password: " ARGOCD_PASS
+echo ""
 
 # --- 1. Tarkista että k3d on asennettu ---
 if ! command -v k3d >/dev/null 2>&1; then
@@ -151,6 +153,17 @@ echo "==> Installing ArgoCD..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 wait_for_deployments "argocd"
+
+# Set the initial admin password using the provided password
+echo "==> Setting ArgoCD initial admin password..."
+password_hash=$(docker run --rm httpd:alpine htpasswd -Bnb admin "$ARGOCD_PASS" | cut -d ":" -f 2)
+
+# Patch argocd-secret
+kubectl -n argocd patch secret argocd-secret \
+  -p "{\"stringData\": { \"admin.password\": \"$password_hash\", \"admin.passwordMtime\": \"$(date +%FT%T%Z)\" }}"
+
+# Delete the initial admin secret as it is no longer needed and might be confusing
+kubectl -n argocd delete secret argocd-initial-admin-secret --ignore-not-found=true
 
 echo "==> Configuring ArgoCD server to run in insecure mode (behind TLS ingress)..."
 kubectl -n argocd patch configmap argocd-cmd-params-cm \
