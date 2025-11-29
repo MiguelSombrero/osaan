@@ -9,5 +9,12 @@
   "noMatch": "No matching skills",
   "search": "Search",
   "login": "Login",
-  "logout": "Logout"
+  "logout": "Logout",
+  "error": {
+    "generic": "An unexpected error occurred. Please try again.",
+    "networkError": "Unable to connect to the server.",
+    "unauthorized": "Please log in to continue.",
+    "notFound": "The requested resource was not found.",
+    "validation": "Please check your input and try again."
+  }
 }

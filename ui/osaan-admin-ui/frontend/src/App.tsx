@@ -7,36 +7,39 @@ import TopBar from './components/TopBar';
 import EmployeesPage from './pages/EmployeesPage';
 import SkillsPage from './pages/SkillsPage';
 import { theme } from './theme';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <TopBar />
-      <Box display="flex">
-        <LeftNav />
-        <Box component="main" sx={{ flex: 1, p: 3 }}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/skills" replace />} />
-            <Route
-              path="/skills"
-              element={
-                <RequireAdmin>
-                  <SkillsPage />
-                </RequireAdmin>
-              }
-            />
-            <Route
-              path="/employees"
-              element={
-                <RequireAuth>
-                  <EmployeesPage />
-                </RequireAuth>
-              }
-            />
-          </Routes>
+      <ErrorBoundary>
+        <TopBar />
+        <Box display="flex">
+          <LeftNav />
+          <Box component="main" sx={{ flex: 1, p: 3 }}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/skills" replace />} />
+              <Route
+                path="/skills"
+                element={
+                  <RequireAdmin>
+                    <SkillsPage />
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/employees"
+                element={
+                  <RequireAuth>
+                    <EmployeesPage />
+                  </RequireAuth>
+                }
+              />
+            </Routes>
+          </Box>
         </Box>
-      </Box>
+      </ErrorBoundary>
     </ThemeProvider>
   );
 }

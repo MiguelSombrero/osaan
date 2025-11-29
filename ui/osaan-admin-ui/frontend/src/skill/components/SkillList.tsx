@@ -17,17 +17,24 @@ import { useTranslation } from 'react-i18next';
 import { useSkillSearch } from '../hooks/useSkillSearch';
 import { useSkillSort } from '../hooks/useSkillSort';
 import { useSkills } from '../hooks/useSkills';
+import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiError } from '@/api/errors';
 
 export const SkillList: React.FC = () => {
   const { t } = useTranslation();
   const { order, toggleSort } = useSkillSort();
   const { searchTerm, debouncedSearchTerm } = useSkillSearch();
 
-  const { data, isLoading, remove } = useSkills([`name,${order}`], debouncedSearchTerm);
+  const { data, isLoading, remove, error } = useSkills([`name,${order}`], debouncedSearchTerm);
 
   const skills: Skill[] = data?.skills ?? [];
 
   if (isLoading) return <div>Loading...</div>;
+
+  if (error) {
+    return <ApiErrorAlert error={error as ApiError} />;
+  }
+
   if (skills.length === 0 && !searchTerm) return <div>{t('noSkills')}</div>;
 
   return (

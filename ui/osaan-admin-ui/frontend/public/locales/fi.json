@@ -9,5 +9,12 @@
   "noMatch": "Ei vastaavia osaamisia",
   "search": "Hae",
   "login": "Kirjaudu sisään",
-  "logout": "Kirjaudu ulos"
+  "logout": "Kirjaudu ulos",
+  "error": {
+    "generic": "Odottamaton virhe. Yritä uudelleen.",
+    "networkError": "Yhteyttä palvelimeen ei saatu.",
+    "unauthorized": "Kirjaudu sisään jatkaaksesi.",
+    "notFound": "Pyydettyä resurssia ei löytynyt.",
+    "validation": "Tarkista syöttämäsi tiedot ja yritä uudelleen."
+  }
 }

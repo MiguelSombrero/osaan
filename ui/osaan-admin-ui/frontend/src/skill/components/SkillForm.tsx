@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { useSkillSearch } from '../hooks/useSkillSearch';
 import { useSkillSort } from '../hooks/useSkillSort';
 import { useSkills } from '../hooks/useSkills';
+import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiError } from '@/api/errors';
 
 type FormData = { name: string };
 
@@ -36,39 +38,44 @@ export default function SkillForm() {
   );
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}
-    >
-      <Controller
-        name="name"
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            label={t('skillName')}
-            fullWidth
-            variant="outlined"
-            placeholder={t('skillName')}
-            onChange={e => {
-              field.onChange(e);
-              updateSearch(e.target.value);
-            }}
-          />
-        )}
-      />
-      <Button
-        variant="contained"
-        type="submit"
-        size="large"
-        disabled={create.isPending || isExactMatch}
-        startIcon={<AddIcon />}
-        sx={{ height: 56, px: 4, whiteSpace: 'nowrap' }}
+    <>
+      {create.error && (
+        <ApiErrorAlert error={create.error as ApiError} onClose={() => create.reset()} />
+      )}
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}
       >
-        {t('add')}
-      </Button>
-    </Box>
+        <Controller
+          name="name"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label={t('skillName')}
+              fullWidth
+              variant="outlined"
+              placeholder={t('skillName')}
+              onChange={e => {
+                field.onChange(e);
+                updateSearch(e.target.value);
+              }}
+            />
+          )}
+        />
+        <Button
+          variant="contained"
+          type="submit"
+          size="large"
+          disabled={create.isPending || isExactMatch}
+          startIcon={<AddIcon />}
+          sx={{ height: 56, px: 4, whiteSpace: 'nowrap' }}
+        >
+          {t('add')}
+        </Button>
+      </Box>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import { corsMiddleware } from './middleware/cors.js';
 import { tokenMiddleware } from './middleware/token.js';
 import skillsRoutes from './routes/adminSkills.js';
 import loginRoutes from './routes/login.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 export const app = express();
 
@@ -34,15 +35,4 @@ app.get('/metrics', async (_req, res) => {
   }
 });
 
-// eslint-disable-next-line no-unused-vars
-app.use((err, _req, res, _next) => {
-  console.error('[Error]', err);
-  const status = err.status || err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-  const details = err.error_description || err.error || undefined;
-
-  res.status(status).json({
-    error: message,
-    details,
-  });
-});
+app.use(errorHandler);
