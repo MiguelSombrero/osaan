@@ -75,17 +75,37 @@ describe('SkillList', () => {
 
       renderWithProviders(<SkillList />, { initialRoute: '/skills?order=asc' });
 
+      // Wait for initial load with ascending order
       await waitFor(() => {
         expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
       });
 
+      // Verify ascending order: Apple, Mango, Zebra
+      const getSkillNames = () =>
+        screen
+          .getAllByRole('row')
+          .slice(1)
+          .map(row => row.textContent?.replace(/\s+/g, ' ').trim());
+
+      let skillNames = getSkillNames();
+      expect(skillNames[0]).toContain('Apple');
+      expect(skillNames[1]).toContain('Mango');
+      expect(skillNames[2]).toContain('Zebra');
+
+      // Click to toggle to descending order
       const sortButton = screen.getByRole('button', { name: /taito/i });
       await userEvent.click(sortButton);
 
-      // The actual sorting is done by MSW handler based on URL params
+      // Wait for descending order: Zebra, Mango, Apple
       await waitFor(() => {
-        expect(screen.getByText('Apple')).toBeInTheDocument();
+        const names = getSkillNames();
+        expect(names[0]).toContain('Zebra');
       });
+
+      skillNames = getSkillNames();
+      expect(skillNames[0]).toContain('Zebra');
+      expect(skillNames[1]).toContain('Mango');
+      expect(skillNames[2]).toContain('Apple');
     });
 
     it('shows sort direction indicator', async () => {

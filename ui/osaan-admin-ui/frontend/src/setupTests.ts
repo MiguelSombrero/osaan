@@ -1,18 +1,8 @@
 import '@testing-library/jest-dom';
-import { server } from './test/mocks/server';
-import { resetMocks } from './test/mocks/handlers';
+import { setupMswServer } from './test/mocks/server';
 
-// Start MSW server before all tests
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
-
-// Reset handlers and mocks after each test
-afterEach(() => {
-  server.resetHandlers();
-  resetMocks();
-});
-
-// Clean up after all tests
-afterAll(() => server.close());
+// Setup MSW server lifecycle (beforeAll, afterEach, afterAll)
+setupMswServer();
 
 // Mock window.location for login/logout tests
 // Store original location to restore parts of it
