@@ -40,6 +40,6 @@ images:
   - name: miguelsombrero/osaan-competence-matching-service
     newTag: latest
   - name: miguelsombrero/osaan-admin-ui-backend
-    newTag: c88e09037ba64c3328939601ce44591d87ff507f
+    newTag: eb8b8f1df4f2cf4f12c0e9c4994cd364dcff5a1e
   - name: miguelsombrero/osaan-admin-ui-frontend
-    newTag: 8ff02384ee500a4145d37e97e7125c6830e24613
+    newTag: eb8b8f1df4f2cf4f12c0e9c4994cd364dcff5a1e
