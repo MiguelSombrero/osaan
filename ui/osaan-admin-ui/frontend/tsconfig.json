@@ -4,12 +4,10 @@
     "paths": {
       "@/*": ["*"]
     },
+    "types": ["vitest/globals"],
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
+    "lib": ["DOM", "ESNext"],
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "Node",
