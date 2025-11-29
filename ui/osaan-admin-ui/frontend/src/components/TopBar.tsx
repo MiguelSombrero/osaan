@@ -1,5 +1,15 @@
 import { login, logout, useAuth } from '@/hooks/useAuth';
-import { AppBar, Box, Button, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +22,7 @@ export default function TopBar() {
 
   const currentLanguage = i18n.language || 'fi';
   const currentFlag = currentLanguage.startsWith('en') ? '🇬🇧' : '🇫🇮';
+  const { t } = useTranslation();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,26 +71,34 @@ export default function TopBar() {
           onClose={handleClose}
         >
           <MenuItem onClick={() => changeLanguage('fi')}>
-            <span role="img" aria-label="Finnish" style={{ marginRight: '8px', fontSize: '1.2rem' }}>
+            <span
+              role="img"
+              aria-label="Finnish"
+              style={{ marginRight: '8px', fontSize: '1.2rem' }}
+            >
               🇫🇮
             </span>
-            Suomi
+            {t('fi')}
           </MenuItem>
           <MenuItem onClick={() => changeLanguage('en')}>
-            <span role="img" aria-label="English" style={{ marginRight: '8px', fontSize: '1.2rem' }}>
+            <span
+              role="img"
+              aria-label="English"
+              style={{ marginRight: '8px', fontSize: '1.2rem' }}
+            >
               🇬🇧
             </span>
-            English
+            {t('en')}
           </MenuItem>
         </Menu>
 
         {authDisabled ? null : loggedIn ? (
           <Button color="inherit" onClick={logout}>
-            Logout
+            {t('logout')}
           </Button>
         ) : (
           <Button color="inherit" onClick={login}>
-            Login
+            {t('login')}
           </Button>
         )}
       </Toolbar>

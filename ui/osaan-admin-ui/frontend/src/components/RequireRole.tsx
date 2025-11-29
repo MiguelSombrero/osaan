@@ -22,7 +22,7 @@ export function RequireRole({ children, role }: RequireRoleProps) {
   }
 
   if (!data?.authenticated || (role && !hasRole)) {
-    return;
+    return null;
   }
 
   return <>{children}</>;

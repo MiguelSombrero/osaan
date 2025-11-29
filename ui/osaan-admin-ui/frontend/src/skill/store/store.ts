@@ -1,25 +1,24 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-
-type Order = 'asc' | 'desc'
+import { Order } from '@/types';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface SkillState {
-  order: Order
-  setOrder: (order: Order) => void
-  searchTerm: string
-  setSearchTerm: (term: string) => void
+  order: Order;
+  setOrder: (order: Order) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }
 
 export const useSkillStore = create<SkillState>()(
   persist(
-    (set) => ({
+    set => ({
       order: 'asc',
-      setOrder: (order) => set({ order }),
+      setOrder: order => set({ order }),
       searchTerm: '',
-      setSearchTerm: (searchTerm) => set({ searchTerm }),
+      setSearchTerm: searchTerm => set({ searchTerm }),
     }),
     {
       name: 'skill-list-storage',
     }
   )
-)
+);

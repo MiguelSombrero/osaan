@@ -6,5 +6,8 @@
   "add": "Add",
   "delete": "Delete",
   "noSkills": "No skills",
-  "search": "Search"
+  "noMatch": "No matching skills",
+  "search": "Search",
+  "login": "Login",
+  "logout": "Logout"
 }

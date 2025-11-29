@@ -6,5 +6,8 @@
   "add": "Lisää",
   "delete": "Poista",
   "noSkills": "Ei osaamisia",
-  "search": "Hae"
+  "noMatch": "Ei vastaavia osaamisia",
+  "search": "Hae",
+  "login": "Kirjaudu sisään",
+  "logout": "Kirjaudu ulos"
 }

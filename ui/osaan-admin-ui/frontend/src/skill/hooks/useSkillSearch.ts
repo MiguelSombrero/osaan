@@ -1,60 +1,68 @@
-import { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { useSkillStore } from '../store/store'
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useSkillStore } from '../store/store';
+
+const DEBOUNCE_MS = 500;
 
 export const useSkillSearch = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { searchTerm, setSearchTerm } = useSkillStore()
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchTerm, setSearchTerm } = useSkillStore();
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
-  const searchParam = searchParams.get('search')
+  const searchParam = searchParams.get('search');
 
-  // 1. Sync URL -> Store
-  // Only run when searchParam changes (navigation / forward / back)
-  // We exclude searchTerm from deps to avoid reverting the store while typing (when URL is stale)
+  // 1. Sync URL -> Store (on navigation / back / forward)
   useEffect(() => {
     if (searchParam !== null && searchParam !== searchTerm) {
-      setSearchTerm(searchParam)
-    }
-    // Restore from store if URL is empty but store has value (initial load with persisted state)
-    else if (searchParam === null && searchTerm) {
+      setSearchTerm(searchParam);
+    } else if (searchParam === null && searchTerm) {
+      // Restore from store if URL is empty but store has value
       setSearchParams(
-        (prev) => {
-          prev.set('search', searchTerm)
-          return prev
+        prev => {
+          prev.set('search', searchTerm);
+          return prev;
         },
         { replace: true }
-      )
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParam, setSearchParams, setSearchTerm]) 
+  }, [searchParam, setSearchParams, setSearchTerm]);
 
-  // 2. Sync Store -> URL (Debounced)
+  // 2. Debounce: searchTerm -> debouncedSearchTerm (for API calls)
+  //    and sync to URL
   useEffect(() => {
     const timer = setTimeout(() => {
-      const currentUrlSearch = searchParams.get('search')
-      
+      setDebouncedSearchTerm(searchTerm);
+
+      // Sync to URL
+      const currentUrlSearch = searchParams.get('search');
       if (searchTerm) {
         if (currentUrlSearch !== searchTerm) {
-          setSearchParams((prev) => {
-            prev.set('search', searchTerm)
-            return prev
-          }, { replace: true })
+          setSearchParams(
+            prev => {
+              prev.set('search', searchTerm);
+              return prev;
+            },
+            { replace: true }
+          );
         }
       } else if (currentUrlSearch) {
-        setSearchParams((prev) => {
-          prev.delete('search')
-          return prev
-        }, { replace: true })
+        setSearchParams(
+          prev => {
+            prev.delete('search');
+            return prev;
+          },
+          { replace: true }
+        );
       }
-    }, 500)
+    }, DEBOUNCE_MS);
 
-    return () => clearTimeout(timer)
-  }, [searchTerm, setSearchParams]) // searchParams is stable, but we need it in deps
+    return () => clearTimeout(timer);
+  }, [searchTerm, searchParams, setSearchParams]);
 
   const updateSearch = (term: string) => {
-    setSearchTerm(term)
-    // Do NOT update URL here. The effect handles it.
-  }
+    setSearchTerm(term);
+  };
 
-  return { searchTerm, updateSearch }
-}
+  return { searchTerm, debouncedSearchTerm, updateSearch };
+};

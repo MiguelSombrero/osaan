@@ -1,5 +1,5 @@
-import type { Skill } from '@/api/generated/api'
-import DeleteIcon from '@mui/icons-material/Delete'
+import type { Skill } from '@/api/generated/api';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   IconButton,
@@ -11,30 +11,24 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Typography
-} from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { useDebounce } from '../../hooks/useDebounce'
-import { useSkillSearch } from '../hooks/useSkillSearch'
-import { useSkillSort } from '../hooks/useSkillSort'
-import { useSkills } from '../hooks/useSkills'
+  Typography,
+} from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useSkillSearch } from '../hooks/useSkillSearch';
+import { useSkillSort } from '../hooks/useSkillSort';
+import { useSkills } from '../hooks/useSkills';
 
 export const SkillList: React.FC = () => {
-  const { t } = useTranslation()
-  const { order, toggleSort } = useSkillSort()
-  const { searchTerm } = useSkillSearch()
-  
-  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+  const { t } = useTranslation();
+  const { order, toggleSort } = useSkillSort();
+  const { searchTerm, debouncedSearchTerm } = useSkillSearch();
 
-  const { data, isLoading, remove } = useSkills(
-    [`name,${order}`], 
-    debouncedSearchTerm
-  )
-  
-  const skills: Skill[] = data?.skills ?? []
+  const { data, isLoading, remove } = useSkills([`name,${order}`], debouncedSearchTerm);
 
-  if (isLoading) return <div>Loading...</div>
-  if (skills.length === 0 && !searchTerm) return <div>{t('noSkills')}</div>
+  const skills: Skill[] = data?.skills ?? [];
+
+  if (isLoading) return <div>Loading...</div>;
+  if (skills.length === 0 && !searchTerm) return <div>{t('noSkills')}</div>;
 
   return (
     <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
@@ -50,18 +44,18 @@ export const SkillList: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {skills.map((s) => (
+          {skills.map(s => (
             <TableRow key={s.id} hover>
               <TableCell>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Box 
-                    sx={{ 
-                      width: 8, 
-                      height: 8, 
-                      borderRadius: '50%', 
+                  <Box
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
                       bgcolor: 'secondary.main',
-                      display: 'inline-block'
-                    }} 
+                      display: 'inline-block',
+                    }}
                   />
                   <Typography variant="body1" fontWeight={500} color="text.primary">
                     {s.name}
@@ -78,12 +72,12 @@ export const SkillList: React.FC = () => {
           {skills.length === 0 && (
             <TableRow>
               <TableCell colSpan={2} align="center">
-                {t('noSkills')}
+                {t('noMatch')}
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
