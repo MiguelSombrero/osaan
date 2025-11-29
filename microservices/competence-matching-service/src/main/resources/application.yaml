@@ -31,6 +31,14 @@ spring:
     url: jdbc:postgresql://${POSTGRESQL_HOST}:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+    hikari:
+      connection-timeout: 10000        # 10s to get connection from pool
+      validation-timeout: 5000         # 5s to validate connection
+      max-lifetime: 600000             # 10min max connection lifetime
+      idle-timeout: 300000             # 5min idle before eviction
+      keepalive-time: 60000            # 60s TCP keepalive to detect stale connections
+      minimum-idle: 2                  # Keep 2 connections ready
+      maximum-pool-size: 10            # Max 10 connections
   sql:
     init:
       mode: always
