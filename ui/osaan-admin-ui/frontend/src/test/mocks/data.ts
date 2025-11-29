@@ -48,20 +48,3 @@ export const mockSkills: Skill[] = [
 export function createMockSkillsResponse(skills: Skill[] = mockSkills): GetSkillsResponse {
   return { skills };
 }
-
-// Factory for creating custom auth states
-export function createAuthState(overrides: Partial<AuthState>): AuthState {
-  return {
-    ...mockAdminUser,
-    ...overrides,
-  };
-}
-
-// Factory for creating skills
-export function createSkill(overrides: Partial<Skill> = {}): Skill {
-  return {
-    id: crypto.randomUUID(),
-    name: 'New Skill',
-    ...overrides,
-  };
-}

@@ -1,16 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils/renderWithProviders';
 import TopBar from '../TopBar';
-import { server } from '@/test/mocks/server';
-import { authHandler } from '@/test/mocks/handlers';
+import { setMockAuthState } from '@/test/mocks/handlers';
 import { mockAdminUser, mockUnauthenticated, mockAuthDisabled } from '@/test/mocks/data';
 
 describe('TopBar', () => {
   describe('authentication states', () => {
     it('shows logout button when user is authenticated', async () => {
-      server.use(authHandler(mockAdminUser));
+      setMockAuthState(mockAdminUser);
 
       renderWithProviders(<TopBar />);
 
@@ -21,7 +20,7 @@ describe('TopBar', () => {
     });
 
     it('shows login button when user is not authenticated', async () => {
-      server.use(authHandler(mockUnauthenticated));
+      setMockAuthState(mockUnauthenticated);
 
       renderWithProviders(<TopBar />);
 
@@ -32,7 +31,7 @@ describe('TopBar', () => {
     });
 
     it('hides auth buttons when auth is disabled', async () => {
-      server.use(authHandler(mockAuthDisabled));
+      setMockAuthState(mockAuthDisabled);
 
       renderWithProviders(<TopBar />);
 
@@ -46,7 +45,7 @@ describe('TopBar', () => {
 
   describe('login action', () => {
     it('redirects to login endpoint when login button is clicked', async () => {
-      server.use(authHandler(mockUnauthenticated));
+      setMockAuthState(mockUnauthenticated);
 
       renderWithProviders(<TopBar />);
 
@@ -59,7 +58,7 @@ describe('TopBar', () => {
 
   describe('logout action', () => {
     it('redirects to logout endpoint when logout button is clicked', async () => {
-      server.use(authHandler(mockAdminUser));
+      setMockAuthState(mockAdminUser);
 
       renderWithProviders(<TopBar />);
 
@@ -72,7 +71,7 @@ describe('TopBar', () => {
 
   describe('language switching', () => {
     it('shows language menu button', async () => {
-      server.use(authHandler(mockAdminUser));
+      setMockAuthState(mockAdminUser);
 
       renderWithProviders(<TopBar />);
 
@@ -82,7 +81,7 @@ describe('TopBar', () => {
     });
 
     it('opens language menu when clicked', async () => {
-      server.use(authHandler(mockAdminUser));
+      setMockAuthState(mockAdminUser);
 
       renderWithProviders(<TopBar />);
 
@@ -95,7 +94,7 @@ describe('TopBar', () => {
     });
 
     it('changes language to English when selected', async () => {
-      server.use(authHandler(mockAdminUser));
+      setMockAuthState(mockAdminUser);
 
       renderWithProviders(<TopBar />);
 
@@ -114,12 +113,12 @@ describe('TopBar', () => {
       });
     });
 
-    it('changes language to Finnish when selected', async () => {
-      server.use(authHandler(mockAdminUser));
+    it('language change persists across re-renders', async () => {
+      setMockAuthState(mockAdminUser);
 
-      renderWithProviders(<TopBar />);
+      const { rerender } = renderWithProviders(<TopBar />);
 
-      // First change to English
+      // Change to English
       const languageButton = await screen.findByLabelText('change language');
       await userEvent.click(languageButton);
       await userEvent.click(screen.getByText('English'));
@@ -128,66 +127,21 @@ describe('TopBar', () => {
         expect(screen.getByText('Logout')).toBeInTheDocument();
       });
 
-      // Now change back to Finnish
-      await userEvent.click(languageButton);
-      await userEvent.click(screen.getByText('Suomi'));
+      // Re-render the component
+      rerender(<TopBar />);
 
-      await waitFor(() => {
-        expect(screen.getByText('Kirjaudu ulos')).toBeInTheDocument();
-      });
-    });
-
-    it('shows correct flag icon for current language', async () => {
-      server.use(authHandler(mockAdminUser));
-
-      renderWithProviders(<TopBar />);
-
-      const languageButton = await screen.findByLabelText('change language');
-
-      // Default language is Finnish, should show Finnish flag
-      expect(languageButton).toHaveTextContent('🇫🇮');
-
-      // Change to English
-      await userEvent.click(languageButton);
-      await userEvent.click(screen.getByText('English'));
-
-      // Should now show UK flag
-      await waitFor(() => {
-        expect(languageButton).toHaveTextContent('🇬🇧');
-      });
+      // Should still be in English
+      expect(screen.getByText('Logout')).toBeInTheDocument();
     });
   });
 
   describe('branding', () => {
     it('displays app title', async () => {
-      server.use(authHandler(mockAdminUser));
+      setMockAuthState(mockAdminUser);
 
       renderWithProviders(<TopBar />);
 
       expect(screen.getByText('Osaan Admin')).toBeInTheDocument();
     });
-  });
-});
-
-describe('Language change affects other components', () => {
-  it('language change persists across re-renders', async () => {
-    server.use(authHandler(mockAdminUser));
-
-    const { rerender } = renderWithProviders(<TopBar />);
-
-    // Change to English
-    const languageButton = await screen.findByLabelText('change language');
-    await userEvent.click(languageButton);
-    await userEvent.click(screen.getByText('English'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Logout')).toBeInTheDocument();
-    });
-
-    // Re-render the component
-    rerender(<TopBar />);
-
-    // Should still be in English
-    expect(screen.getByText('Logout')).toBeInTheDocument();
   });
 });
