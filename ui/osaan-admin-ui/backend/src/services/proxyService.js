@@ -1,4 +1,3 @@
-// backend/src/services/proxyService.js
 import axios from 'axios';
 import { appConfig, isKeycloakEnabled } from '../config/env.js';
 import { ServiceUnavailableError } from '../utils/errors.js';

@@ -24,7 +24,7 @@ export function errorHandler(err, req, res, _next) {
 
   // Unknown errors - don't leak internal details
   const status = err.status || err.statusCode || 500;
-  res
+  return res
     .status(status)
     .type('application/problem+json')
     .json({
