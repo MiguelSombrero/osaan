@@ -39,7 +39,7 @@ describe('RequireRole', () => {
 
       // Wait for auth query to resolve
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('RequireRole', () => {
       );
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
@@ -101,7 +101,7 @@ describe('RequireRole', () => {
       );
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       expect(window.location.assign).not.toHaveBeenCalled();
@@ -146,7 +146,7 @@ describe('RequireAdmin', () => {
     );
 
     await waitFor(() => {
-      expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+      expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     });
 
     expect(screen.queryByText('Admin Content')).not.toBeInTheDocument();

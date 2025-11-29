@@ -1,5 +1,6 @@
 import { PropsWithChildren, useEffect } from 'react';
 import { login, useAuth } from '../hooks/useAuth';
+import { Loading } from './Loading';
 
 interface RequireRoleProps extends PropsWithChildren {
   role?: string;
@@ -15,7 +16,7 @@ export function RequireRole({ children, role }: RequireRoleProps) {
     }
   }, [isLoading, data]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   if (data?.authDisabled) {
     return <>{children}</>;

@@ -19,6 +19,7 @@ import { useSkillSort } from '../hooks/useSkillSort';
 import { useSkills } from '../hooks/useSkills';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { ApiError } from '@/api/errors';
+import { Loading } from '@/components/Loading';
 
 export const SkillList: React.FC = () => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ export const SkillList: React.FC = () => {
 
   const skills: Skill[] = data?.skills ?? [];
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   if (error) {
     return <ApiErrorAlert error={error as ApiError} />;

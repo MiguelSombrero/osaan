@@ -21,7 +21,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       for (const skill of mockSkills) {
@@ -35,7 +35,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       const table = screen.getByRole('table');
@@ -51,7 +51,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       expect(screen.getByText('Ei taitoja')).toBeInTheDocument(); // noSkills in Finnish
@@ -60,7 +60,7 @@ describe('SkillList', () => {
     it('shows loading state while fetching', () => {
       renderWithProviders(<SkillList />);
 
-      expect(screen.getByText('Loading...')).toBeInTheDocument();
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
     });
   });
 
@@ -77,7 +77,7 @@ describe('SkillList', () => {
 
       // Wait for initial load with ascending order
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       // Verify ascending order: Apple, Mango, Zebra
@@ -114,7 +114,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />, { initialRoute: '/skills?order=asc' });
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       // TableSortLabel should be present and active
@@ -174,7 +174,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       const deleteButtons = screen.getAllByRole('button', { name: '' }); // IconButtons without text
@@ -190,7 +190,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       const reactRow = screen.getByText('React').closest('tr')!;
@@ -227,7 +227,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       server.use(deleteSkillErrorHandler(500, 'Cannot delete skill'));
@@ -246,7 +246,7 @@ describe('SkillList', () => {
       renderWithProviders(<SkillList />);
 
       await waitFor(() => {
-        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
       server.use(deleteSkillErrorHandler(500, 'Cannot delete skill'));
