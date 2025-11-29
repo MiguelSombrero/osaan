@@ -7,12 +7,25 @@ import './i18n';
 
 const queryClient = new QueryClient();
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
-  </React.StrictMode>
-);
+async function enableMocking() {
+  if (import.meta.env.VITE_MOCK_API !== 'true') {
+    return;
+  }
+
+  const { worker } = await import('./test/mocks/browser');
+  return worker.start({
+    onUnhandledRequest: 'bypass', // Don't warn about unhandled requests in dev
+  });
+}
+
+enableMocking().then(() => {
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+});
