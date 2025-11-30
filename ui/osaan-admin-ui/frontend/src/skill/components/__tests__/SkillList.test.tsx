@@ -41,7 +41,7 @@ describe('SkillList', () => {
       const table = screen.getByRole('table');
       expect(table).toBeInTheDocument();
 
-      expect(screen.getByText('Taito')).toBeInTheDocument(); // skillName in Finnish
+      expect(screen.getByText('Osaamisen nimi')).toBeInTheDocument(); // skillName in Finnish
       expect(screen.getByText('Poista')).toBeInTheDocument(); // delete in Finnish
     });
 
@@ -54,7 +54,7 @@ describe('SkillList', () => {
         expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
-      expect(screen.getByText('Ei taitoja')).toBeInTheDocument(); // noSkills in Finnish
+      expect(screen.getByText('Ei osaamisia')).toBeInTheDocument(); // noSkills in Finnish
     });
 
     it('shows loading state while fetching', () => {
@@ -93,7 +93,7 @@ describe('SkillList', () => {
       expect(skillNames[2]).toContain('Zebra');
 
       // Click to toggle to descending order
-      const sortButton = screen.getByRole('button', { name: /taito/i });
+      const sortButton = screen.getByRole('button', { name: /osaamisen nimi/i });
       await userEvent.click(sortButton);
 
       // Wait for descending order: Zebra, Mango, Apple
@@ -118,7 +118,7 @@ describe('SkillList', () => {
       });
 
       // TableSortLabel should be present and active
-      const sortLabel = screen.getByRole('button', { name: /taito/i });
+      const sortLabel = screen.getByRole('button', { name: /osaamisen nimi/i });
       expect(sortLabel).toBeInTheDocument();
     });
   });
@@ -134,7 +134,7 @@ describe('SkillList', () => {
       // Wait for debounce + query + render cycle
       await waitFor(
         () => {
-          expect(screen.getByText('Ei hakutuloksia')).toBeInTheDocument();
+          expect(screen.getByText('Ei vastaavia osaamisia')).toBeInTheDocument();
         },
         { timeout: 2000 }
       );

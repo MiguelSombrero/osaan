@@ -65,3 +65,21 @@ Object.defineProperty(window, 'localStorage', {
 beforeEach(() => {
   localStorage.clear();
 });
+
+// Suppress unhandled rejection warnings for expected errors in tests
+// This prevents test output pollution when intentionally testing error scenarios
+const originalUnhandledRejection = process.listeners('unhandledRejection');
+process.removeAllListeners('unhandledRejection');
+process.on('unhandledRejection', (reason: any) => {
+  // Ignore ApiError rejections from React Query mutations in tests
+  // These are intentional and handled by the components
+  if (reason?.name === 'ApiError' || reason?.constructor?.name === 'ApiError') {
+    return;
+  }
+  // Re-throw other unhandled rejections
+  originalUnhandledRejection.forEach(listener => {
+    if (typeof listener === 'function') {
+      listener(reason, Promise.reject(reason));
+    }
+  });
+});

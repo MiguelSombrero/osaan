@@ -18,5 +18,10 @@
     "validation": "Tarkista syöttämäsi tiedot ja yritä uudelleen.",
     "serverError": "Palvelinvirhe. Yritä myöhemmin uudelleen.",
     "serviceUnavailable": "Palvelu ei ole tilapäisesti käytettävissä. Yritä myöhemmin uudelleen."
+  },
+  "validation": {
+    "skillNameRequired": "Osaamisen nimi on pakollinen",
+    "skillNameMinLength": "Osaamisen nimen on oltava vähintään 1 merkki",
+    "skillNameMaxLength": "Osaamisen nimi saa olla enintään 50 merkkiä"
   }
 }

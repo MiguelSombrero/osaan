@@ -26,7 +26,7 @@ describe('TopBar', () => {
 
       await waitFor(() => {
         // Finnish translation for 'login'
-        expect(screen.getByText('Kirjaudu')).toBeInTheDocument();
+        expect(screen.getByText('Kirjaudu sisään')).toBeInTheDocument();
       });
     });
 
@@ -37,7 +37,7 @@ describe('TopBar', () => {
 
       // Wait for auth state to load
       await waitFor(() => {
-        expect(screen.queryByText('Kirjaudu')).not.toBeInTheDocument();
+        expect(screen.queryByText('Kirjaudu sisään')).not.toBeInTheDocument();
         expect(screen.queryByText('Kirjaudu ulos')).not.toBeInTheDocument();
       });
     });
@@ -49,7 +49,7 @@ describe('TopBar', () => {
 
       renderWithProviders(<TopBar />);
 
-      const loginButton = await screen.findByText('Kirjaudu');
+      const loginButton = await screen.findByText('Kirjaudu sisään');
       await userEvent.click(loginButton);
 
       expect(window.location.assign).toHaveBeenCalledWith('/api/login');

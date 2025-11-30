@@ -18,5 +18,10 @@
     "validation": "Please check your input and try again.",
     "serverError": "A server error occurred. Please try again later.",
     "serviceUnavailable": "The service is temporarily unavailable. Please try again later."
+  },
+  "validation": {
+    "skillNameRequired": "Skill name is required",
+    "skillNameMinLength": "Skill name must be at least 1 character",
+    "skillNameMaxLength": "Skill name must not exceed 50 characters"
   }
 }

@@ -218,8 +218,6 @@ kubeseal \
 
 - Implement pagination in osaan-admin-ui
 
-- Improve form validation and error messages in osaan-admin-ui
-
 - Add loading states and better user feedback in osaan-admin-ui
 
 - Add toast notifications for user actions in osaan-admin-ui

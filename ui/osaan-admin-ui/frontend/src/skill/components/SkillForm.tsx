@@ -11,6 +11,10 @@ import { ApiError } from '@/api/errors';
 
 type FormData = { name: string };
 
+// Validation constants
+const SKILL_NAME_MIN_LENGTH = 1;
+const SKILL_NAME_MAX_LENGTH = 50;
+
 export default function SkillForm() {
   const { t } = useTranslation();
   const { searchTerm, debouncedSearchTerm, updateSearch } = useSkillSearch();
@@ -18,8 +22,15 @@ export default function SkillForm() {
 
   const { create, data } = useSkills([`name,${order}`], debouncedSearchTerm);
 
-  const { control, handleSubmit, reset, setValue } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: { name: searchTerm },
+    mode: 'onChange',
   });
 
   // Sync hook searchTerm to form input (one-way sync from URL/Store to Input)
@@ -28,9 +39,12 @@ export default function SkillForm() {
   }, [searchTerm, setValue]);
 
   const onSubmit = async (formData: FormData) => {
-    await create.mutateAsync(formData.name);
-    reset();
-    updateSearch('');
+    const trimmedName = formData.name.trim();
+    if (trimmedName) {
+      await create.mutateAsync(trimmedName);
+      reset();
+      updateSearch('');
+    }
   };
 
   const isExactMatch = data?.skills?.some(
@@ -50,7 +64,17 @@ export default function SkillForm() {
         <Controller
           name="name"
           control={control}
-          rules={{ required: true }}
+          rules={{
+            required: t('validation.skillNameRequired'),
+            minLength: {
+              value: SKILL_NAME_MIN_LENGTH,
+              message: t('validation.skillNameMinLength'),
+            },
+            maxLength: {
+              value: SKILL_NAME_MAX_LENGTH,
+              message: t('validation.skillNameMaxLength'),
+            },
+          }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -58,9 +82,16 @@ export default function SkillForm() {
               fullWidth
               variant="outlined"
               placeholder={t('skillName')}
+              error={!!errors.name}
+              helperText={errors.name?.message}
               onChange={e => {
                 field.onChange(e);
                 updateSearch(e.target.value);
+              }}
+              slotProps={{
+                formHelperText: {
+                  sx: { color: 'error.main' },
+                },
               }}
             />
           )}
@@ -69,7 +100,7 @@ export default function SkillForm() {
           variant="contained"
           type="submit"
           size="large"
-          disabled={create.isPending || isExactMatch}
+          disabled={create.isPending || isExactMatch || !!errors.name}
           startIcon={<AddIcon />}
           sx={{ height: 56, px: 4, whiteSpace: 'nowrap' }}
         >
