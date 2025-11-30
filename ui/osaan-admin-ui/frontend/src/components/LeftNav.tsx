@@ -6,6 +6,7 @@ import {
   Divider,
   Drawer,
   List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -65,7 +66,7 @@ export default function LeftNav() {
           <Typography
             variant="h6"
             noWrap
-            component="div"
+            component="span"
             sx={{ fontWeight: 700, fontFamily: 'Merriweather' }}
           >
             Osaan Admin
@@ -73,34 +74,38 @@ export default function LeftNav() {
         </Box>
       </Toolbar>
       <Divider />
-      <List sx={{ pt: 2 }}>
+      <List component="nav" sx={{ pt: 2 }}>
         <RequireAdmin>
-          <ListItemButton
-            onClick={() => navigate('/skills')}
-            selected={isSelected('/skills')}
-            sx={navItemSx}
-          >
-            <ListItemIcon
-              sx={{ minWidth: 40, color: isSelected('/skills') ? 'inherit' : 'primary.main' }}
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => navigate('/skills')}
+              selected={isSelected('/skills')}
+              sx={navItemSx}
             >
-              <SchoolIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('skills')} slotProps={{ primary: { fontWeight: 500 } }} />
-          </ListItemButton>
+              <ListItemIcon
+                sx={{ minWidth: 40, color: isSelected('/skills') ? 'inherit' : 'primary.main' }}
+              >
+                <SchoolIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('skills')} slotProps={{ primary: { fontWeight: 500 } }} />
+            </ListItemButton>
+          </ListItem>
         </RequireAdmin>
         <RequireAuth>
-          <ListItemButton
-            onClick={() => navigate('/employees')}
-            selected={isSelected('/employees')}
-            sx={navItemSx}
-          >
-            <ListItemIcon
-              sx={{ minWidth: 40, color: isSelected('/employees') ? 'inherit' : 'primary.main' }}
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => navigate('/employees')}
+              selected={isSelected('/employees')}
+              sx={navItemSx}
             >
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('employees')} slotProps={{ primary: { fontWeight: 500 } }} />
-          </ListItemButton>
+              <ListItemIcon
+                sx={{ minWidth: 40, color: isSelected('/employees') ? 'inherit' : 'primary.main' }}
+              >
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('employees')} slotProps={{ primary: { fontWeight: 500 } }} />
+            </ListItemButton>
+          </ListItem>
         </RequireAuth>
       </List>
     </Drawer>

@@ -177,8 +177,8 @@ describe('SkillList', () => {
         expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
       });
 
-      const deleteButtons = screen.getAllByRole('button', { name: '' }); // IconButtons without text
-      expect(deleteButtons.length).toBeGreaterThanOrEqual(2);
+      const deleteButtons = screen.getAllByRole('button', { name: 'Poista' }); // Delete buttons with aria-label
+      expect(deleteButtons.length).toBe(2);
     });
 
     it('removes skill from list after successful delete', async () => {
@@ -232,7 +232,7 @@ describe('SkillList', () => {
 
       server.use(deleteSkillErrorHandler(500, 'Cannot delete skill'));
 
-      const deleteButton = screen.getByRole('button', { name: '' });
+      const deleteButton = screen.getByRole('button', { name: 'Poista' });
       await userEvent.click(deleteButton);
 
       await waitFor(() => {
@@ -251,7 +251,7 @@ describe('SkillList', () => {
 
       server.use(deleteSkillErrorHandler(500, 'Cannot delete skill'));
 
-      const deleteButton = screen.getByRole('button', { name: '' });
+      const deleteButton = screen.getByRole('button', { name: 'Poista' });
       await userEvent.click(deleteButton);
 
       await waitFor(() => {

@@ -76,7 +76,12 @@ export const SkillList: React.FC = () => {
                   </Box>
                 </TableCell>
                 <TableCell align="right">
-                  <IconButton onClick={() => remove.mutate(s.id!)} color="default" size="small">
+                  <IconButton
+                    onClick={() => remove.mutate(s.id!)}
+                    color="default"
+                    size="small"
+                    aria-label={t('delete')}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>

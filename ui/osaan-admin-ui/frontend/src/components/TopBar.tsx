@@ -40,7 +40,9 @@ export default function TopBar() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6">Osaan Admin</Typography>
+        <Typography variant="h6" component="div">
+          Osaan Admin
+        </Typography>
         <Box sx={{ flex: 1 }} />
 
         <Tooltip title="Change Language">
