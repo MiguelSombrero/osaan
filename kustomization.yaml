@@ -34,7 +34,7 @@ images:
   - name: miguelsombrero/osaan-employee-service
     newTag: b25cbe4ab1ec0db640c4704f13e28f70e9039621
   - name: miguelsombrero/osaan-skill-catalog-service
-    newTag: b25cbe4ab1ec0db640c4704f13e28f70e9039621
+    newTag: 67a111cc8df0c731317965aa7e56b15fc1475c43
   - name: miguelsombrero/osaan-competence-profile-service
     newTag: b25cbe4ab1ec0db640c4704f13e28f70e9039621
   - name: miguelsombrero/osaan-competence-matching-service
@@ -42,4 +42,4 @@ images:
   - name: miguelsombrero/osaan-admin-ui-backend
     newTag: b25cbe4ab1ec0db640c4704f13e28f70e9039621
   - name: miguelsombrero/osaan-admin-ui-frontend
-    newTag: 1867a3c9e604c6c8610b428692aae137272f0198
+    newTag: 67a111cc8df0c731317965aa7e56b15fc1475c43
