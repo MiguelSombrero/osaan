@@ -10,6 +10,8 @@
   "search": "Hae",
   "login": "Kirjaudu sisään",
   "logout": "Kirjaudu ulos",
+  "fi": "Suomi",
+  "en": "English",
   "error": {
     "generic": "Odottamaton virhe. Yritä uudelleen.",
     "networkError": "Yhteyttä palvelimeen ei saatu.",

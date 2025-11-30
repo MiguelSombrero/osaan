@@ -10,6 +10,8 @@
   "search": "Search",
   "login": "Login",
   "logout": "Logout",
+  "fi": "Suomi",
+  "en": "English",
   "error": {
     "generic": "An unexpected error occurred. Please try again.",
     "networkError": "Unable to connect to the server.",
