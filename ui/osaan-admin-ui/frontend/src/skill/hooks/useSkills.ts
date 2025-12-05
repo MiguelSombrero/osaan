@@ -3,14 +3,14 @@ import { skillApi } from '@/api/skillApi';
 import { parseApiError, ApiError } from '@/api/errors';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-export const useSkills = (sort?: string[], query?: string) => {
+export const useSkills = (sort?: string[], query?: string, page?: number, size?: number) => {
   const qc = useQueryClient();
 
   const q = useQuery<GetSkillsResponse, ApiError>({
-    queryKey: ['skills', sort, query],
+    queryKey: ['skills', sort, query, page, size],
     queryFn: async () => {
       try {
-        return await skillApi.getSkills(query, sort);
+        return await skillApi.getSkills(query, sort, page, size);
       } catch (err) {
         throw parseApiError(err);
       }

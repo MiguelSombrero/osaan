@@ -13,9 +13,11 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
+import TablePagination from '@mui/material/TablePagination';
 import { useTranslation } from 'react-i18next';
 import { useSkillSearch } from '../hooks/useSkillSearch';
 import { useSkillSort } from '../hooks/useSkillSort';
+import { useSkillPagination } from '../hooks/useSkillPagination';
 import { useSkills } from '../hooks/useSkills';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { ApiError } from '@/api/errors';
@@ -25,8 +27,14 @@ export const SkillList: React.FC = () => {
   const { t } = useTranslation();
   const { order, toggleSort } = useSkillSort();
   const { searchTerm, debouncedSearchTerm } = useSkillSearch();
+  const { page, size, updatePage, updateSize } = useSkillPagination();
 
-  const { data, isLoading, remove, error } = useSkills([`name,${order}`], debouncedSearchTerm);
+  const { data, isLoading, remove, error } = useSkills(
+    [`name,${order}`],
+    debouncedSearchTerm,
+    page,
+    size
+  );
 
   const skills: Skill[] = data?.skills ?? [];
 
@@ -96,6 +104,17 @@ export const SkillList: React.FC = () => {
             )}
           </TableBody>
         </Table>
+        <TablePagination
+          component="div"
+          count={data?.totalElements ?? 0}
+          page={page}
+          onPageChange={(_, newPage) => updatePage(newPage)}
+          rowsPerPage={size}
+          onRowsPerPageChange={event => {
+            updateSize(parseInt(event.target.value, 10));
+          }}
+          rowsPerPageOptions={[10, 20, 50]}
+        />
       </TableContainer>
     </>
   );

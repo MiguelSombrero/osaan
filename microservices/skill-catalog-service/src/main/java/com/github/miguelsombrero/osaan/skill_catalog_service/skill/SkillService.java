@@ -1,12 +1,13 @@
 package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.data.domain.Sort;
+import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 class SkillService {
@@ -36,15 +37,38 @@ class SkillService {
         return mapper.entityToApi(entity);
     }
 
-    public GetSkillsResponse getSkills(String query, Sort sort) {
-        List<SkillEntity> entities;
+    /**
+     * Using custom count query when filtering with pageable, because Spring Data JDBC does not support it out of the box.
+     * Without it Spring creates COUNT query including ORDER BY clause which causes syntax error in some databases.
+     */
+    public GetSkillsResponse getSkills(String query, Pageable pageable) {
+        List<SkillEntity> content;
+        long total;
+
         if (query != null && !query.isBlank()) {
-            entities = repository.findByNameContainingIgnoreCase(query, sort);
+            content = repository.findByNameContainingIgnoreCase(query, pageable);
+            total = repository.countByNameContainingIgnoreCase(query);
         } else {
-            entities = repository.findAll(sort);
+            Page<SkillEntity> page = repository.findAll(pageable);
+            content = page.getContent();
+            total = page.getTotalElements();
         }
-        return new GetSkillsResponse(entities.stream()
-                .map(mapper::entityToApi).toList());
+
+        Page<SkillEntity> page = new PageImpl<>(content, pageable, total);
+
+        List<Skill> skills = page.getContent().stream()
+                .map(mapper::entityToApi)
+                .toList();
+
+        return new GetSkillsResponse(
+                skills,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isFirst(),
+                page.isLast()
+        );
     }
 
     public void deleteSkill(UUID skillId) {

@@ -31,7 +31,7 @@
           "AdminSkills"
         ],
         "summary": "Get skills",
-        "description": "Get all skills.",
+        "description": "Get all skills with pagination support. Use 'page' (zero-based), 'size', and 'sort' query parameters.",
         "operationId": "getSkills",
         "parameters": [
           {
@@ -45,15 +45,39 @@
             }
           },
           {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            }
+          },
+          {
             "name": "sort",
             "in": "query",
-            "description": "Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
             "required": false,
             "schema": {
               "type": "array",
+              "default": [
+                "name,ASC"
+              ],
               "items": {
-                "type": "string",
-                "example": "name,asc"
+                "type": "string"
               }
             }
           }
@@ -325,7 +349,7 @@
       },
       "GetSkillsResponse": {
         "type": "object",
-        "description": "Response wrapper containing a list of skills",
+        "description": "Paginated response containing skills and pagination metadata",
         "properties": {
           "skills": {
             "type": "array",
@@ -335,6 +359,40 @@
               "minItems": 0
             },
             "minItems": 0
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Current page number (zero-based)",
+            "example": 0
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page",
+            "example": 20
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Total number of items",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of pages",
+            "example": 5
+          },
+          "first": {
+            "type": "boolean",
+            "description": "Whether this is the first page",
+            "example": true
+          },
+          "last": {
+            "type": "boolean",
+            "description": "Whether this is the last page",
+            "example": false
           }
         }
       }
