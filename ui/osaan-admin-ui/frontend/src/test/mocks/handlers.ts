@@ -39,15 +39,15 @@ export const handlers = [
       filteredSkills = filteredSkills.filter(skill => skill.name?.toLowerCase().includes(query));
     }
 
-    // Sort by name
-    if (sortParam.length > 0) {
-      const [field, direction] = sortParam[0].split(',');
-      if (field === 'name') {
-        filteredSkills.sort((a, b) => {
-          const comparison = (a.name ?? '').localeCompare(b.name ?? '');
-          return direction === 'desc' ? -comparison : comparison;
-        });
-      }
+    // Sort by name (default: name,asc when no sort param provided)
+    const sortString = sortParam.length > 0 ? sortParam[0] : 'name,asc';
+    const [field, direction] = sortString.split(',');
+
+    if (field === 'name') {
+      filteredSkills.sort((a, b) => {
+        const comparison = (a.name ?? '').localeCompare(b.name ?? '');
+        return direction === 'desc' ? -comparison : comparison;
+      });
     }
 
     return HttpResponse.json(createMockSkillsResponse(filteredSkills));

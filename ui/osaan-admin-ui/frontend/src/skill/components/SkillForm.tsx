@@ -1,10 +1,9 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, TextField } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useSkillSearch } from '../hooks/useSkillSearch';
-import { useSkillSort } from '../hooks/useSkillSort';
+import { useSkillSearchParams } from '../hooks/useSkillSearchParams';
 import { useSkills } from '../hooks/useSkills';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { ApiError } from '@/api/errors';
@@ -17,10 +16,12 @@ const SKILL_NAME_MAX_LENGTH = 50;
 
 export default function SkillForm() {
   const { t } = useTranslation();
-  const { searchTerm, debouncedSearchTerm, updateSearch } = useSkillSearch();
-  const { order } = useSkillSort();
+  const { searchTerm, debouncedSearchTerm, updateSearch, order, page, size } =
+    useSkillSearchParams();
 
-  const { create, data } = useSkills([`name,${order}`], debouncedSearchTerm);
+  // Memoize sort array and use same query params as SkillList to share cache
+  const sort = useMemo(() => [`name,${order}`], [order]);
+  const { create, data } = useSkills(sort, debouncedSearchTerm, page, size);
 
   const {
     control,

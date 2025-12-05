@@ -5,11 +5,9 @@ import { renderWithProviders } from '@/test/utils/renderWithProviders';
 import SkillForm from '../SkillForm';
 import { server } from '@/test/mocks/server';
 import { setMockSkills, createSkillErrorHandler } from '@/test/mocks/handlers';
-import { useSkillStore } from '../../store/store';
 
 describe('SkillForm', () => {
   beforeEach(() => {
-    useSkillStore.setState({ order: 'asc', searchTerm: '' });
     setMockSkills([]);
   });
 
@@ -212,13 +210,15 @@ describe('SkillForm', () => {
       });
     });
 
-    it('syncs initial search term from store to input', () => {
-      useSkillStore.setState({ searchTerm: 'Python' });
-
-      renderWithProviders(<SkillForm />);
+    it('syncs initial search term from URL to input', async () => {
+      renderWithProviders(<SkillForm />, {
+        initialRoute: '/?search=Python&page=0&size=20&order=asc',
+      });
 
       const input = screen.getByLabelText('Osaamisen nimi');
-      expect(input).toHaveValue('Python');
+      await waitFor(() => {
+        expect(input).toHaveValue('Python');
+      });
     });
 
     it('clears search term after successful submission', async () => {
@@ -232,7 +232,7 @@ describe('SkillForm', () => {
       await user.click(button);
 
       await waitFor(() => {
-        expect(useSkillStore.getState().searchTerm).toBe('');
+        expect(input).toHaveValue('');
       });
     });
   });

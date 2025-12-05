@@ -14,10 +14,9 @@ import {
   Typography,
 } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSkillSearch } from '../hooks/useSkillSearch';
-import { useSkillSort } from '../hooks/useSkillSort';
-import { useSkillPagination } from '../hooks/useSkillPagination';
+import { useSkillSearchParams } from '../hooks/useSkillSearchParams';
 import { useSkills } from '../hooks/useSkills';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { ApiError } from '@/api/errors';
@@ -25,16 +24,13 @@ import { Loading } from '@/components/Loading';
 
 export const SkillList: React.FC = () => {
   const { t } = useTranslation();
-  const { order, toggleSort } = useSkillSort();
-  const { searchTerm, debouncedSearchTerm } = useSkillSearch();
-  const { page, size, updatePage, updateSize } = useSkillPagination();
+  const { order, toggleSort, searchTerm, debouncedSearchTerm, page, size, updatePage, updateSize } =
+    useSkillSearchParams();
 
-  const { data, isLoading, remove, error } = useSkills(
-    [`name,${order}`],
-    debouncedSearchTerm,
-    page,
-    size
-  );
+  // Memoize sort array to prevent new reference on every render (prevents duplicate API calls)
+  const sort = useMemo(() => [`name,${order}`], [order]);
+
+  const { data, isLoading, remove, error } = useSkills(sort, debouncedSearchTerm, page, size);
 
   const skills: Skill[] = data?.skills ?? [];
 

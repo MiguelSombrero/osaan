@@ -7,11 +7,11 @@ import { server } from '@/test/mocks/server';
 import { setMockSkills, skillsErrorHandler, deleteSkillErrorHandler } from '@/test/mocks/handlers';
 import { mockSkills } from '@/test/mocks/data';
 import type { Skill } from '@/api/generated/api';
-import { useSkillStore } from '../../store/store';
 
 describe('SkillList', () => {
   beforeEach(() => {
-    useSkillStore.setState({ order: 'asc', searchTerm: '' });
+    // Reset mock skills before each test
+    setMockSkills(mockSkills);
   });
 
   describe('rendering skills', () => {

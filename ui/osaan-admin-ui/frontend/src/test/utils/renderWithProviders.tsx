@@ -5,7 +5,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 
-interface ProvidersProps {
+export interface ProvidersProps {
   children: ReactNode;
   initialRoute?: string;
 }
@@ -25,7 +25,7 @@ function createTestQueryClient() {
   });
 }
 
-function Providers({ children, initialRoute = '/' }: ProvidersProps) {
+export function Providers({ children, initialRoute = '/' }: ProvidersProps) {
   const queryClient = createTestQueryClient();
 
   return (
