@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSkills } from '@/hooks/use-skills';
+import TopBar from '@/components/top-bar';
 import type { Skill } from '@/types/skill';
 
 export default function CompetencesPage() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
 
@@ -16,17 +19,7 @@ export default function CompetencesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Competence Management
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Browse available skills and manage your competence profile
-          </p>
-        </div>
-      </header>
+      <TopBar subtitle={t('browseSkills')} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -35,7 +28,7 @@ export default function CompetencesPage() {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search skills..."
+              placeholder={t('searchSkills')}
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -52,7 +45,7 @@ export default function CompetencesPage() {
           {isLoading && (
             <div className="p-8 text-center">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-              <p className="mt-4 text-gray-600">Loading skills...</p>
+              <p className="mt-4 text-gray-600">{t('loading')}</p>
             </div>
           )}
 
@@ -74,9 +67,7 @@ export default function CompetencesPage() {
                   />
                 </svg>
               </div>
-              <p className="text-red-800 font-semibold">
-                Failed to load skills
-              </p>
+              <p className="text-red-800 font-semibold">{t('loadingError')}</p>
               <p className="mt-2 text-gray-600">
                 {error instanceof Error ? error.message : 'Unknown error'}
               </p>
@@ -88,11 +79,9 @@ export default function CompetencesPage() {
             <>
               {data.skills.length === 0 ? (
                 <div className="p-8 text-center text-gray-500">
-                  <p>No skills found</p>
+                  <p>{t('noSkills')}</p>
                   {searchQuery && (
-                    <p className="mt-2 text-sm">
-                      Try adjusting your search query
-                    </p>
+                    <p className="mt-2 text-sm">{t('adjustSearch')}</p>
                   )}
                 </div>
               ) : (
@@ -116,8 +105,11 @@ export default function CompetencesPage() {
                   {/* Pagination */}
                   <div className="border-t border-gray-200 px-6 py-4 flex items-center justify-between">
                     <div className="text-sm text-gray-700">
-                      Showing page {data.page + 1} of {data.totalPages} (
-                      {data.totalElements} total skills)
+                      {t('showingPage', {
+                        page: data.page + 1,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                      })}
                     </div>
                     <div className="flex gap-2">
                       <button
@@ -125,14 +117,14 @@ export default function CompetencesPage() {
                         disabled={data.first}
                         className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
                       >
-                        Previous
+                        {t('previous')}
                       </button>
                       <button
                         onClick={() => setPage(page + 1)}
                         disabled={data.last}
                         className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
                       >
-                        Next
+                        {t('next')}
                       </button>
                     </div>
                   </div>

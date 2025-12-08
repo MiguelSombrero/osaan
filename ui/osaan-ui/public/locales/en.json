@@ -1,0 +1,16 @@
+{
+  "competenceManagement": "Competence Management",
+  "browseSkills": "Browse available skills and manage your competence profile",
+  "search": "Search",
+  "searchSkills": "Search skills...",
+  "loading": "Loading skills...",
+  "loadingError": "Failed to load skills",
+  "noSkills": "No skills found",
+  "adjustSearch": "Try adjusting your search query",
+  "showingPage": "Showing page {{page}} of {{totalPages}} ({{totalElements}} total skills)",
+  "previous": "Previous",
+  "next": "Next",
+  "fi": "Suomi",
+  "en": "English",
+  "skills": "Skills"
+}

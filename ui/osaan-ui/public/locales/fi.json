@@ -1,0 +1,16 @@
+{
+  "competenceManagement": "Osaamisen hallinta",
+  "browseSkills": "Selaa saatavilla olevia osaamisia ja hallitse osaamisprofiiliasi",
+  "search": "Hae",
+  "searchSkills": "Hae osaamisia...",
+  "loading": "Ladataan osaamisia...",
+  "loadingError": "Osaamisten lataus epäonnistui",
+  "noSkills": "Osaamisia ei löytynyt",
+  "adjustSearch": "Kokeile muuttaa hakukriteerejä",
+  "showingPage": "Näytetään sivu {{page}} / {{totalPages}} (yhteensä {{totalElements}} osaamista)",
+  "previous": "Edellinen",
+  "next": "Seuraava",
+  "fi": "Suomi",
+  "en": "English",
+  "skills": "Osaamiset"
+}
