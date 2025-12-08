@@ -17,6 +17,27 @@ How do I find those people inside my company?
 With Osaan System you can (eventually) create skill profiles for employees, subscribe for specific skill profiles and
 get notified via email when matching profiles are added. You can create and manage teams for specific projects and needs.
 
+## Table of Contents
+
+- [Stack](#stack)
+  - [Frontend](#frontend)
+  - [Backend](#backend)
+  - [CI/CD](#cicd)
+- [UI](#ui)
+  - [Osaan Admin UI](#osaan-admin-ui)
+  - [Osaan UI](#osaan-ui)
+  - [Management UIs](#management-uis)
+    - [Local](#local)
+    - [Kubernetes](#kubernetes)
+- [Run](#run)
+  - [1) IDE](#1-ide)
+  - [2) Docker Compose](#2-docker-compose)
+  - [3) Kubernetes](#3-kubernetes)
+- [Deploy](#deploy)
+- [Notes and instructions](#notes-and-instructions)
+  - [How to create SealedSecrets from Secrets](#how-to-create-sealedsecrets-from-secrets)
+- [Bugs, issues and TODOs](#bugs-issues-and-todos)
+
 ## Stack
 
 ### Frontend
@@ -52,15 +73,6 @@ Osaan system contains two different UIs:
 Osaan Admin UI is for admins to create new skills and adding employees.
 
 See [Osaan Admin UI documentation](https://github.com/MiguelSombrero/osaan/blob/main/ui/osaan-admin-ui/README.md) for more details on how to develop Osaan Admin UI.
-
-#### Local
-
-- With Vite (npm run dev): http://localhost:5173 (Login → admin/admin)
-- With Docker Compose (docker compose up --build -d): http://localhost:8085 (Login → admin/admin)
-
-#### Kubernetes
-
-- Admin UI: https://osaan.admin.local:9443
 
 ### Osaan UI
 
@@ -123,11 +135,7 @@ Start all microservices from `/microservices` folder (exept osaan-core which is 
 Prerequisites: microservices are build with maven (Dockerfile does not build applicaitons, only copies `/target/*.jar` to build image)
 
 ```bash
-docker compose build
-```
-
-```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 ### 3) Kubernetes
@@ -158,36 +166,6 @@ If needed, you can apply manifests manually with command:
 kubectl apply -k .
 ```
 
-## Use (k3d)
-
-Default skills and employees is created on startup, for details look up `src/main/resources/data.sql` scripts of microservices.
-
-You can create competence profiles for employees and subscribe for new skills.
-
-### Add subscription for skill
-
-```bash
-curl -X POST http://osaan.local:9080/v1/subscriptions \
-  -H "Content-Type: application/json" \
-  -d '{"skill":"java","rating":5,"email":"anna.korhonen@example.com"}'
-```
-
-### Add competence to employee
-
-```bash
-curl -X POST http://osaan.local:9080/v1/competences/d8f1a6c4-75e2-49b7-a3f1-8e7c2d49f3b2 \
-  -H "Content-Type: application/json" \
-  -d '[{"skillId":"a3f8c2de-4b19-4f7d-9c72-6a0f4b1d93c5","rating":5}]'
-```
-
-This fires SkillCreatedEvent and if there is subscriptions for that skill level, email is sent to subscribers.
-
-### Search employees with skill and rating
-
-```bash
-curl -X GET http://osaan.local:9080/v1/competences/search?skill=Python&rating=2
-```
-
 ## Notes and instructions
 
 ### How to create SealedSecrets from Secrets
@@ -213,12 +191,6 @@ kubeseal \
 ```
 
 ## Bugs, issues and TODOs
-
-- Implement pagination in skill-catalog-service
-
-- Implement pagination in osaan-admin-ui
-
-- Add loading states and better user feedback in osaan-admin-ui
 
 - Add toast notifications for user actions in osaan-admin-ui
 
