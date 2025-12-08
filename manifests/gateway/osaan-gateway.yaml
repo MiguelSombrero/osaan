@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: osaan-gateway
-  namespace: osaan-dev
+  namespace: istio-system
 spec:
   selector:
     istio: ingressgateway
@@ -10,15 +10,18 @@ spec:
   - hosts:
     - "osaan.local"
     port:
-      number: 80
-      name: http
-      protocol: HTTP
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: osaan-certificate
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: osaan-vs
-  namespace: osaan-dev
+  namespace: istio-system
 spec:
   gateways:
   - osaan-gateway
@@ -27,33 +30,20 @@ spec:
   http:
   - match:
     - uri:
-        prefix: /v1/competences
+        prefix: /
     route:
     - destination:
-        host: competence-profile-svc
+        host: osaan-ui-svc.osaan-dev.svc.cluster.local
         port:
           number: 80
-  - match:
-    - uri:
-        prefix: /v1/subscriptions
-    route:
-    - destination:
-        host: competence-matching-svc
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: /v1/employees
-    route:
-    - destination:
-        host: employee-svc
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: /v1/skills
-    route:
-    - destination:
-        host: skill-catalog-svc
-        port:
-          number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: osaan-ui-dr
+  namespace: istio-system
+spec:
+  host: osaan-ui-svc.osaan-dev.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL

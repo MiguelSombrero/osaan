@@ -30,6 +30,9 @@ resources:
   - manifests/osaan-admin-ui/configmap.yaml
   - manifests/osaan-admin-ui/deployment.yaml
   - manifests/osaan-admin-ui/service.yaml
+  - manifests/osaan-ui/configmap.yaml
+  - manifests/osaan-ui/deployment.yaml
+  - manifests/osaan-ui/service.yaml
 images:
   - name: miguelsombrero/osaan-employee-service
     newTag: b25cbe4ab1ec0db640c4704f13e28f70e9039621
@@ -43,3 +46,5 @@ images:
     newTag: 62fe930b1da9261ed10b4c184c6c7af1b4f3dd74
   - name: miguelsombrero/osaan-admin-ui-frontend
     newTag: ae59264c53b89b383cf4a82f3e6af9e1a4832795
+  - name: miguelsombrero/osaan-ui
+    newTag: latest

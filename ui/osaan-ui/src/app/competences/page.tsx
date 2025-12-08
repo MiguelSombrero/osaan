@@ -7,6 +7,9 @@ import { useDebounce } from '@/hooks/use-debounce';
 import TopBar from '@/components/top-bar';
 import type { Skill } from '@/types/skill';
 
+// Force dynamic rendering - disable static generation
+export const dynamic = 'force-dynamic';
+
 export default function CompetencesPage() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');

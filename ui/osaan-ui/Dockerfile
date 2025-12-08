@@ -16,6 +16,11 @@ COPY . .
 # Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Set build-time environment variables to prevent API calls during build
+ENV SKILL_CATALOG_API_URL=http://localhost:8092
+ENV COMPETENCE_PROFILE_API_URL=http://localhost:8090
+ENV EMPLOYEE_API_URL=http://localhost:8091
+
 RUN npm run build
 
 # Production image, copy all the files and run next
