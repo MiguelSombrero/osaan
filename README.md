@@ -20,12 +20,14 @@ get notified via email when matching profiles are added. You can create and mana
 ## Table of Contents
 
 - [Stack](#stack)
-  - [Frontend](#frontend)
-  - [Backend](#backend)
-  - [CI/CD](#cicd)
-- [UI](#ui)
-  - [Osaan Admin UI](#osaan-admin-ui)
   - [Osaan UI](#osaan-ui)
+  - [Osaan Admin UI](#osaan-admin-ui)
+  - [Microservices](#microservices)
+  - [CI/CD](#cicd)
+  - [Platform](#platform)
+- [UI](#ui)
+  - [Osaan Admin UI](#osaan-admin-ui-1)
+  - [Osaan UI](#osaan-ui-1)
   - [Management UIs](#management-uis)
     - [Local](#local)
     - [Kubernetes](#kubernetes)
@@ -40,7 +42,14 @@ get notified via email when matching profiles are added. You can create and mana
 
 ## Stack
 
-### Frontend
+### Osaan UI
+
+- UI - Next.js, TypeScript, Tailwind CSS
+- Data fetching - Tanstack Query, Next,js API routes
+- Session - Redis
+- Authentication, IAM - OAuth2, Keycloak
+
+### Osaan Admin UI
 
 - UI - React, Typecript, Material UI
 - Backend - Node, Express
@@ -49,7 +58,7 @@ get notified via email when matching profiles are added. You can create and mana
 - Session - Redis
 - Authentication, IAM - OAuth2, Keycloak
 
-### Backend
+### Microservices
 
 - Microservices - Spring Boot
 - Databases - PostgreSQL
@@ -57,12 +66,16 @@ get notified via email when matching profiles are added. You can create and mana
 - Tracing - Micrometer Tracing, Zipkin (local), Jaeger (Kubernetes)
 - Monitoring - Prometheus, Grafana
 - Resilience - Resilience4j
-- Service Mesh - Istio (Kubernetes)
 
 ### CI/CD
 
 - CI/CD - GitHub Actions
 - Deployment - ArgoCD
+
+### Platform
+
+- Kubernetes - k3d
+- Service Mesh - Istio
 
 ## UI
 
@@ -72,11 +85,13 @@ Osaan system contains two different UIs:
 
 Osaan Admin UI is for admins to create new skills and adding employees.
 
-See [Osaan Admin UI documentation](https://github.com/MiguelSombrero/osaan/blob/main/ui/osaan-admin-ui/README.md) for more details on how to develop Osaan Admin UI.
+See [Osaan Admin UI documentation](https://github.com/MiguelSombrero/osaan/blob/main/ui/osaan-admin-ui/README.md) for more details on Osaan Admin UI.
 
 ### Osaan UI
 
-NOT IMPLEMENTED YET!
+Osaan UI is for users and managers to create and subscribe to competence profiles.
+
+See [Osaan UI documentation](https://github.com/MiguelSombrero/osaan/blob/main/ui/osaan-ui/README.md) for more details on Osaan UI.
 
 ### Management UIs
 

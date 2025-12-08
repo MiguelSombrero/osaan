@@ -1,22 +1,17 @@
-"use client";
+'use client';
 
-import { useQuery } from "@tanstack/react-query";
-import { skillApi } from "@/lib/api-client";
-import { useState } from "react";
-import type { Skill } from "@/types/skill";
+import { useState } from 'react';
+import { useSkills } from '@/hooks/use-skills';
+import type { Skill } from '@/types/skill';
 
 export default function CompetencesPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["skills", { query: searchQuery, page }],
-    queryFn: () =>
-      skillApi.getSkills({
-        query: searchQuery || undefined,
-        page,
-        size: 20,
-      }),
+  const { data, isLoading, error } = useSkills({
+    query: searchQuery || undefined,
+    page,
+    size: 20,
   });
 
   return (
@@ -83,7 +78,7 @@ export default function CompetencesPage() {
                 Failed to load skills
               </p>
               <p className="mt-2 text-gray-600">
-                {error instanceof Error ? error.message : "Unknown error"}
+                {error instanceof Error ? error.message : 'Unknown error'}
               </p>
             </div>
           )}
@@ -145,18 +140,6 @@ export default function CompetencesPage() {
               )}
             </>
           )}
-        </div>
-
-        {/* Info Box */}
-        <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-          <h2 className="text-lg font-semibold text-blue-900 mb-2">
-            Coming Soon
-          </h2>
-          <ul className="text-blue-800 space-y-1">
-            <li>• Create and manage competence profiles</li>
-            <li>• Rate your skills from 1 to 5</li>
-            <li>• Link competences to employee profiles</li>
-          </ul>
         </div>
       </main>
     </div>
