@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSkills } from '@/hooks/use-skills';
+import { useDebounce } from '@/hooks/use-debounce';
 import TopBar from '@/components/top-bar';
 import type { Skill } from '@/types/skill';
 
@@ -11,8 +12,15 @@ export default function CompetencesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
 
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  // Reset to first page when debounced search query changes
+  useEffect(() => {
+    setPage(0);
+  }, [debouncedSearchQuery]);
+
   const { data, isLoading, error } = useSkills({
-    query: searchQuery || undefined,
+    query: debouncedSearchQuery || undefined,
     page,
     size: 20,
   });
@@ -30,10 +38,7 @@ export default function CompetencesPage() {
               type="text"
               placeholder={t('searchSkills')}
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setPage(0); // Reset to first page on search
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
             />
           </div>
