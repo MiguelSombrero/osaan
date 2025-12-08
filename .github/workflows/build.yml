@@ -2,19 +2,20 @@ name: Build & Publish Osaan System
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
     paths:
-      - 'microservices/osaan-core/**'
-      - 'microservices/competence-matching-service/**'
-      - 'microservices/competence-profile-service/**'
-      - 'microservices/employee-service/**'
-      - 'microservices/skill-catalog-service/**'
-      - 'pom.xml'
-      - 'ui/osaan-admin-ui/**'
+      - "microservices/osaan-core/**"
+      - "microservices/competence-matching-service/**"
+      - "microservices/competence-profile-service/**"
+      - "microservices/employee-service/**"
+      - "microservices/skill-catalog-service/**"
+      - "pom.xml"
+      - "ui/osaan-admin-ui/**"
+      - "ui/osaan-ui/**"
   workflow_dispatch:
 
 env:
-  JAVA_VERSION: '25'
+  JAVA_VERSION: "25"
 
 jobs:
   detect-changes:
@@ -25,6 +26,7 @@ jobs:
       changed_services: ${{ steps.detect.outputs.changed_services }}
       admin_backend_changed: ${{ steps.detect.outputs.admin_backend_changed }}
       admin_frontend_changed: ${{ steps.detect.outputs.admin_frontend_changed }}
+      osaan_ui_changed: ${{ steps.detect.outputs.osaan_ui_changed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -41,10 +43,12 @@ jobs:
             SERVICES_JSON='["competence-matching-service","competence-profile-service","employee-service","skill-catalog-service"]'
             ADMIN_BACKEND_CHANGED=true
             ADMIN_FRONTEND_CHANGED=true
+            OSAAN_UI_CHANGED=true
             printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
             printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
             printf 'admin_backend_changed=%s\n' "$ADMIN_BACKEND_CHANGED" >> "$GITHUB_OUTPUT"
             printf 'admin_frontend_changed=%s\n' "$ADMIN_FRONTEND_CHANGED" >> "$GITHUB_OUTPUT"
+            printf 'osaan_ui_changed=%s\n' "$OSAAN_UI_CHANGED" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -79,10 +83,16 @@ jobs:
             ADMIN_FRONTEND_CHANGED=true
           fi
 
+          OSAAN_UI_CHANGED=false
+          if echo "$CHANGED_FILES" | grep -qE '^ui/osaan-ui/'; then
+            OSAAN_UI_CHANGED=true
+          fi
+
           printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
           printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
           printf 'admin_backend_changed=%s\n' "$ADMIN_BACKEND_CHANGED" >> "$GITHUB_OUTPUT"
           printf 'admin_frontend_changed=%s\n' "$ADMIN_FRONTEND_CHANGED" >> "$GITHUB_OUTPUT"
+          printf 'osaan_ui_changed=%s\n' "$OSAAN_UI_CHANGED" >> "$GITHUB_OUTPUT"
 
   build-core:
     name: Build & Publish osaan-core
@@ -229,6 +239,42 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-admin-ui-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/osaan-admin-ui-frontend:${{ github.sha }}
 
+  build-and-push-osaan-ui:
+    name: Build & Push osaan-ui image
+    runs-on: ubuntu-latest
+    needs:
+      - detect-changes
+    if: needs.detect-changes.outputs.osaan_ui_changed == 'true'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+          driver: docker-container
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push osaan-ui image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./ui/osaan-ui
+          file: ./ui/osaan-ui/Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/osaan-ui:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/osaan-ui:${{ github.sha }}
+
   update-kustomize-images:
     name: Update kustomization image tags
     runs-on: ubuntu-latest
@@ -236,12 +282,14 @@ jobs:
       - detect-changes
       - build-and-push-services
       - build-and-push-admin-ui
+      - build-and-push-osaan-ui
     if: >
       always() &&
       (
         needs.detect-changes.outputs.changed_services != '[]' ||
         needs.detect-changes.outputs.admin_backend_changed == 'true' ||
-        needs.detect-changes.outputs.admin_frontend_changed == 'true'
+        needs.detect-changes.outputs.admin_frontend_changed == 'true' ||
+        needs.detect-changes.outputs.osaan_ui_changed == 'true'
       )
     permissions:
       contents: write
@@ -286,6 +334,17 @@ jobs:
           if [ "$ADMIN_FRONTEND_CHANGED" = "true" ]; then
             yq -i '
               (.images[] | select(.name == "miguelsombrero/osaan-admin-ui-frontend") | .newTag) = env(GIT_SHA)
+            ' kustomization.yaml
+          fi
+
+      - name: Update osaan-ui image tag in kustomization.yaml
+        env:
+          GIT_SHA: ${{ github.sha }}
+          OSAAN_UI_CHANGED: ${{ needs.detect-changes.outputs.osaan_ui_changed }}
+        run: |
+          if [ "$OSAAN_UI_CHANGED" = "true" ]; then
+            yq -i '
+              (.images[] | select(.name == "miguelsombrero/osaan-ui") | .newTag) = env(GIT_SHA)
             ' kustomization.yaml
           fi
 
