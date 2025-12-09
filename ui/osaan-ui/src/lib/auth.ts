@@ -110,6 +110,8 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: token.sub || '',
         };
+        // Store idToken in session for logout
+        session.idToken = token.idToken as string | undefined;
       }
 
       return session;

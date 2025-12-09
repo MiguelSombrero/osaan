@@ -12,5 +12,7 @@
   "next": "Seuraava",
   "fi": "Suomi",
   "en": "English",
-  "skills": "Osaamiset"
+  "skills": "Osaamiset",
+  "login": "Kirjaudu sisään",
+  "logout": "Kirjaudu ulos"
 }

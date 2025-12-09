@@ -12,5 +12,7 @@
   "next": "Next",
   "fi": "Suomi",
   "en": "English",
-  "skills": "Skills"
+  "skills": "Skills",
+  "login": "Login",
+  "logout": "Logout"
 }

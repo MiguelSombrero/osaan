@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
+import { useSession, signIn } from 'next-auth/react';
 import LanguageSelector from './language-selector';
 
 interface TopBarProps {
@@ -10,6 +11,16 @@ interface TopBarProps {
 
 export default function TopBar({ title, subtitle }: TopBarProps) {
   const { t } = useTranslation();
+  const { data: session, status } = useSession();
+
+  const handleAuthAction = () => {
+    if (session) {
+      // Redirect to custom logout API that handles Keycloak SSO logout
+      window.location.href = '/api/auth/logout';
+    } else {
+      signIn();
+    }
+  };
 
   return (
     <header className="bg-white shadow-sm">
@@ -28,7 +39,18 @@ export default function TopBar({ title, subtitle }: TopBarProps) {
               </p>
             )}
           </div>
-          <LanguageSelector />
+          <div className="flex items-center gap-4">
+            {status !== 'loading' && (
+              <button
+                onClick={handleAuthAction}
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                suppressHydrationWarning
+              >
+                {session ? t('logout') : t('login')}
+              </button>
+            )}
+            <LanguageSelector />
+          </div>
         </div>
       </div>
     </header>
