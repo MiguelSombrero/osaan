@@ -1,7 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-
-const COMPETENCE_PROFILE_API_URL =
-  process.env.COMPETENCE_PROFILE_API_URL || "http://localhost:8090";
+import { NextRequest, NextResponse } from 'next/server';
+import { config } from '@/lib/config';
 
 export async function POST(
   request: NextRequest,
@@ -11,12 +9,12 @@ export async function POST(
     const { employeeId } = await params;
     const body = await request.json();
 
-    const url = `${COMPETENCE_PROFILE_API_URL}/v1/competences/${employeeId}`;
+    const url = `${config.competenceProfileApiUrl}/v1/competences/${employeeId}`;
 
     const response = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         // TODO: Add authorization header from session/token
       },
       body: JSON.stringify(body),
@@ -25,7 +23,7 @@ export async function POST(
     if (!response.ok) {
       const errorData = await response.text();
       return NextResponse.json(
-        { error: "Failed to create competences", details: errorData },
+        { error: 'Failed to create competences', details: errorData },
         { status: response.status }
       );
     }
@@ -33,9 +31,9 @@ export async function POST(
     const data = await response.json();
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    console.error("Error creating competences:", error);
+    console.error('Error creating competences:', error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

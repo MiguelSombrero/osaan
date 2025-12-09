@@ -18,11 +18,15 @@ export const config = {
 
   // URLs
   appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
-  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
-  targetApiUrl:
-    process.env.TARGET_API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    'http://localhost:8080/api',
+
+  // Microservice URLs (server-side only)
+  skillCatalogApiUrl:
+    process.env.SKILL_CATALOG_API_URL || 'http://localhost:8092',
+  employeeApiUrl: process.env.EMPLOYEE_API_URL || 'http://localhost:8091',
+  competenceProfileApiUrl:
+    process.env.COMPETENCE_PROFILE_API_URL || 'http://localhost:8093',
+  competenceMatchingApiUrl:
+    process.env.COMPETENCE_MATCHING_API_URL || 'http://localhost:8094',
 
   // NextAuth
   nextAuth: {

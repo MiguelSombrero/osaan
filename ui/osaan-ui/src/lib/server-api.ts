@@ -1,7 +1,10 @@
 import { getAccessToken } from './session';
-import { config } from './config';
 
+/**
+ * Generic server-side API utility for authenticated requests to microservices
+ */
 export async function fetchWithAuth<T>(
+  serviceUrl: string,
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
@@ -23,7 +26,7 @@ export async function fetchWithAuth<T>(
     });
   }
 
-  const response = await fetch(`${config.targetApiUrl}${endpoint}`, {
+  const response = await fetch(`${serviceUrl}${endpoint}`, {
     ...options,
     headers,
   });
@@ -37,14 +40,15 @@ export async function fetchWithAuth<T>(
 }
 
 export async function proxyRequest(
-  method: string,
+  serviceUrl: string,
   path: string,
+  method: string,
   body?: any,
   params?: Record<string, string>
 ) {
   const token = await getAccessToken();
 
-  const url = new URL(`${config.targetApiUrl}${path}`);
+  const url = new URL(`${serviceUrl}${path}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.append(key, value);

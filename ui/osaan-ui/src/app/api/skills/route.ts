@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAccessToken } from '@/lib/session';
-
-const SKILL_CATALOG_API_URL =
-  process.env.SKILL_CATALOG_API_URL || 'http://localhost:8092';
+import { config } from '@/lib/config';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,7 +19,7 @@ export async function GET(request: NextRequest) {
     if (sort) queryParams.set('sort', sort);
 
     const queryString = queryParams.toString();
-    const url = `${SKILL_CATALOG_API_URL}/v1/admin/skills${
+    const url = `${config.skillCatalogApiUrl}/v1/admin/skills${
       queryString ? `?${queryString}` : ''
     }`;
 

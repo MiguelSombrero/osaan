@@ -1,5 +1,4 @@
 import { getServerSession } from 'next-auth';
-import { getToken } from 'next-auth/jwt';
 import { authOptions } from './auth';
 import { isKeycloakEnabled, config } from './config';
 import { cookies } from 'next/headers';
