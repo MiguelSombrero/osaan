@@ -11,16 +11,6 @@ export async function getSession() {
   return await getServerSession(authOptions);
 }
 
-export async function requireAuth() {
-  const session = await getSession();
-
-  if (!session) {
-    throw new Error('Unauthorized');
-  }
-
-  return session;
-}
-
 export async function getAccessToken(): Promise<string | null> {
   if (!isKeycloakEnabled) {
     return null;
@@ -45,17 +35,4 @@ export async function getAccessToken(): Promise<string | null> {
   }
 
   return null;
-}
-
-export async function hasRole(role: string): Promise<boolean> {
-  const session = await getSession();
-  if (!session) return false;
-
-  const roles = (session as any)?.user?.realm_access?.roles || [];
-  return roles.includes(role);
-}
-
-export async function getCurrentUser() {
-  const session = await getSession();
-  return session?.user || null;
 }

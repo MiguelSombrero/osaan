@@ -44,21 +44,3 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
     return null;
   }
 }
-
-export async function closeRedisClient(): Promise<void> {
-  if (redis) {
-    try {
-      await redis.quit();
-      redis = null;
-      console.log('[Redis] Connection closed');
-    } catch (error) {
-      console.error('[Redis] Error closing connection:', error);
-    }
-  }
-}
-
-export function isRedisConnected(): boolean {
-  return redis?.isOpen ?? false;
-}
-
-export { redis };

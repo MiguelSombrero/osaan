@@ -4,70 +4,7 @@ import { config, isKeycloakEnabled, isRedisEnabled } from './config';
 import { getRedisClient } from './redis';
 
 /**
- * Custom Redis adapter for NextAuth
- * Stores sessions in Redis instead of in-memory
- */
-async function createRedisAdapter() {
-  const redis = await getRedisClient();
-
-  if (!redis) {
-    console.warn('[Auth] Redis adapter disabled, using default adapter');
-    return undefined;
-  }
-
-  return {
-    async createSession(session: any) {
-      const key = `session:${session.sessionToken}`;
-      await redis.setEx(key, 30 * 24 * 60 * 60, JSON.stringify(session)); // 30 days
-      return session;
-    },
-    async getSessionAndUser(sessionToken: string) {
-      const key = `session:${sessionToken}`;
-      const sessionData = await redis.get(key);
-
-      if (!sessionData) return null;
-
-      const session = JSON.parse(sessionData);
-      return { session, user: session.user };
-    },
-    async updateSession(session: any) {
-      const key = `session:${session.sessionToken}`;
-      await redis.setEx(key, 30 * 24 * 60 * 60, JSON.stringify(session));
-      return session;
-    },
-    async deleteSession(sessionToken: string) {
-      const key = `session:${sessionToken}`;
-      await redis.del(key);
-    },
-    async createUser(user: any) {
-      return user;
-    },
-    async getUser(id: string) {
-      return null;
-    },
-    async getUserByEmail(email: string) {
-      return null;
-    },
-    async getUserByAccount(provider: string, providerAccountId: string) {
-      return null;
-    },
-    async updateUser(user: any) {
-      return user;
-    },
-    async deleteUser(userId: string) {
-      return;
-    },
-    async linkAccount(account: any) {
-      return account;
-    },
-    async unlinkAccount(provider: string, providerAccountId: string) {
-      return;
-    },
-  };
-}
-
-/**
- * NextAuth configuration
+ * NextAuth configuration with Keycloak provider and Redis token storage
  */
 export const authOptions: NextAuthOptions = {
   providers: isKeycloakEnabled
@@ -91,7 +28,8 @@ export const authOptions: NextAuthOptions = {
       if (isRedisEnabled && token?.sub) {
         const redis = await getRedisClient();
         if (redis) {
-          const sessionKey = `auth:${token.sub}:${Date.now()}`;
+          // Use consistent key format without timestamp
+          const sessionKey = `auth:session:${token.sub}`;
           await redis.setEx(
             sessionKey,
             24 * 60 * 60,
@@ -165,34 +103,13 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       // Only send non-sensitive data to the client
+      // Tokens are stored in Redis via JWT encode/decode, NOT sent to browser
       if (token) {
         session.error = token.error as string | undefined;
         session.user = {
           ...session.user,
           id: token.sub || '',
         };
-      }
-
-      // Tokens are stored in Redis, NOT sent to browser
-      // The sessionKey reference is in the JWT cookie (httpOnly)
-      if (isRedisEnabled) {
-        try {
-          const redis = await getRedisClient();
-          if (redis && token.sessionKey) {
-            const sessionKey = `session:${token.sub}`;
-            await redis.setEx(
-              sessionKey,
-              30 * 24 * 60 * 60,
-              JSON.stringify({
-                ...session,
-                userId: token.sub,
-                expiresAt: token.expiresAt,
-              })
-            );
-          }
-        } catch (error) {
-          console.error('[Auth] Failed to store session in Redis:', error);
-        }
       }
 
       return session;
@@ -215,7 +132,8 @@ export const authOptions: NextAuthOptions = {
         try {
           const redis = await getRedisClient();
           if (redis) {
-            await redis.del(`session:${token.sub}`);
+            // Use same key format as encode
+            await redis.del(`auth:session:${token.sub}`);
             console.log('[Auth] Session removed from Redis');
           }
         } catch (error) {

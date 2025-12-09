@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { isKeycloakEnabled } from './lib/config';
+import { isKeycloakEnabled, config as appConfig } from './lib/config';
 
 const publicRoutes = [
   '/',
@@ -9,12 +9,6 @@ const publicRoutes = [
   '/api/auth',
   '/auth/signin',
   '/auth/error',
-];
-
-const protectedApiRoutes = [
-  '/api/skills',
-  '/api/competences',
-  '/api/employees',
 ];
 
 function isPublicRoute(pathname: string): boolean {
@@ -25,10 +19,6 @@ function isPublicRoute(pathname: string): boolean {
     if (pathname.startsWith(route + '/')) return true;
     return false;
   });
-}
-
-function isProtectedApiRoute(pathname: string): boolean {
-  return protectedApiRoutes.some((route) => pathname.startsWith(route));
 }
 
 export async function middleware(request: NextRequest) {
@@ -44,7 +34,7 @@ export async function middleware(request: NextRequest) {
 
   const token = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: appConfig.nextAuth.secret,
   });
 
   if (!token) {
@@ -60,20 +50,6 @@ export async function middleware(request: NextRequest) {
     const signInUrl = new URL('/api/auth/signin', request.url);
     signInUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(signInUrl);
-  }
-
-  // Add token to request headers for API routes
-  if (isProtectedApiRoute(pathname)) {
-    const requestHeaders = new Headers(request.headers);
-    if (token.accessToken) {
-      requestHeaders.set('Authorization', `Bearer ${token.accessToken}`);
-    }
-
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
   }
 
   return NextResponse.next();
