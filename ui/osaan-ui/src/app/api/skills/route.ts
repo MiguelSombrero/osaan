@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAccessToken } from '@/lib/session';
+import { fetchWithAuth } from '@/lib/server-api';
 import { config } from '@/lib/config';
 
 export async function GET(request: NextRequest) {
@@ -19,38 +19,16 @@ export async function GET(request: NextRequest) {
     if (sort) queryParams.set('sort', sort);
 
     const queryString = queryParams.toString();
-    const url = `${config.skillCatalogApiUrl}/v1/admin/skills${
-      queryString ? `?${queryString}` : ''
-    }`;
+    const endpoint = `/v1/admin/skills${queryString ? `?${queryString}` : ''}`;
 
-    const accessToken = await getAccessToken();
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-
-    if (accessToken) {
-      headers['Authorization'] = `Bearer ${accessToken}`;
-    }
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers,
-    });
-
-    if (!response.ok) {
-      const errorData = await response.text();
-      return NextResponse.json(
-        { error: 'Failed to fetch skills', details: errorData },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
+    const data = await fetchWithAuth(config.skillCatalogApiUrl, endpoint);
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching skills:', error);
+    const message =
+      error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to fetch skills', details: message },
       { status: 500 }
     );
   }
