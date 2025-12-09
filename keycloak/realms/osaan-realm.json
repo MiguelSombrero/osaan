@@ -21,6 +21,34 @@
   },
   "clients": [
     {
+      "clientId": "osaan-ui",
+      "name": "Osaan UI",
+      "secret": "osaan-secret",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:3002/*",
+        "https://localhost:3000/*",
+        "https://localhost:3002/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "http://localhost:3002",
+        "https://localhost:3000",
+        "https://localhost:3002"
+      ],
+      "publicClient": false,
+      "bearerOnly": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:3000/*##http://localhost:3002/*##https://localhost:3000/*##https://localhost:3002/*"
+      }
+    },
+    {
       "clientId": "osaan-admin-ui",
       "name": "Osaan Admin UI",
       "secret": "osaan-admin-secret",
@@ -54,12 +82,8 @@
       "secret": "osaan-swagger-secret",
       "enabled": true,
       "protocol": "openid-connect",
-      "redirectUris": [
-        "http://localhost:8092/swagger-ui/*"
-      ],
-      "webOrigins": [
-        "http://localhost:8092"
-      ],
+      "redirectUris": ["http://localhost:8092/swagger-ui/*"],
+      "webOrigins": ["http://localhost:8092"],
       "publicClient": false,
       "bearerOnly": false,
       "directAccessGrantsEnabled": false,
@@ -87,9 +111,7 @@
         }
       ],
       "requiredActions": [],
-      "realmRoles": [
-        "ADMIN"
-      ]
+      "realmRoles": ["ADMIN"]
     },
     {
       "username": "user",
@@ -106,9 +128,7 @@
         }
       ],
       "requiredActions": [],
-      "realmRoles": [
-        "USER"
-      ]
+      "realmRoles": ["USER"]
     }
   ]
 }

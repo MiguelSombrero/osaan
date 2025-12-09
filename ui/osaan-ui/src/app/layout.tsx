@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { QueryProvider } from '@/providers/query-provider';
 import { I18nProvider } from '@/providers/i18n-provider';
+import { SessionProvider } from '@/providers/session-provider';
 
 export const metadata: Metadata = {
   title: 'Osaan - Competence Management',
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <I18nProvider>
-          <QueryProvider>{children}</QueryProvider>
-        </I18nProvider>
+        <SessionProvider>
+          <I18nProvider>
+            <QueryProvider>{children}</QueryProvider>
+          </I18nProvider>
+        </SessionProvider>
       </body>
     </html>
   );

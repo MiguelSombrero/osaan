@@ -15,9 +15,12 @@
     "i18next": "^25.6.0",
     "i18next-http-backend": "^3.0.2",
     "next": "^15.5.7",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-i18next": "^16.0.0"
+    "react-i18next": "^16.0.0",
+    "redis": "^4.7.0",
+    "@upstash/redis": "^1.34.3"
   },
   "devDependencies": {
     "@types/node": "^22",

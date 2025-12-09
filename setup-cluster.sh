@@ -29,6 +29,7 @@ if ! k3d cluster list | grep -q "${CLUSTER_NAME}"; then
     -p '9080:80@loadbalancer' \
     -p '443:443@loadbalancer' \
     -p '9443:443@loadbalancer' \
+    --volume /tmp/k3d-storage:/var/lib/rancher/k3s/storage@all \
     --agents 2 \
     --k3s-arg '--disable=traefik@server:*'
 else

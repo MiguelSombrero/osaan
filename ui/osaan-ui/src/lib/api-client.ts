@@ -1,16 +1,20 @@
-import type { GetSkillsParams, GetSkillsResponse } from "@/types/skill";
-import type { Competence } from "@/types/competence";
-import type { Employee } from "@/types/employee";
+import type { GetSkillsParams, GetSkillsResponse } from '@/types/skill';
+import type { Competence } from '@/types/competence';
+import type { Employee } from '@/types/employee';
 
-const API_BASE = "/api";
+const API_BASE = '/api';
 
 class ApiError extends Error {
   constructor(message: string, public status: number, public data?: unknown) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
   }
 }
 
+/**
+ * Fetch wrapper for API requests
+ * Authentication is handled server-side via session cookies
+ */
 async function fetchApi<T>(
   endpoint: string,
   options?: RequestInit
@@ -18,9 +22,10 @@ async function fetchApi<T>(
   const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options?.headers,
     },
+    credentials: 'include', // Include cookies for authentication
   });
 
   if (!response.ok) {
@@ -38,15 +43,15 @@ async function fetchApi<T>(
 export const skillApi = {
   getSkills: (params?: GetSkillsParams) => {
     const searchParams = new URLSearchParams();
-    if (params?.query) searchParams.set("query", params.query);
+    if (params?.query) searchParams.set('query', params.query);
     if (params?.page !== undefined)
-      searchParams.set("page", params.page.toString());
-    if (params?.size) searchParams.set("size", params.size.toString());
-    if (params?.sort) searchParams.set("sort", params.sort);
+      searchParams.set('page', params.page.toString());
+    if (params?.size) searchParams.set('size', params.size.toString());
+    if (params?.sort) searchParams.set('sort', params.sort);
 
     const queryString = searchParams.toString();
     return fetchApi<GetSkillsResponse>(
-      `/skills${queryString ? `?${queryString}` : ""}`
+      `/skills${queryString ? `?${queryString}` : ''}`
     );
   },
 };
@@ -54,18 +59,18 @@ export const skillApi = {
 export const competenceApi = {
   createCompetences: (
     employeeId: string,
-    competences: Omit<Competence, "id" | "employeeId">[]
+    competences: Omit<Competence, 'id' | 'employeeId'>[]
   ) =>
     fetchApi<Competence[]>(`/competences/${employeeId}`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(competences),
     }),
 };
 
 export const employeeApi = {
-  createEmployee: (employee: Omit<Employee, "id">) =>
-    fetchApi<Employee>("/employees", {
-      method: "POST",
+  createEmployee: (employee: Omit<Employee, 'id'>) =>
+    fetchApi<Employee>('/employees', {
+      method: 'POST',
       body: JSON.stringify(employee),
     }),
 };

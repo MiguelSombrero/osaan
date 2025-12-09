@@ -30,6 +30,7 @@ services:
       - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/cert.pem
       - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/key.pem
       - KC_HOSTNAME=keycloak
+      - KC_HOSTNAME_STRICT=false
     volumes:
       - ./keycloak/realms:/opt/keycloak/data/import
       - ./keycloak/certs:/opt/keycloak/certs:ro
@@ -111,6 +112,7 @@ services:
     container_name: skill-catalog-service
     depends_on:
       - osaan-db
+      - keycloak
     environment:
       SPRING_PROFILES_ACTIVE: docker
       JAVA_TOOL_OPTIONS: >
@@ -167,6 +169,20 @@ services:
       - API_URL=http://osaan-admin-backend:3001
     depends_on:
       - osaan-admin-backend
+
+  osaan-ui:
+    build: ./ui/osaan-ui
+    container_name: osaan-ui
+    ports:
+      - "3002:3000"
+    env_file:
+      - ./ui/osaan-ui/.env.staging
+    depends_on:
+      - skill-catalog-service
+      - competence-profile-service
+      - employee-service
+      - keycloak
+      - osaan-redis
 
 volumes:
   osaan-data:
