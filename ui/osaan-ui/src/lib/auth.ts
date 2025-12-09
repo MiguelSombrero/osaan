@@ -134,12 +134,26 @@ export const authOptions: NextAuthOptions = {
         try {
           const redis = await getRedisClient();
           if (redis) {
-            // Use same key format as encode
             await redis.del(`auth:session:${token.sub}`);
             console.log('[Auth] Session removed from Redis');
           }
         } catch (error) {
           console.error('[Auth] Failed to remove session from Redis:', error);
+        }
+      }
+
+      // Logout from Keycloak SSO session
+      if (isKeycloakEnabled && token?.idToken) {
+        try {
+          const logoutUrl = new URL(
+            `${config.keycloak.issuer}/protocol/openid-connect/logout`
+          );
+          logoutUrl.searchParams.set('id_token_hint', token.idToken as string);
+
+          await fetch(logoutUrl.toString());
+          console.log('[Auth] Keycloak session ended');
+        } catch (error) {
+          console.error('[Auth] Failed to end Keycloak session:', error);
         }
       }
     },
