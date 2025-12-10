@@ -43,6 +43,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: osaan-ui-config
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: redis-password
           resources:
             requests:
               memory: "256Mi"

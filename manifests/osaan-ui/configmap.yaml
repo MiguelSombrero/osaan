@@ -4,6 +4,19 @@ metadata:
   name: osaan-ui-config
   namespace: osaan-dev
 data:
+  NODE_ENV: production
+  NODE_TLS_REJECT_UNAUTHORIZED: 0
+  NEXT_PUBLIC_APP_URL: https://osaan.local:9443
+  NEXTAUTH_URL: https://osaan.local:9443
+  NEXTAUTH_SECRET:  your-secret-key-here-change-in-production
+  KEYCLOAK_ENABLED: "true"
+  KEYCLOAK_ISSUER: https://keycloak.local:8443/realms/osaan
+  KEYCLOAK_CLIENT_ID: osaan-ui
+  KEYCLOAK_CLIENT_SECRET: osaan-secret
+  REDIS_ENABLED: "true"
+  REDIS_HOST: redis-master.osaan-dev.svc.cluster.local
+  REDIS_PORT: "6379"
   SKILL_CATALOG_API_URL: http://skill-catalog-svc:80
-  COMPETENCE_PROFILE_API_URL: http://competence-profile-svc:80
   EMPLOYEE_API_URL: http://employee-svc:80
+  COMPETENCE_PROFILE_API_URL: http://competence-profile-svc:80
+  COMPETENCE_MATCHING_API_URL: http://competence-matching-svc:80

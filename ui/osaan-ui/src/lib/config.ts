@@ -45,7 +45,6 @@ export const config = {
   // Redis
   redis: {
     enabled: bool(process.env.REDIS_ENABLED, false),
-    url: process.env.REDIS_URL || 'redis://localhost:6379',
     host: process.env.REDIS_HOST || 'localhost',
     port: number(process.env.REDIS_PORT, 6379),
     password: process.env.REDIS_PASSWORD || undefined,

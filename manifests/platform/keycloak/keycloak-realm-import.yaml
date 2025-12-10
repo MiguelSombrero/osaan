@@ -19,17 +19,17 @@ spec:
         - name: USER
           description: Regular user role for Osaan
     clients:
-      - clientId: osaan-admin-ui
-        name: Osaan Admin UI
-        secret: osaan-admin-secret
+      - clientId: osaan-ui
+        name: Osaan UI
+        secret: osaan-secret
         enabled: true
         protocol: openid-connect
         redirectUris:
-          - https://osaan.admin.local/*
-          - https://osaan.admin.local:9443/*
+          - https://osaan.local/*
+          - https://osaan.local:9443/*
         webOrigins:
-          - https://osaan.admin.local
-          - https://osaan.admin.local:9443
+          - https://osaan.local
+          - https://osaan.local:9443
         publicClient: false
         bearerOnly: false
         directAccessGrantsEnabled: false
@@ -38,7 +38,27 @@ spec:
         implicitFlowEnabled: false
         attributes:
           post.logout.redirect.uris: >-
-            https://osaan.admin.local/*##https://osaan.admin.local:9443/*##
+            https://osaan.local/*##https://osaan.local:9443/*##
+      - clientId: osaan-admin-ui
+        name: Osaan Admin UI
+        secret: osaan-admin-secret
+        enabled: true
+        protocol: openid-connect
+        redirectUris:
+          - https://osaan.local/*
+          - https://osaan.local:9443/*
+        webOrigins:
+          - https://osaan.local
+          - https://osaan.local:9443
+        publicClient: false
+        bearerOnly: false
+        directAccessGrantsEnabled: false
+        serviceAccountsEnabled: false
+        standardFlowEnabled: true
+        implicitFlowEnabled: false
+        attributes:
+          post.logout.redirect.uris: >-
+            https://osaan.admin/*##https://osaan.local:9443/*##
     users:
       - username: admin
         enabled: true
