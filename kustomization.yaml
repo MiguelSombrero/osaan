@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - manifests/common/mailhog.yaml
   - manifests/common/rabbitmq.yaml
+  - manifests/common/microservices-destinationrules.yaml
   - manifests/employee-service/configmap.yaml
   - manifests/employee-service/deployment.yaml
   - manifests/employee-service/service.yaml

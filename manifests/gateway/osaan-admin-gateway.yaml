@@ -46,36 +46,3 @@ spec:
         host: osaan-admin-ui-svc.osaan-dev.svc.cluster.local
         port:
           number: 80
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: osaan-admin-backend-dr
-  namespace: istio-system
-spec:
-  host: osaan-admin-backend-svc.osaan-dev.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: osaan-admin-ui-dr
-  namespace: istio-system
-spec:
-  host: osaan-admin-ui-svc.osaan-dev.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: redis-master-dr
-  namespace: osaan-dev
-spec:
-  host: redis-master.osaan-dev.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: DISABLE

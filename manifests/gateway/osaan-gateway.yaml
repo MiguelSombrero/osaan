@@ -36,14 +36,3 @@ spec:
         host: osaan-ui-svc.osaan-dev.svc.cluster.local
         port:
           number: 80
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: osaan-ui-dr
-  namespace: istio-system
-spec:
-  host: osaan-ui-svc.osaan-dev.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
