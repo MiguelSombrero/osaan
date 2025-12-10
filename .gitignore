@@ -49,3 +49,15 @@ build/
 
 ### Generated Clients ###
 ui/osaan-admin-ui/frontend/src/api/generated/
+
+### Secrets (Never commit plaintext secrets!) ###
+# Plaintext secret templates (NOT encrypted)
+secrets-template.yaml
+**/secrets-template.yaml
+
+# Keep only the sealed (encrypted) secrets
+!sealed-*.yaml
+**/!sealed-*.yaml
+
+# Local encryption key backup (keep private)
+.osaan/

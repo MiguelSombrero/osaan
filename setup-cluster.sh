@@ -4,6 +4,7 @@ set -euo pipefail
 CLUSTER_NAME="k3d-osaan-dev"
 EXPECTED_CONTEXT="k3d-${CLUSTER_NAME}"
 REDIS_PASS=""
+BACKUP_DIR="${HOME}/.osaan/backup"
 
 echo "===================================================="
 echo "  Setting up local Kubernetes cluster: ${CLUSTER_NAME}"
@@ -78,8 +79,32 @@ wait_for_deployments "rabbitmq-system"
 # --- 6. Sealed Secrets ---
 echo ""
 echo "==> Installing SealedSecrets Operator..."
+
+# Create backup directory if it doesn't exist
+mkdir -p "$BACKUP_DIR"
+
+# Restore existing key if available (allows decrypting existing SealedSecrets)
+if [[ -f "$BACKUP_DIR/sealed-secrets-key.yaml" ]]; then
+  echo "📦 Restoring SealedSecrets key from backup..."
+  kubectl create namespace kube-system --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1 || true
+  kubectl apply -f "$BACKUP_DIR/sealed-secrets-key.yaml"
+  echo "✅ SealedSecrets key restored"
+fi
+
+# Install the controller
 kubectl apply -f "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml"
 wait_for_deployments "kube-system"
+
+# Backup the key if we don't have it yet
+if [[ ! -f "$BACKUP_DIR/sealed-secrets-key.yaml" ]]; then
+  echo "💾 Backing up SealedSecrets key for future cluster recreations..."
+  # Wait a bit for the key to be generated
+  sleep 5
+  kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key=active \
+    -o yaml > "$BACKUP_DIR/sealed-secrets-key.yaml"
+  echo "✅ SealedSecrets key backed up to: $BACKUP_DIR/sealed-secrets-key.yaml"
+  echo "⚠️  Keep this file safe! It's needed to decrypt your secrets."
+fi
 
 # --- 7. Istio ---
 echo ""
@@ -116,10 +141,21 @@ wait_for_deployments "cert-manager"
 echo ""
 echo "=== 🧰 Installing Redis (Bitnami)..."
 kubectl apply -f manifests/common/namespace-osaan.yaml
-kubectl create secret generic redis-secret \
-  -n osaan-dev \
-  --from-literal=redis-password="$REDIS_PASS" \
-  --dry-run=client -o yaml | kubectl apply -f -
+
+# NOTE: redis-secret is now managed by SealedSecrets
+# Apply sealed secrets for osaan-dev namespace
+if [[ -f "manifests/environments/osaan-dev/sealed-secrets.yaml" ]]; then
+  echo "📦 Applying SealedSecrets for osaan-dev..."
+  kubectl apply -f manifests/environments/osaan-dev/sealed-secrets.yaml
+else
+  echo "⚠️  WARNING: manifests/environments/osaan-dev/sealed-secrets.yaml not found!"
+  echo "Creating temporary redis-secret for initial setup..."
+  kubectl create secret generic redis-secret \
+    -n osaan-dev \
+    --from-literal=redis-password="$REDIS_PASS" \
+    --dry-run=client -o yaml | kubectl apply -f -
+fi
+
 helm repo add bitnami https://charts.bitnami.com/bitnami >/dev/null 2>&1
 helm repo update >/dev/null 2>&1
 helm upgrade --install redis bitnami/redis \

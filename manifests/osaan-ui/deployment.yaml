@@ -43,6 +43,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: osaan-ui-config
+            - secretRef:
+                name: osaan-ui-secret
           env:
             - name: REDIS_PASSWORD
               valueFrom:
