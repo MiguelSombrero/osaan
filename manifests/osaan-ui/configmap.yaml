@@ -5,7 +5,7 @@ metadata:
   namespace: osaan-dev
 data:
   NODE_ENV: production
-  NODE_TLS_REJECT_UNAUTHORIZED: 0
+  NODE_TLS_REJECT_UNAUTHORIZED: "0"
   NEXT_PUBLIC_APP_URL: https://osaan.local:9443
   NEXTAUTH_URL: https://osaan.local:9443
   NEXTAUTH_SECRET:  your-secret-key-here-change-in-production
