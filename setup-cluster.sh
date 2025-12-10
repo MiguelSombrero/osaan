@@ -79,16 +79,22 @@ wait_for_deployments "rabbitmq-system"
 # --- 6. Sealed Secrets ---
 echo ""
 echo "==> Installing SealedSecrets Operator..."
+kubectl apply -f manifests/common/namespace-osaan.yaml
 
 # Create backup directory if it doesn't exist
 mkdir -p "$BACKUP_DIR"
 
 # Restore existing key if available (allows decrypting existing SealedSecrets)
 if [[ -f "$BACKUP_DIR/sealed-secrets-key.yaml" ]]; then
-  echo "📦 Restoring SealedSecrets key from backup..."
-  kubectl create namespace kube-system --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1 || true
-  kubectl apply -f "$BACKUP_DIR/sealed-secrets-key.yaml"
-  echo "✅ SealedSecrets key restored"
+  # Check if the sealed-secrets key already exists in the cluster
+  if kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key=active >/dev/null 2>&1; then
+    echo "✅ SealedSecrets key already exists in cluster"
+  else
+    echo "📦 Restoring SealedSecrets key from backup..."
+    kubectl create namespace kube-system --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1 || true
+    kubectl apply -f "$BACKUP_DIR/sealed-secrets-key.yaml"
+    echo "✅ SealedSecrets key restored"
+  fi
 fi
 
 # Install the controller
@@ -104,6 +110,46 @@ if [[ ! -f "$BACKUP_DIR/sealed-secrets-key.yaml" ]]; then
     -o yaml > "$BACKUP_DIR/sealed-secrets-key.yaml"
   echo "✅ SealedSecrets key backed up to: $BACKUP_DIR/sealed-secrets-key.yaml"
   echo "⚠️  Keep this file safe! It's needed to decrypt your secrets."
+fi
+
+# Auto-seal secrets if template exists
+# This ensures secrets are always encrypted with the CURRENT cluster's key
+SECRETS_DIR="manifests/environments/osaan-dev"
+TEMPLATE_FILE="$SECRETS_DIR/secrets-template.yaml"
+SEALED_FILE="$SECRETS_DIR/sealed-secrets.yaml"
+
+if [[ -f "$TEMPLATE_FILE" ]]; then
+  echo ""
+  echo "📋 Found secrets template: $TEMPLATE_FILE"
+  
+  # Check if we need to seal (template exists and is newer than sealed file, or sealed doesn't exist)
+  if [[ ! -f "$SEALED_FILE" ]] || [[ "$TEMPLATE_FILE" -nt "$SEALED_FILE" ]]; then
+    echo "🔐 Auto-sealing secrets with current cluster's key..."
+    if [[ -x "$SECRETS_DIR/seal-secrets.sh" ]]; then
+      (cd "$SECRETS_DIR" && ./seal-secrets.sh)
+      echo "✅ Secrets sealed and ready to apply"
+    else
+      echo "⚠️  WARNING: seal-secrets.sh not found or not executable"
+      echo "   You'll need to run it manually: cd $SECRETS_DIR && ./seal-secrets.sh"
+    fi
+  else
+    echo "✅ Sealed secrets are up to date"
+  fi
+else
+  echo ""
+  echo "ℹ️  No secrets template found at $TEMPLATE_FILE"
+  echo "   Create one to enable automatic secret sealing"
+fi
+
+if [[ -f "manifests/environments/osaan-dev/sealed-secrets.yaml" ]]; then
+  echo "📦 Applying SealedSecrets for osaan-dev..."
+  kubectl apply -f manifests/environments/osaan-dev/sealed-secrets.yaml
+  echo "✅ Secrets decrypted and created in cluster"
+else
+  echo "⚠️  WARNING: manifests/environments/osaan-dev/sealed-secrets.yaml not found!"
+  echo "   This should have been created during SealedSecrets setup above."
+  echo "   Check that secrets-template.yaml exists and seal-secrets.sh is executable."
+  exit 1
 fi
 
 # --- 7. Istio ---
@@ -140,22 +186,6 @@ wait_for_deployments "cert-manager"
 # --- 10. Redis ---
 echo ""
 echo "=== 🧰 Installing Redis (Bitnami)..."
-kubectl apply -f manifests/common/namespace-osaan.yaml
-
-# NOTE: redis-secret is now managed by SealedSecrets
-# Apply sealed secrets for osaan-dev namespace
-if [[ -f "manifests/environments/osaan-dev/sealed-secrets.yaml" ]]; then
-  echo "📦 Applying SealedSecrets for osaan-dev..."
-  kubectl apply -f manifests/environments/osaan-dev/sealed-secrets.yaml
-else
-  echo "⚠️  WARNING: manifests/environments/osaan-dev/sealed-secrets.yaml not found!"
-  echo "Creating temporary redis-secret for initial setup..."
-  kubectl create secret generic redis-secret \
-    -n osaan-dev \
-    --from-literal=redis-password="$REDIS_PASS" \
-    --dry-run=client -o yaml | kubectl apply -f -
-fi
-
 helm repo add bitnami https://charts.bitnami.com/bitnami >/dev/null 2>&1
 helm repo update >/dev/null 2>&1
 helm upgrade --install redis bitnami/redis \
