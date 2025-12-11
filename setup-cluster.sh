@@ -69,12 +69,17 @@ wait_for_deployments() {
   kubectl -n "$namespace" wait --timeout=600s --for=condition=available deployment --all || true
 }
 
+# --- 5. Install Operator Lifecycle Manager ---
+echo ""
+echo "==> Installing Operator Lifecycle Manager..."
+operator-sdk olm install
+wait_for_deployments "olm"
 
 # --- 5. RabbitMQ Operator ---
-echo ""
-echo "==> Installing RabbitMQ Cluster Operator..."
-kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
-wait_for_deployments "rabbitmq-system"
+#echo ""
+#echo "==> Installing RabbitMQ Cluster Operator..."
+#kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+#wait_for_deployments "rabbitmq-system"
 
 # --- 6. Sealed Secrets ---
 echo ""
@@ -251,8 +256,8 @@ helm upgrade --install external-secrets \
     --create-namespace
 wait_for_deployments "external-secrets"
 
-# --- 15: Deploying platform specific resources ---
-kubectl apply -f manifests/platform/argocd/argocd-platform.yaml
+# --- 15: Deploying ArgoCD app-of-apps ---
+kubectl apply -f manifests/platform/argocd-apps.yaml
 wait_for_deployments "keycloak"
 wait_for_deployments "istio-system"
 wait_for_deployments "postgres-operator"

@@ -7,7 +7,6 @@ resources:
   - keycloak/keycloak.yaml
   - keycloak/keycloak-cert.yaml
   - keycloak/keycloak-realm-import.yaml
-  - argocd/argocd-osaan.yaml
   - istio/infrastructure-destinationrules.yaml
   - istio/istio.yaml
   - secrets/secret-store.yaml
