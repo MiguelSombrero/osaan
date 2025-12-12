@@ -157,6 +157,10 @@ docker compose up -d --build
 
 These instructions are k3d specific but can be applied to other Kubernetes distributions as well.
 
+First encrypt :
+
+TODO
+
 Create cluster and install all necessary operators etc. with script:
 
 ```bash
@@ -179,30 +183,6 @@ If needed, you can apply manifests manually with command:
 
 ```bash
 kubectl apply -k .
-```
-
-## Notes and instructions
-
-### How to create SealedSecrets from Secrets
-
-Create Secret to file:
-
-```bash
-kubectl create secret generic postgres-secret \
---from-literal=POSTGRES_DB=osaan-db \
---from-literal=POSTGRES_USER=osaan-user \
---from-literal=POSTGRES_PASSWORD=osaan-password \
---namespace osaan-dev \
---dry-run=client -o yaml > secret.yaml
-```
-
-Create SealedSecret from Secret:
-
-```bash
-kubeseal \
---controller-namespace=kube-system \
---controller-name=sealed-secrets-controller \
--o yaml < secret.yaml > postgres-secret.yaml
 ```
 
 ## Bugs, issues and TODOs

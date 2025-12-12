@@ -77,12 +77,6 @@ else
     echo "✅ OLM is already installed"
 fi
 
-# --- 5. RabbitMQ Operator ---
-#echo ""
-#echo "==> Installing RabbitMQ Cluster Operator..."
-#kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
-#wait_for_deployments "rabbitmq-system"
-
 # --- 6. Installing Secrets ---
 echo ""
 echo "==> Installing Secrets..."
@@ -115,10 +109,10 @@ kubectl apply -n istio-system -f "${base_url}/grafana.yaml"
 wait_for_deployments "istio-system"
 
 # --- 9. cert-manager ---
-#echo ""
-#echo "==> Installing cert-manager..."
-#kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/v1.19.0/cert-manager.yaml"
-#wait_for_deployments "cert-manager"
+echo ""
+echo "==> Installing cert-manager..."
+kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml"
+wait_for_deployments "cert-manager"
 
 # --- 10. Redis ---
 echo ""
@@ -145,11 +139,11 @@ kubectl -n keycloak apply -f https://raw.githubusercontent.com/keycloak/keycloak
 wait_for_deployments "keycloak"
 
 # --- 12. Postgres Operator and cluster ---
-echo ""
-echo "=== Installing CrunchyData Postgres Operator ..."
-kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
-wait_for_deployments "postgres-operator"
+#echo ""
+#echo "=== Installing CrunchyData Postgres Operator ..."
+#kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl apply -f -
+#kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
+#wait_for_deployments "postgres-operator"
 
 # --- 13 Installing ArgoCD ---
 echo ""
