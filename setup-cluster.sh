@@ -115,10 +115,10 @@ kubectl apply -n istio-system -f "${base_url}/grafana.yaml"
 wait_for_deployments "istio-system"
 
 # --- 9. cert-manager ---
-echo ""
-echo "==> Installing cert-manager..."
-kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/v1.19.0/cert-manager.yaml"
-wait_for_deployments "cert-manager"
+#echo ""
+#echo "==> Installing cert-manager..."
+#kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/v1.19.0/cert-manager.yaml"
+#wait_for_deployments "cert-manager"
 
 # --- 10. Redis ---
 echo ""
