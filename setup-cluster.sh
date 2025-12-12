@@ -3,7 +3,6 @@ set -euo pipefail
 
 CLUSTER_NAME="k3d-osaan-dev"
 EXPECTED_CONTEXT="k3d-${CLUSTER_NAME}"
-REDIS_PASS=""
 BACKUP_DIR="${HOME}/.osaan/backup"
 
 echo "===================================================="
@@ -11,8 +10,6 @@ echo "  Setting up local Kubernetes cluster: ${CLUSTER_NAME}"
 echo "===================================================="
 
 # --- 0. Kysy asennuksessa tarvittavat salasanat ---
-read -s -p "Give Redis password: " REDIS_PASS
-echo ""
 read -s -p "Give ArgoCD admin password: " ARGOCD_PASS
 echo ""
 
@@ -69,11 +66,16 @@ wait_for_deployments() {
   kubectl -n "$namespace" wait --timeout=600s --for=condition=available deployment --all || true
 }
 
-# --- 5. Install Operator Lifecycle Manager ---
+# --- 5. Install Operator Lifecycle Manager (if not already installed) ---
 echo ""
-echo "==> Installing Operator Lifecycle Manager..."
-operator-sdk olm install
-wait_for_deployments "olm"
+echo "==> Checking Operator Lifecycle Manager..."
+if ! kubectl get crd | grep -q 'operatorgroups.operators.coreos.com'; then
+    echo "Installing OLM..."
+    operator-sdk olm install
+    wait_for_deployments "olm"
+else
+    echo "✅ OLM is already installed"
+fi
 
 # --- 5. RabbitMQ Operator ---
 #echo ""
@@ -81,81 +83,11 @@ wait_for_deployments "olm"
 #kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 #wait_for_deployments "rabbitmq-system"
 
-# --- 6. Sealed Secrets ---
+# --- 6. Installing Secrets ---
 echo ""
-echo "==> Installing SealedSecrets Operator..."
+echo "==> Installing Secrets..."
 kubectl apply -f manifests/common/namespace-osaan.yaml
-
-# Create backup directory if it doesn't exist
-mkdir -p "$BACKUP_DIR"
-
-# Restore existing key if available (allows decrypting existing SealedSecrets)
-if [[ -f "$BACKUP_DIR/sealed-secrets-key.yaml" ]]; then
-  # Check if the sealed-secrets key already exists in the cluster
-  if kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key=active >/dev/null 2>&1; then
-    echo "✅ SealedSecrets key already exists in cluster"
-  else
-    echo "📦 Restoring SealedSecrets key from backup..."
-    kubectl create namespace kube-system --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1 || true
-    kubectl apply -f "$BACKUP_DIR/sealed-secrets-key.yaml"
-    echo "✅ SealedSecrets key restored"
-  fi
-fi
-
-# Install the controller
-kubectl apply -f "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/controller.yaml"
-wait_for_deployments "kube-system"
-
-# Backup the key if we don't have it yet
-if [[ ! -f "$BACKUP_DIR/sealed-secrets-key.yaml" ]]; then
-  echo "💾 Backing up SealedSecrets key for future cluster recreations..."
-  # Wait a bit for the key to be generated
-  sleep 5
-  kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key=active \
-    -o yaml > "$BACKUP_DIR/sealed-secrets-key.yaml"
-  echo "✅ SealedSecrets key backed up to: $BACKUP_DIR/sealed-secrets-key.yaml"
-  echo "⚠️  Keep this file safe! It's needed to decrypt your secrets."
-fi
-
-# Auto-seal secrets if template exists
-# This ensures secrets are always encrypted with the CURRENT cluster's key
-SECRETS_DIR="manifests/environments/osaan-dev"
-TEMPLATE_FILE="$SECRETS_DIR/secrets-template.yaml"
-SEALED_FILE="$SECRETS_DIR/sealed-secrets.yaml"
-
-if [[ -f "$TEMPLATE_FILE" ]]; then
-  echo ""
-  echo "📋 Found secrets template: $TEMPLATE_FILE"
-  
-  # Check if we need to seal (template exists and is newer than sealed file, or sealed doesn't exist)
-  if [[ ! -f "$SEALED_FILE" ]] || [[ "$TEMPLATE_FILE" -nt "$SEALED_FILE" ]]; then
-    echo "🔐 Auto-sealing secrets with current cluster's key..."
-    if [[ -x "$SECRETS_DIR/seal-secrets.sh" ]]; then
-      (cd "$SECRETS_DIR" && ./seal-secrets.sh)
-      echo "✅ Secrets sealed and ready to apply"
-    else
-      echo "⚠️  WARNING: seal-secrets.sh not found or not executable"
-      echo "   You'll need to run it manually: cd $SECRETS_DIR && ./seal-secrets.sh"
-    fi
-  else
-    echo "✅ Sealed secrets are up to date"
-  fi
-else
-  echo ""
-  echo "ℹ️  No secrets template found at $TEMPLATE_FILE"
-  echo "   Create one to enable automatic secret sealing"
-fi
-
-if [[ -f "manifests/environments/osaan-dev/sealed-secrets.yaml" ]]; then
-  echo "📦 Applying SealedSecrets for osaan-dev..."
-  kubectl apply -f manifests/environments/osaan-dev/sealed-secrets.yaml
-  echo "✅ Secrets decrypted and created in cluster"
-else
-  echo "⚠️  WARNING: manifests/environments/osaan-dev/sealed-secrets.yaml not found!"
-  echo "   This should have been created during SealedSecrets setup above."
-  echo "   Check that secrets-template.yaml exists and seal-secrets.sh is executable."
-  exit 1
-fi
+sops --decrypt manifests/environments/osaan-dev/secrets.enc.yaml | kubectl apply -f -
 
 # --- 7. Istio ---
 echo ""
