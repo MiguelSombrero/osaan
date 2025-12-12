@@ -80,6 +80,7 @@ fi
 # --- 6. Installing Secrets ---
 echo ""
 echo "==> Installing Secrets..."
+# TODO: add SOPS plugin for ArgoCD to automate decrypting secrets
 kubectl apply -f manifests/common/namespace-osaan.yaml
 sops --decrypt manifests/environments/osaan-dev/secrets.enc.yaml | kubectl apply -f -
 
@@ -138,14 +139,17 @@ kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resourc
 kubectl -n keycloak apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/kubernetes.yml
 wait_for_deployments "keycloak"
 
-# --- 12. Postgres Operator and cluster ---
-#echo ""
-#echo "=== Installing CrunchyData Postgres Operator ..."
-#kubectl create namespace postgres-operator --dry-run=client -o yaml | kubectl apply -f -
-#kubectl apply --server-side -k "https://github.com/CrunchyData/postgres-operator-examples.git/kustomize/install/default"
-#wait_for_deployments "postgres-operator"
+# --- 12. Istalling Postgres Operator ---
+echo ""
+echo "=== Installing CrunchyData Postgres Operator ..."
+kubectl create -f https://operatorhub.io/install/postgresql.yaml
+wait_for_deployments "operators"
 
-# --- 13 Installing ArgoCD ---
+# --- 13. Installing RabbitMQ Operator ---
+kubectl create -f https://operatorhub.io/install/rabbitmq-cluster-operator.yaml
+wait_for_deployments "operators"
+
+# --- 14 Installing ArgoCD ---
 echo ""
 echo "==> Installing ArgoCD..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
@@ -171,23 +175,16 @@ kubectl -n argocd patch configmap argocd-cmd-params-cm \
 kubectl -n argocd rollout restart deployment argocd-server
 kubectl -n argocd rollout status deployment argocd-server
 
-# --- 14. Install External Secrets ---
+# --- 15. Install External Secrets ---
 echo ""
 echo "=== Installing External Secrets ..."
-helm repo add external-secrets https://charts.external-secrets.io >/dev/null 2>&1
-helm repo update >/dev/null 2>&1
-helm upgrade --install external-secrets \
-   external-secrets/external-secrets \
-    -n external-secrets \
-    --create-namespace
-wait_for_deployments "external-secrets"
+kubectl create -f https://operatorhub.io/install/external-secrets-operator.yaml
+wait_for_deployments "operators"
 
-# --- 15: Deploying ArgoCD app-of-apps ---
+# --- 16: Deploying ArgoCD app-of-apps ---
 kubectl apply -f manifests/platform/argocd-apps.yaml
 wait_for_deployments "keycloak"
 wait_for_deployments "istio-system"
-wait_for_deployments "postgres-operator"
-wait_for_deployments "external-secrets"
 wait_for_deployments "cert-manager"
 
 # --- FINALLY: Creating Keycloak truststore Secret for osaan-dev ---
