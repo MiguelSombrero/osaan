@@ -61,3 +61,11 @@ secrets-template.yaml
 
 # Local encryption key backup (keep private)
 .osaan/
+
+# Playwright
+**/test-results/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

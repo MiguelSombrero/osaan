@@ -183,7 +183,7 @@ kubectl apply -f manifests/platform/argocd-apps.yaml
 wait_for_deployments "keycloak"
 wait_for_deployments "cert-manager"
 
-# --- FINALLY: Creating Keycloak truststore Secret for osaan-dev ---
+# --- Creating Keycloak truststore Secret for osaan-dev ---
 echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
 
 # Wait for ca-cert resource to be created by ArgoCD
@@ -210,6 +210,10 @@ kubectl -n cert-manager get secret ca-secret \
 kubectl -n osaan-dev create secret generic keycloak-truststore \
   --from-file=keycloak-truststore.jks=/tmp/keycloak-truststore-k3d.jks \
   --dry-run=client -o yaml | kubectl apply -f -
+
+# --- Install Testkube non-interactively ---
+echo "Installing Testkube..."
+yes | testkube init || true
 
 echo ""
 echo "===================================================="

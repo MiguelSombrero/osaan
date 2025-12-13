@@ -1,0 +1,23 @@
+{
+  "name": "osaan",
+  "version": "1.0.0",
+  "description": "Osaan is my hobby project for studying different aspects of fullstack development in microservice landscape.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MiguelSombrero/osaan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MiguelSombrero/osaan/issues"
+  },
+  "homepage": "https://github.com/MiguelSombrero/osaan#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.1"
+  }
+}

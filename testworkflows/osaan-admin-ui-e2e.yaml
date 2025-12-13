@@ -1,0 +1,38 @@
+apiVersion: testworkflows.testkube.io/v1
+kind: TestWorkflow
+metadata:
+  name: osaan-ui-e2e
+  namespace: testkube
+  labels:
+    app: osaan-ui
+    type: e2e
+spec:
+  content:
+    git:
+      uri: https://github.com/MiguelSombrero/osaan
+      revision: dev
+      paths:
+        - tests
+
+  container:
+    image: mcr.microsoft.com/playwright:v1.57.0-noble
+    workingDir: /data/repo/tests
+    resources:
+      requests:
+        cpu: "2"
+        memory: 2Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+
+  steps:
+    - name: Install dependencies
+      shell: |
+        npm ci
+
+    - name: Run Playwright tests
+      shell: |
+        npx --yes playwright test --trace on
+      artifacts:
+        paths:
+          - playwright-report/**/*

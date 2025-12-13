@@ -165,6 +165,7 @@ Prerequisites for running `setup-cluster.sh` script:
 - istioctl
 - helm
 - sops
+- testkube
 
 First make a copy of `manifests/environments/osaan-dev/secrets-template.yaml.example` and encrypt it with SOPS:
 
