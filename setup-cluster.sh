@@ -152,28 +152,32 @@ kubectl create -f https://operatorhub.io/install/rabbitmq-cluster-operator.yaml
 # --- 14 Installing ArgoCD ---
 echo ""
 echo "==> Installing ArgoCD..."
-kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl create -f https://operatorhub.io/install/argocd-operator.yaml
+kubectl apply -f manifests/argocd.yaml
 wait_for_deployments "argocd"
 
+
+#kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+#kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
 # Set the initial admin password using the provided password
-echo "==> Setting ArgoCD initial admin password..."
-password_hash=$(docker run --rm httpd:alpine htpasswd -Bnb admin "$ARGOCD_PASS" | cut -d ":" -f 2)
+#echo "==> Setting ArgoCD initial admin password..."
+#password_hash=$(docker run --rm httpd:alpine htpasswd -Bnb admin "$ARGOCD_PASS" | cut -d ":" -f 2)
 
 # Patch argocd-secret
-kubectl -n argocd patch secret argocd-secret \
-  -p "{\"stringData\": { \"admin.password\": \"$password_hash\", \"admin.passwordMtime\": \"$(date +%FT%T%Z)\" }}"
+#kubectl -n argocd patch secret argocd-secret \
+#  -p "{\"stringData\": { \"admin.password\": \"$password_hash\", \"admin.passwordMtime\": \"$(date +%FT%T%Z)\" }}"
 
 # Delete the initial admin secret as it is no longer needed and might be confusing
-kubectl -n argocd delete secret argocd-initial-admin-secret --ignore-not-found=true
+#kubectl -n argocd delete secret argocd-initial-admin-secret --ignore-not-found=true
 
-echo "==> Configuring ArgoCD server to run in insecure mode (behind TLS ingress)..."
-kubectl -n argocd patch configmap argocd-cmd-params-cm \
-  --type merge \
-  -p '{"data":{"server.insecure":"true"}}'
+#echo "==> Configuring ArgoCD server to run in insecure mode (behind TLS ingress)..."
+#kubectl -n argocd patch configmap argocd-cmd-params-cm \
+#  --type merge \
+#  -p '{"data":{"server.insecure":"true"}}'
 
-kubectl -n argocd rollout restart deployment argocd-server
-kubectl -n argocd rollout status deployment argocd-server
+#kubectl -n argocd rollout restart deployment argocd-server
+#kubectl -n argocd rollout status deployment argocd-server
 
 # --- 15. Install External Secrets ---
 echo ""
@@ -187,9 +191,10 @@ helm upgrade --install external-secrets \
 wait_for_deployments "external-secrets"
 
 # --- 16: Deploying ArgoCD app-of-apps ---
+echo ""
+echo "=== Deploying ArgoCD app-of-apps ..."
 kubectl apply -f manifests/platform/argocd-apps.yaml
 wait_for_deployments "keycloak"
-wait_for_deployments "istio-system"
 wait_for_deployments "cert-manager"
 
 # --- FINALLY: Creating Keycloak truststore Secret for osaan-dev ---

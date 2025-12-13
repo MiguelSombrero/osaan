@@ -157,11 +157,25 @@ docker compose up -d --build
 
 These instructions are k3d specific but can be applied to other Kubernetes distributions as well.
 
-First encrypt :
+Prerequisites for running `setup-cluster.sh` script:
 
-TODO
+- k3d
+- kubectl
+- operator-sdk
+- istioctl
+- helm
+- sops
 
-Create cluster and install all necessary operators etc. with script:
+First make a copy of `manifests/environments/osaan-dev/secrets-template.yaml.example` and encrypt it with SOPS:
+
+```bash
+sops encrypt \
+ --age <AGE_PUBLIC_KEY> \
+ --encrypted-regex '^(stringData)$' \
+ secrets-template.yaml > secrets.enc.yaml
+```
+
+Push encrypted Secrets to GitHub (ArgoCD watches Git repository for changes). Then create cluster and install all necessary operators etc. with script:
 
 ```bash
   ./setup-cluster.sh
