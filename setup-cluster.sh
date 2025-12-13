@@ -143,11 +143,11 @@ wait_for_deployments "keycloak"
 echo ""
 echo "=== Installing CrunchyData Postgres Operator ..."
 kubectl create -f https://operatorhub.io/install/postgresql.yaml
-wait_for_deployments "operators"
 
 # --- 13. Installing RabbitMQ Operator ---
+echo ""
+echo "=== Installing RabbitMQ Operator ..."
 kubectl create -f https://operatorhub.io/install/rabbitmq-cluster-operator.yaml
-wait_for_deployments "operators"
 
 # --- 14 Installing ArgoCD ---
 echo ""
@@ -178,8 +178,13 @@ kubectl -n argocd rollout status deployment argocd-server
 # --- 15. Install External Secrets ---
 echo ""
 echo "=== Installing External Secrets ..."
-kubectl create -f https://operatorhub.io/install/external-secrets-operator.yaml
-wait_for_deployments "operators"
+helm repo add external-secrets https://charts.external-secrets.io >/dev/null 2>&1
+helm repo update >/dev/null 2>&1
+helm upgrade --install external-secrets \
+   external-secrets/external-secrets \
+    -n external-secrets \
+    --create-namespace
+wait_for_deployments "external-secrets"
 
 # --- 16: Deploying ArgoCD app-of-apps ---
 kubectl apply -f manifests/platform/argocd-apps.yaml

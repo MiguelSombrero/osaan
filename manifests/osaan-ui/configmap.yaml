@@ -9,7 +9,7 @@ data:
   NEXT_PUBLIC_APP_URL: https://osaan.local:9443
   NEXTAUTH_URL: https://osaan.local:9443
   KEYCLOAK_ENABLED: "true"
-  KEYCLOAK_ISSUER: https://keycloak.local:8443/realms/osaan
+  KEYCLOAK_ISSUER: https://keycloak.local/realms/osaan
   KEYCLOAK_CLIENT_ID: osaan-ui
   REDIS_ENABLED: "true"
   REDIS_HOST: redis-master.osaan-dev.svc.cluster.local
