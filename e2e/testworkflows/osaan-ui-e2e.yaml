@@ -33,7 +33,6 @@ spec:
     - name: Run Playwright tests
       shell: |
         npx --yes playwright test --trace on
-      workingDir: /e2e/tests
       artifacts:
         paths:
           - playwright-report/**/*
