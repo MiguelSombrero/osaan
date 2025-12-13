@@ -16,7 +16,7 @@ spec:
 
   container:
     image: mcr.microsoft.com/playwright:v1.57.0-noble
-    workingDir: /data/repo
+    workingDir: /data/repo/e2e
     resources:
       requests:
         cpu: "2"
