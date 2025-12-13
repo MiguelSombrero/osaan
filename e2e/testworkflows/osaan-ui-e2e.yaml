@@ -12,11 +12,11 @@ spec:
       uri: https://github.com/MiguelSombrero/osaan
       revision: dev
       paths:
-        - tests
+        - e2e
 
   container:
     image: mcr.microsoft.com/playwright:v1.57.0-noble
-    workingDir: /data/repo/tests
+    workingDir: /data/repo
     resources:
       requests:
         cpu: "2"
@@ -33,6 +33,7 @@ spec:
     - name: Run Playwright tests
       shell: |
         npx --yes playwright test --trace on
+      workingDir: /e2e/tests
       artifacts:
         paths:
           - playwright-report/**/*
