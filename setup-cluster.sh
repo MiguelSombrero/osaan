@@ -9,10 +9,6 @@ echo "===================================================="
 echo "  Setting up local Kubernetes cluster: ${CLUSTER_NAME}"
 echo "===================================================="
 
-# --- 0. Kysy asennuksessa tarvittavat salasanat ---
-read -s -p "Give ArgoCD admin password: " ARGOCD_PASS
-echo ""
-
 # --- 1. Tarkista että k3d on asennettu ---
 if ! command -v k3d >/dev/null 2>&1; then
   echo "❌ k3d is not installed. Please install it first: https://k3d.io/"
@@ -69,10 +65,15 @@ wait_for_deployments() {
 # --- 5. Install Operator Lifecycle Manager (if not already installed) ---
 echo ""
 echo "==> Checking Operator Lifecycle Manager..."
-if ! kubectl get crd | grep -q 'operatorgroups.operators.coreos.com'; then
+if ! operator-sdk olm status >/dev/null 2>&1; then
     echo "Installing OLM..."
-    operator-sdk olm install
-    wait_for_deployments "olm"
+    operator-sdk olm install --timeout 10m
+    # Wait for OLM to be ready
+    until operator-sdk olm status >/dev/null 2>&1; do
+        echo "Waiting for OLM to be ready..."
+        sleep 5
+    done
+    echo "✅ OLM installed successfully"
 else
     echo "✅ OLM is already installed"
 fi
@@ -82,6 +83,7 @@ echo ""
 echo "==> Installing Secrets..."
 # TODO: add SOPS plugin for ArgoCD to automate decrypting secrets
 kubectl apply -f manifests/common/namespace-osaan.yaml
+kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 sops --decrypt manifests/environments/osaan-dev/secrets.enc.yaml | kubectl apply -f -
 
 # --- 7. Istio ---
@@ -142,42 +144,26 @@ wait_for_deployments "keycloak"
 # --- 12. Istalling Postgres Operator ---
 echo ""
 echo "=== Installing CrunchyData Postgres Operator ..."
-kubectl create -f https://operatorhub.io/install/postgresql.yaml
+kubectl apply -f https://operatorhub.io/install/postgresql.yaml
 
 # --- 13. Installing RabbitMQ Operator ---
 echo ""
 echo "=== Installing RabbitMQ Operator ..."
-kubectl create -f https://operatorhub.io/install/rabbitmq-cluster-operator.yaml
+kubectl apply -f https://operatorhub.io/install/rabbitmq-cluster-operator.yaml
 
 # --- 14 Installing ArgoCD ---
 echo ""
 echo "==> Installing ArgoCD..."
-kubectl create -f https://operatorhub.io/install/argocd-operator.yaml
-kubectl apply -f manifests/argocd.yaml
-wait_for_deployments "argocd"
-
-
-#kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-#kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-
-# Set the initial admin password using the provided password
-#echo "==> Setting ArgoCD initial admin password..."
-#password_hash=$(docker run --rm httpd:alpine htpasswd -Bnb admin "$ARGOCD_PASS" | cut -d ":" -f 2)
-
-# Patch argocd-secret
-#kubectl -n argocd patch secret argocd-secret \
-#  -p "{\"stringData\": { \"admin.password\": \"$password_hash\", \"admin.passwordMtime\": \"$(date +%FT%T%Z)\" }}"
-
-# Delete the initial admin secret as it is no longer needed and might be confusing
-#kubectl -n argocd delete secret argocd-initial-admin-secret --ignore-not-found=true
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 #echo "==> Configuring ArgoCD server to run in insecure mode (behind TLS ingress)..."
-#kubectl -n argocd patch configmap argocd-cmd-params-cm \
-#  --type merge \
-#  -p '{"data":{"server.insecure":"true"}}'
+kubectl -n argocd patch configmap argocd-cmd-params-cm \
+  --type merge \
+  -p '{"data":{"server.insecure":"true"}}'
 
-#kubectl -n argocd rollout restart deployment argocd-server
-#kubectl -n argocd rollout status deployment argocd-server
+kubectl -n argocd rollout restart deployment argocd-server
+kubectl -n argocd rollout status deployment argocd-server
+wait_for_deployments "argocd"
 
 # --- 15. Install External Secrets ---
 echo ""

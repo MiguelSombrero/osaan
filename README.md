@@ -181,14 +181,6 @@ Push encrypted Secrets to GitHub (ArgoCD watches Git repository for changes). Th
   ./setup-cluster.sh
 ```
 
-OR create cluster manually with command:
-
-```bash
-k3d cluster create k3d-osaan-dev --api-port 6550 -p '9080:80@loadbalancer' -p '9443:443@loadbalancer' --agents 2 --k3s-arg '--disable=traefik@server:*'
-```
-
-AND install selected operators from `./setup-cluster.sh` script.
-
 ## Deploy
 
 ArgoCD that was installed previous step will sync all the resources in `kustomization.yaml` file to the cluster.
@@ -200,6 +192,8 @@ kubectl apply -k .
 ```
 
 ## Bugs, issues and TODOs
+
+- Lots of cool stuff in osaan-ui
 
 - Add toast notifications for user actions in osaan-admin-ui
 
