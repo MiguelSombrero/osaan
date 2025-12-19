@@ -209,6 +209,11 @@ kubectl apply -k .
 
 - Authentication on microservices
 
-- Integration tests for microservices
+- Testing improvements
+
+  - Integration tests for microservices
+  - More e2e tests with Playwright
+  - Notifications when TestWorkflow fails
+  - UI for watching Playwright reports
 
 - Tracing is not working for osaan-admin-backend (Jaeger not showing spans)
