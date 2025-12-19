@@ -181,7 +181,16 @@ echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
 
 # Wait for ca-cert resource to be created by ArgoCD
 echo "⏳ Waiting for Certificate 'ca-cert' to be created..."
+kubectl apply -f manifests/platform/certificate/selfsigned-issuer.yaml
+wait_attempts=0
 while ! kubectl -n cert-manager get certificate ca-cert >/dev/null 2>&1; do
+  wait_attempts=$((wait_attempts + 1))
+  if [ "$wait_attempts" -ge 150 ]; then
+    echo "❌ Timed out waiting for Certificate 'ca-cert' to be created"
+    kubectl -n cert-manager get certificate ca-cert -o yaml || true
+    kubectl -n cert-manager get certificates || true
+    exit 1
+  fi
   sleep 2
 done
 
@@ -206,7 +215,7 @@ kubectl -n osaan-dev create secret generic keycloak-truststore \
 
 # --- Install Testkube non-interactively ---
 echo "Installing Testkube..."
-yes | testkube init || true
+testkube init standalone-agent --namespace testkube --no-confirm
 
 # --- 16: Deploying ArgoCD app-of-apps ---
 echo ""
