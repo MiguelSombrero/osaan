@@ -18,7 +18,8 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: process.env.BASE_URL || "https://osaan.local:9443",
+    baseURL:
+      process.env.BASE_URL || "http://osaan-ui-svc.osaan-dev.svc.cluster.local",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",

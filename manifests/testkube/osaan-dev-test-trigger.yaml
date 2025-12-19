@@ -1,0 +1,25 @@
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
+metadata:
+  name: osaan-dev-deployment-trigger
+  namespace: testkube
+spec:
+  resource: deployment
+  resourceSelector:
+    namespace: osaan-dev
+    nameRegex: ".*"
+  event: modified
+  conditionSpec:
+    timeout: 120
+    delay: 5
+    conditions:
+      - type: Progressing
+        status: "True"
+        reason: NewReplicaSetAvailable
+      - type: Available
+        status: "True"
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: osaan-ui-e2e
+    namespace: testkube

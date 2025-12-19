@@ -176,13 +176,6 @@ helm upgrade --install external-secrets \
     --create-namespace
 wait_for_deployments "external-secrets"
 
-# --- 16: Deploying ArgoCD app-of-apps ---
-echo ""
-echo "=== Deploying ArgoCD app-of-apps ..."
-kubectl apply -f manifests/platform/argocd-apps.yaml
-wait_for_deployments "keycloak"
-wait_for_deployments "cert-manager"
-
 # --- Creating Keycloak truststore Secret for osaan-dev ---
 echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
 
@@ -214,6 +207,11 @@ kubectl -n osaan-dev create secret generic keycloak-truststore \
 # --- Install Testkube non-interactively ---
 echo "Installing Testkube..."
 yes | testkube init || true
+
+# --- 16: Deploying ArgoCD app-of-apps ---
+echo ""
+echo "=== Deploying ArgoCD app-of-apps ..."
+kubectl apply -f argocd/app-of-apps.yaml
 
 echo ""
 echo "===================================================="
