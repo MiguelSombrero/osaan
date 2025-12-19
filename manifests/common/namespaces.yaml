@@ -1,0 +1,29 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: osaan-dev
+  labels:
+    name: osaan-dev
+    istio-injection: enabled
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: keycloak
+  labels:
+    name: keycloak
+    istio-injection: enabled
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: argocd
+  labels:
+    name: argocd
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: istio-system
+  labels:
+    name: istio-system

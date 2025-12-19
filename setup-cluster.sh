@@ -78,18 +78,20 @@ else
     echo "✅ OLM is already installed"
 fi
 
-# --- 6. Installing Secrets ---
+# --- 6. Installing Namespaces ---
+echo ""
+echo "==> Installing Namespaces..."
+kubectl apply -f manifests/common/namespaces.yaml
+
+# --- Installing Secrets ---
 echo ""
 echo "==> Installing Secrets..."
 # TODO: add SOPS plugin for ArgoCD to automate decrypting secrets
-kubectl apply -f manifests/common/namespace-osaan.yaml
-kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 sops --decrypt manifests/environments/osaan-dev/secrets.enc.yaml | kubectl apply -f -
 
-# --- 7. Istio ---
+# --- Installing Istio ---
 echo ""
 echo "==> Installing Istio..."
-kubectl create namespace istio-system --dry-run=client -o yaml | kubectl apply -f -
 istioctl install -y -n istio-system \
   --set meshConfig.accessLogFile=/dev/stdout \
   --set meshConfig.accessLogEncoding=JSON \
@@ -99,7 +101,7 @@ istioctl install -y -n istio-system \
   --set meshConfig.defaultConfig.proxyMetadata.ISTIO_META_DNS_CAPTURE=true
 wait_for_deployments "istio-system"
 
-# --- 8. Istio integrations ---
+# --- Installing Istio integrations ---
 echo ""
 echo "==> Installing Istio integrations (Kiali, Jaeger, Prometheus, Grafana)..."
 istio_version=$(istioctl version --short --remote=false | awk '{print $3}')
@@ -111,13 +113,13 @@ kubectl apply -n istio-system -f "${base_url}/prometheus.yaml"
 kubectl apply -n istio-system -f "${base_url}/grafana.yaml"
 wait_for_deployments "istio-system"
 
-# --- 9. cert-manager ---
+# --- Installing cert-manager ---
 echo ""
 echo "==> Installing cert-manager..."
 kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml"
 wait_for_deployments "cert-manager"
 
-# --- 10. Redis ---
+# --- Installing Redis ---
 echo ""
 echo "=== 🧰 Installing Redis (Bitnami)..."
 helm repo add bitnami https://charts.bitnami.com/bitnami >/dev/null 2>&1
@@ -130,30 +132,27 @@ helm upgrade --install redis bitnami/redis \
   --set master.service.ports.redis=6379 \
   --wait
 
-# --- 11. Keycloak ---
+# --- Installing Keycloak ---
 echo ""
 echo "=== Installing Keycloak ..."
-kubectl create namespace keycloak --dry-run=client -o yaml \
-  | kubectl label --local -f - istio-injection=enabled -o yaml \
-  | kubectl apply -f -
 kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/keycloaks.k8s.keycloak.org-v1.yml
 kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
 kubectl -n keycloak apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/kubernetes.yml
 wait_for_deployments "keycloak"
 
-# --- 12. Istalling Postgres Operator ---
+# --- Installing Postgres Operator ---
 echo ""
 echo "=== Installing CrunchyData Postgres Operator ..."
 kubectl apply -f https://operatorhub.io/install/postgresql.yaml
 
-# --- 13. Installing RabbitMQ Operator ---
+# --- Installing RabbitMQ Operator ---
 echo ""
 echo "=== Installing RabbitMQ Operator ..."
 kubectl apply -f https://operatorhub.io/install/rabbitmq-cluster-operator.yaml
 
-# --- 14 Installing ArgoCD ---
+# --- Installing ArgoCD ---
 echo ""
-echo "==> Installing ArgoCD..."
+echo "=== Installing ArgoCD..."
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 #echo "==> Configuring ArgoCD server to run in insecure mode (behind TLS ingress)..."
@@ -161,11 +160,28 @@ kubectl -n argocd patch configmap argocd-cmd-params-cm \
   --type merge \
   -p '{"data":{"server.insecure":"true"}}'
 
+echo "⏳ Waiting for ArgoCD secrets to be created..."
+until kubectl -n argocd get secret argocd-secret >/dev/null 2>&1; do
+  sleep 2
+done
+until kubectl -n argocd get secret argocd-initial-admin-secret >/dev/null 2>&1; do
+  sleep 2
+done
+
+ARGOCD_ADMIN_PASSWORD="$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)"
+ARGOCD_ADMIN_PASSWORD_BCRYPT="$(docker run --rm httpd:2.4-alpine htpasswd -Bbn admin "${ARGOCD_ADMIN_PASSWORD}" | cut -d ':' -f 2)"
+ARGOCD_ADMIN_PASSWORD_BCRYPT="${ARGOCD_ADMIN_PASSWORD_BCRYPT/\$2y\$/\$2a\$}"
+ARGOCD_ADMIN_PASSWORD_MTIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+kubectl -n argocd patch secret argocd-secret \
+  --type merge \
+  -p "{\"stringData\":{\"admin.password\":\"${ARGOCD_ADMIN_PASSWORD_BCRYPT}\",\"admin.passwordMtime\":\"${ARGOCD_ADMIN_PASSWORD_MTIME}\"}}"
+
 kubectl -n argocd rollout restart deployment argocd-server
 kubectl -n argocd rollout status deployment argocd-server
 wait_for_deployments "argocd"
 
-# --- 15. Install External Secrets ---
+# --- Installing External Secrets ---
 echo ""
 echo "=== Installing External Secrets ..."
 helm repo add external-secrets https://charts.external-secrets.io >/dev/null 2>&1
@@ -213,11 +229,12 @@ kubectl -n osaan-dev create secret generic keycloak-truststore \
   --from-file=keycloak-truststore.jks=/tmp/keycloak-truststore-k3d.jks \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# --- Install Testkube non-interactively ---
-echo "Installing Testkube..."
+# --- Installing Testkube ---
+echo ""
+echo "=== Installing Testkube..."
 testkube init standalone-agent --namespace testkube --no-confirm
 
-# --- 16: Deploying ArgoCD app-of-apps ---
+# --- Deploying ArgoCD app-of-apps ---
 echo ""
 echo "=== Deploying ArgoCD app-of-apps ..."
 kubectl apply -f argocd/app-of-apps.yaml
