@@ -3,14 +3,10 @@ package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,20 +30,6 @@ class AdminSkillController {
 
     public AdminSkillController(SkillService service) {
         this.service = service;
-    }
-
-    @GetMapping
-    @ApiResponse(responseCode = "200", description = "OK")
-    @Operation(summary = "Get skills", description = "Get all skills with pagination support. Use 'page' (zero-based), 'size', and 'sort' query parameters.")
-    public GetSkillsResponse getSkills(
-            @Parameter(in = ParameterIn.QUERY,
-                    description = "Filter skills by name (case-insensitive, partial match).",
-                    schema = @Schema(type = "string", example = "java"))
-            @RequestParam(required = false) String query,
-            @ParameterObject @PageableDefault(size = 20, sort = "name")
-            Pageable pageable
-    ) {
-        return service.getSkills(query, pageable);
     }
 
     @PostMapping

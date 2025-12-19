@@ -71,6 +71,7 @@ get notified via email when matching profiles are added. You can create and mana
 
 - CI/CD - GitHub Actions
 - Deployment - ArgoCD
+- E2E tests - Playwright, TestKube
 
 ### Platform
 

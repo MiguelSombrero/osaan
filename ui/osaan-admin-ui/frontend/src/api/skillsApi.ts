@@ -1,17 +1,17 @@
-import { AdminSkillsApi, type GetSkillsResponse, type Skill } from './generated/api';
-import { Configuration } from './generated/configuration';
+import { PublicSkillsApi, type GetSkillsResponse, type Skill } from './generated/skills';
+import { Configuration } from './generated/skills/configuration';
 import { DEFAULT_PAGE, DEFAULT_SIZE, DEFAULT_ORDER } from '@/skill/hooks/useSkillSearchParams';
 
-const config = new Configuration({
+const skillsConfig = new Configuration({
   basePath: '/api',
   baseOptions: { withCredentials: true },
 });
 
-export const adminSkillsApi = new AdminSkillsApi(config);
+export const skillApi = new PublicSkillsApi(skillsConfig);
 
 const DEFAULT_SORT = [`name,${DEFAULT_ORDER}`];
 
-export const skillApi = {
+export const skillsApi = {
   async getSkills(
     query?: string,
     sort?: string[],
@@ -26,16 +26,7 @@ export const skillApi = {
     const sortParam =
       sort && JSON.stringify(sort) !== JSON.stringify(DEFAULT_SORT) ? sort : undefined;
 
-    const res = await adminSkillsApi.getSkills(queryParam, pageParam, sizeParam, sortParam);
+    const res = await skillApi.getSkills(queryParam, pageParam, sizeParam, sortParam);
     return res.data;
-  },
-
-  async createSkill(skill: Skill): Promise<Skill> {
-    const res = await adminSkillsApi.createSkill(skill);
-    return res.data;
-  },
-
-  async deleteSkill(skillId: string): Promise<void> {
-    await adminSkillsApi.deleteSkill(skillId);
   },
 };

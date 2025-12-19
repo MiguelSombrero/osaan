@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     if (sort) queryParams.set('sort', sort);
 
     const queryString = queryParams.toString();
-    const endpoint = `/v1/admin/skills${queryString ? `?${queryString}` : ''}`;
+    const endpoint = `/v1/skills${queryString ? `?${queryString}` : ''}`;
 
     const data = await fetchWithAuth(config.skillCatalogApiUrl, endpoint);
     return NextResponse.json(data);

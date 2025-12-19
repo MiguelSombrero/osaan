@@ -1,5 +1,6 @@
-import type { GetSkillsResponse } from '@/api/generated/api';
-import { skillApi } from '@/api/skillApi';
+import type { GetSkillsResponse } from '@/api/generated/skills';
+import { skillsApi } from '@/api/skillsApi';
+import { adminSkillsApi } from '@/api/adminSkillsApi';
 import { parseApiError, ApiError } from '@/api/errors';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -10,7 +11,7 @@ export const useSkills = (sort?: string[], query?: string, page?: number, size?:
     queryKey: ['skills', sort, query, page, size],
     queryFn: async () => {
       try {
-        return await skillApi.getSkills(query, sort, page, size);
+        return await skillsApi.getSkills(query, sort, page, size);
       } catch (err) {
         throw parseApiError(err);
       }
@@ -28,7 +29,7 @@ export const useSkills = (sort?: string[], query?: string, page?: number, size?:
   const create = useMutation({
     mutationFn: async (name: string) => {
       try {
-        return await skillApi.createSkill({ name });
+        return await adminSkillsApi.createSkill({ name });
       } catch (err) {
         throw parseApiError(err);
       }
@@ -41,7 +42,7 @@ export const useSkills = (sort?: string[], query?: string, page?: number, size?:
   const remove = useMutation({
     mutationFn: async (id: string) => {
       try {
-        await skillApi.deleteSkill(id);
+        await adminSkillsApi.deleteSkill(id);
         return id;
       } catch (err) {
         throw parseApiError(err);

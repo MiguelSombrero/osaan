@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import type { AuthState } from '@/hooks/useAuth';
-import type { Skill } from '@/api/generated/api';
+import type { Skill } from '@/api/generated/skills/api';
 import { mockAdminUser, mockSkills, createMockSkillsResponse } from './data';
 
 // Mutable state for tests to override
@@ -26,8 +26,8 @@ export const handlers = [
     return HttpResponse.json(currentAuthState);
   }),
 
-  // Get skills - matches /api/v1/admin/skills
-  http.get('*/v1/admin/skills', ({ request }) => {
+  // Get skills - matches /api/v1/skills (public endpoint)
+  http.get('*/v1/skills', ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get('query')?.toLowerCase();
     const sortParam = url.searchParams.getAll('sort');
@@ -84,9 +84,7 @@ export const authHandler = (state: AuthState) =>
   http.get('*/api/user', () => HttpResponse.json(state));
 
 export const skillsErrorHandler = (status: number, detail: string) =>
-  http.get('*/v1/admin/skills', () =>
-    HttpResponse.json({ title: 'Error', status, detail }, { status })
-  );
+  http.get('*/v1/skills', () => HttpResponse.json({ title: 'Error', status, detail }, { status }));
 
 export const createSkillErrorHandler = (status: number, detail: string) =>
   http.post('*/v1/admin/skills', () =>

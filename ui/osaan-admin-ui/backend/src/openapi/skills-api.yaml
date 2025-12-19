@@ -1,0 +1,291 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Skill Catalog Service API",
+    "description": "API for managing skills",
+    "contact": {
+      "name": "Miguel Sombrero"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://raw.githubusercontent.com/MiguelSombrero/osaan/refs/heads/main/LICENSE?token=GHSAT0AAAAAADI246M5X7R6KOEGQGCQX3GY2HJDVBA"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8092",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "PublicSkills",
+      "description": "REST API for public operations on skills"
+    }
+  ],
+  "paths": {
+    "/v1/skills": {
+      "get": {
+        "tags": [
+          "PublicSkills"
+        ],
+        "summary": "Get skills",
+        "description": "Get all skills with pagination support. Use 'page' (zero-based), 'size', and 'sort' query parameters.",
+        "operationId": "getSkills",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Filter skills by name (case-insensitive, partial match).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "java"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "default": [
+                "name,ASC"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSkillsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSkillsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSkillsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSkillsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/skills/{skillId}": {
+      "get": {
+        "tags": [
+          "PublicSkills"
+        ],
+        "summary": "Get skill",
+        "description": "Get skill by ID",
+        "operationId": "getSkill",
+        "parameters": [
+          {
+            "name": "skillId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GetSkillsResponse": {
+        "type": "object",
+        "description": "Paginated response containing skills and pagination metadata",
+        "properties": {
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Skill",
+              "description": "List of skills",
+              "minItems": 0
+            },
+            "minItems": 0
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Current page number (zero-based)",
+            "example": 0
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page",
+            "example": 20
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Total number of items",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of pages",
+            "example": 5
+          },
+          "first": {
+            "type": "boolean",
+            "description": "Whether this is the first page",
+            "example": true
+          },
+          "last": {
+            "type": "boolean",
+            "description": "Whether this is the last page",
+            "example": false
+          }
+        }
+      },
+      "Skill": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the skill. Generated by the database",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the skill",
+            "example": "Java"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "oauth2",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://keycloak.local/realms/osaan/protocol/openid-connect/auth",
+            "tokenUrl": "https://keycloak.local/realms/osaan/protocol/openid-connect/token",
+            "scopes": {
+
+            }
+          }
+        }
+      }
+    }
+  }
+}
