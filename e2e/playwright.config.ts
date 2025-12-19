@@ -1,4 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
+import * as dotenv from "dotenv";
+import * as path from "path";
+
+// Load environment variables from .env.local or .env.dev based on NODE_ENV
+const envFile =
+  process.env.NODE_ENV === "development" ? ".env.dev" : ".env.local";
+const envPath = path.resolve(__dirname, envFile);
+
+dotenv.config({ path: envPath });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -20,6 +29,9 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL:
       process.env.BASE_URL || "http://osaan-ui-svc.osaan-dev.svc.cluster.local",
+
+    /* Bypass SSL certificate errors for local development */
+    ignoreHTTPSErrors: true,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",

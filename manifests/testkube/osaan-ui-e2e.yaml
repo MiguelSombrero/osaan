@@ -31,8 +31,10 @@ spec:
         npm ci
 
     - name: Run Playwright tests
+      env:
+        NODE_ENV: development
       shell: |
-        npx --yes playwright test --trace on
+        npx --yes playwright test
       artifacts:
         paths:
           - playwright-report/**/*
