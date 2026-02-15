@@ -1,4 +1,4 @@
-package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
+package com.github.miguelsombrero.osaan.skill_catalog_service.infrastructure.persistence.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table("skills")
 @NoArgsConstructor
 @AllArgsConstructor
-class SkillEntity {
+public class SkillEntity {
     @Id
     private UUID id;
     private String name;

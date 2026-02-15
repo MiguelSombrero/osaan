@@ -1,6 +1,11 @@
-package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
+package com.github.miguelsombrero.osaan.skill_catalog_service.domain.service;
 
 import com.github.miguelsombrero.osaan.core.exception.ResourceNotFoundException;
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.GetSkillsResponse;
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.SkillDto;
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.mapper.ApiDomainSkillMapper;
+import com.github.miguelsombrero.osaan.skill_catalog_service.domain.repository.SkillRepository;
+import com.github.miguelsombrero.osaan.skill_catalog_service.skill.Skill;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -10,31 +15,31 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-class SkillService {
+public class SkillService {
 
-    private final SkillMapper mapper;
+    private final ApiDomainSkillMapper mapper;
     private final SkillRepository repository;
 
-    SkillService(SkillMapper mapper, SkillRepository repository) {
+    SkillService(ApiDomainSkillMapper mapper, SkillRepository repository) {
         this.mapper = mapper;
         this.repository = repository;
     }
 
-    public Skill saveSkill(Skill skill) {
-        SkillEntity entity = mapper.apiToEntity(skill);
-        return mapper.entityToApi(repository.save(entity));
+    public SkillDto saveSkill(SkillDto skill) {
+        Skill domain = mapper.apiToDomain(skill);
+        return mapper.domainToApi(repository.save(domain));
     }
 
-    public Skill getSkill(UUID skillId) {
-        SkillEntity entity = repository.findById(skillId)
+    public SkillDto getSkill(UUID skillId) {
+        Skill domain = repository.findById(skillId)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
-        return mapper.entityToApi(entity);
+        return mapper.domainToApi(domain);
     }
 
-    public Skill searchByName(String name) {
-        SkillEntity entity = repository.findByNameIgnoreCase(name)
+    public SkillDto searchByName(String name) {
+        Skill domain = repository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
-        return mapper.entityToApi(entity);
+        return mapper.domainToApi(domain);
     }
 
     /**
@@ -42,22 +47,22 @@ class SkillService {
      * Without it Spring creates COUNT query including ORDER BY clause which causes syntax error in some databases.
      */
     public GetSkillsResponse getSkills(String query, Pageable pageable) {
-        List<SkillEntity> content;
+        List<Skill> content;
         long total;
 
         if (query != null && !query.isBlank()) {
             content = repository.findByNameContainingIgnoreCase(query, pageable);
             total = repository.countByNameContainingIgnoreCase(query);
         } else {
-            Page<SkillEntity> page = repository.findAll(pageable);
+            Page<Skill> page = repository.findAll(pageable);
             content = page.getContent();
             total = page.getTotalElements();
         }
 
-        Page<SkillEntity> page = new PageImpl<>(content, pageable, total);
+        Page<Skill> page = new PageImpl<>(content, pageable, total);
 
-        List<Skill> skills = page.getContent().stream()
-                .map(mapper::entityToApi)
+        List<SkillDto> skills = page.getContent().stream()
+                .map(mapper::domainToApi)
                 .toList();
 
         return new GetSkillsResponse(

@@ -1,5 +1,7 @@
-package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
+package com.github.miguelsombrero.osaan.skill_catalog_service.api.controller;
 
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.SkillDto;
+import com.github.miguelsombrero.osaan.skill_catalog_service.domain.service.SkillService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -35,8 +37,8 @@ class AdminSkillController {
     @PostMapping
     @ApiResponse(responseCode = "201", description = "Created")
     @Operation(summary = "Create Skill", description = "Creates new skill and returns created skill with generated ID.")
-    public ResponseEntity<Skill> createSkill(@RequestBody Skill skill) {
-        Skill saved = service.saveSkill(skill);
+    public ResponseEntity<SkillDto> createSkill(@RequestBody SkillDto skill) {
+        SkillDto saved = service.saveSkill(skill);
         URI location = URI.create("/v1/admin/skills/" + saved.getId());
         return ResponseEntity.created(location).body(saved);
     }
@@ -44,7 +46,7 @@ class AdminSkillController {
     @DeleteMapping("/{skillId}")
     @ApiResponse(responseCode = "204", description = "No Content")
     @Operation(summary = "Delete skill", description = "Delete skill by ID")
-    public ResponseEntity<Skill> deleteSkill(
+    public ResponseEntity<SkillDto> deleteSkill(
             @Parameter(in = ParameterIn.PATH, required = true, example = "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8")
             @PathVariable UUID skillId
     ) {

@@ -1,5 +1,8 @@
-package com.github.miguelsombrero.osaan.skill_catalog_service.skill;
+package com.github.miguelsombrero.osaan.skill_catalog_service.api.controller;
 
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.GetSkillsResponse;
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.SkillDto;
+import com.github.miguelsombrero.osaan.skill_catalog_service.domain.service.SkillService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -48,7 +51,7 @@ class SkillController {
 
     @Operation(summary = "Get skill", description = "Get skill by ID")
     @GetMapping("/{skillId}")
-    public Skill getSkill(
+    public SkillDto getSkill(
             @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", example = "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8"))
             @PathVariable UUID skillId
     ) {

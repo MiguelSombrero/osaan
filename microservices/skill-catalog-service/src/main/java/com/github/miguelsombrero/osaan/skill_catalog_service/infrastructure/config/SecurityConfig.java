@@ -1,10 +1,4 @@
-package com.github.miguelsombrero.osaan.skill_catalog_service.config;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+package com.github.miguelsombrero.osaan.skill_catalog_service.infrastructure.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Configuration
 public class SecurityConfig {
@@ -61,22 +61,22 @@ public class SecurityConfig {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
 
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
-        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-        if (realmAccess == null) {
-            return Collections.emptyList();
-        }
+            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+            if (realmAccess == null) {
+                return Collections.emptyList();
+            }
 
-        Object rolesObj = realmAccess.get("roles");
-        if (!(rolesObj instanceof Collection<?> roles)) {
-            return Collections.emptyList();
-        }
+            Object rolesObj = realmAccess.get("roles");
+            if (!(rolesObj instanceof Collection<?> roles)) {
+                return Collections.emptyList();
+            }
 
-        return roles.stream()
-                .filter(Objects::nonNull)
-                .map(Object::toString)
-                .map(role -> "ROLE_" + role)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+            return roles.stream()
+                    .filter(Objects::nonNull)
+                    .map(Object::toString)
+                    .map(role -> "ROLE_" + role)
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
         });
 
         return jwtAuthenticationConverter;
