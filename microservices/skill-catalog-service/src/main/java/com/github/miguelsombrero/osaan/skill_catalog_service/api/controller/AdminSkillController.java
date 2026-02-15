@@ -1,7 +1,8 @@
 package com.github.miguelsombrero.osaan.skill_catalog_service.api.controller;
 
 import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.SkillDto;
-import com.github.miguelsombrero.osaan.skill_catalog_service.domain.service.SkillService;
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.mapper.ApiDomainSkillMapper;
+import com.github.miguelsombrero.osaan.skill_catalog_service.application.port.ManageSkillsPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -28,19 +29,22 @@ import java.util.UUID;
 })
 class AdminSkillController {
 
-    private final SkillService service;
+    private final ManageSkillsPort manageSkillsPort;
+    private final ApiDomainSkillMapper apiMapper;
 
-    public AdminSkillController(SkillService service) {
-        this.service = service;
+    public AdminSkillController(ManageSkillsPort manageSkillsPort, ApiDomainSkillMapper apiMapper) {
+        this.manageSkillsPort = manageSkillsPort;
+        this.apiMapper = apiMapper;
     }
 
     @PostMapping
     @ApiResponse(responseCode = "201", description = "Created")
     @Operation(summary = "Create Skill", description = "Creates new skill and returns created skill with generated ID.")
     public ResponseEntity<SkillDto> createSkill(@RequestBody SkillDto skill) {
-        SkillDto saved = service.saveSkill(skill);
-        URI location = URI.create("/v1/admin/skills/" + saved.getId());
-        return ResponseEntity.created(location).body(saved);
+        var created = manageSkillsPort.createSkill(skill.getName());
+        var dto = apiMapper.domainToApi(created);
+        URI location = URI.create("/v1/admin/skills/" + dto.getId());
+        return ResponseEntity.created(location).body(dto);
     }
 
     @DeleteMapping("/{skillId}")
@@ -50,7 +54,7 @@ class AdminSkillController {
             @Parameter(in = ParameterIn.PATH, required = true, example = "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8")
             @PathVariable UUID skillId
     ) {
-        service.deleteSkill(skillId);
+        manageSkillsPort.deleteSkill(skillId);
         return ResponseEntity.noContent().build();
     }
 

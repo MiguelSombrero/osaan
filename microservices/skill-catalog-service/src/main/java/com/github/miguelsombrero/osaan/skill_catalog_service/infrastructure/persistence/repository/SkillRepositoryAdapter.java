@@ -2,7 +2,7 @@ package com.github.miguelsombrero.osaan.skill_catalog_service.infrastructure.per
 
 import com.github.miguelsombrero.osaan.skill_catalog_service.domain.repository.SkillRepository;
 import com.github.miguelsombrero.osaan.skill_catalog_service.infrastructure.persistence.mapper.DomainEntitySkillMapper;
-import com.github.miguelsombrero.osaan.skill_catalog_service.skill.Skill;
+import com.github.miguelsombrero.osaan.skill_catalog_service.domain.entity.Skill;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

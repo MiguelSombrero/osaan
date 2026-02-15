@@ -2,7 +2,8 @@ package com.github.miguelsombrero.osaan.skill_catalog_service.api.controller;
 
 import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.GetSkillsResponse;
 import com.github.miguelsombrero.osaan.skill_catalog_service.api.dto.SkillDto;
-import com.github.miguelsombrero.osaan.skill_catalog_service.domain.service.SkillService;
+import com.github.miguelsombrero.osaan.skill_catalog_service.api.mapper.ApiDomainSkillMapper;
+import com.github.miguelsombrero.osaan.skill_catalog_service.application.port.ManageSkillsPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -30,10 +31,12 @@ import java.util.UUID;
 @Tag(name = "PublicSkills", description = "REST API for public operations on skills")
 class SkillController {
 
-    private final SkillService service;
+    private final ManageSkillsPort manageSkillsPort;
+    private final ApiDomainSkillMapper apiMapper;
 
-    public SkillController(SkillService service) {
-        this.service = service;
+    public SkillController(ManageSkillsPort manageSkillsPort, ApiDomainSkillMapper apiMapper) {
+        this.manageSkillsPort = manageSkillsPort;
+        this.apiMapper = apiMapper;
     }
 
     @GetMapping
@@ -46,7 +49,19 @@ class SkillController {
             @ParameterObject @PageableDefault(size = 20, sort = "name")
             Pageable pageable
     ) {
-        return service.getSkills(query, pageable);
+        var page = manageSkillsPort.getSkills(query, pageable);
+        var skills = page.getContent().stream()
+                .map(apiMapper::domainToApi)
+                .toList();
+        return new GetSkillsResponse(
+                skills,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isFirst(),
+                page.isLast()
+        );
     }
 
     @Operation(summary = "Get skill", description = "Get skill by ID")
@@ -55,7 +70,8 @@ class SkillController {
             @Parameter(in = ParameterIn.PATH, required = true, schema = @Schema(type = "string", example = "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8"))
             @PathVariable UUID skillId
     ) {
-        return service.getSkill(skillId);
+        var skill = manageSkillsPort.getSkill(skillId);
+        return apiMapper.domainToApi(skill);
     }
 
 }
