@@ -1,0 +1,7 @@
+# Use Caffeine cache for tests - no Redis required
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+CACHE_TYPE: caffeine

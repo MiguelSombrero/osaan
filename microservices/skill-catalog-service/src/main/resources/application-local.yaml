@@ -1,6 +1,14 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
 logging:
   level:
     com.github.miguelsombrero.osaan: TRACE
+    com.github.miguelsombrero.osaan.skill_catalog_service.infrastructure.cache: DEBUG
+    com.github.benmanes.caffeine: DEBUG
+    org.springframework.cache: DEBUG
     org.springframework:
       jdbc: DEBUG
       security: DEBUG
@@ -15,3 +23,4 @@ server:
 APP_AUTH_DISABLED: true
 API_DOCS_ENABLED: true
 SWAGGER_UI_ENABLED: true
+CACHE_TYPE: caffeine

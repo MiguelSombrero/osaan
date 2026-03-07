@@ -8,11 +8,13 @@ management:
   zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans
   tracing.sampling.probability: 1.0
 
-spring.datasource:
-  url: jdbc:postgresql://osaan-db:5432/postgres
-  username: postgres
-  password: osaan_pass
+spring:
+  datasource:
+    url: jdbc:postgresql://osaan-db:5432/postgres
+    username: postgres
+    password: osaan_pass
 
 ISSUER_URI: https://keycloak:8443/realms/osaan
 API_DOCS_ENABLED: true
 SWAGGER_UI_ENABLED: true
+SPRING_DATA_REDIS_HOST: osaan-redis
