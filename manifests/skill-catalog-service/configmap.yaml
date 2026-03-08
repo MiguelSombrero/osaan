@@ -8,6 +8,7 @@ data:
   LOGGING_LEVEL_APPLICATION: TRACE
   LOGGING_LEVEL_ORG_SPRING_FRAMEWORK_JDBC: DEBUG
   ISSUER_URI: https://keycloak.local/realms/osaan
+  SPRING_DATA_REDIS_HOST: redis-master.osaan-dev.svc.cluster.local
   JAVA_TOOL_OPTIONS: >
     -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeit

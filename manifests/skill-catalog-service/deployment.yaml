@@ -44,6 +44,11 @@ spec:
             - configMapRef:
                 name: skill-catalog-service-config
           env:
+            - name: SPRING_DATA_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: redis-password
             - name: POSTGRESQL_HOST
               valueFrom:
                 secretKeyRef:

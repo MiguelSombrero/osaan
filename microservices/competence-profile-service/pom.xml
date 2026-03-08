@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.6</version>
+        <version>4.0.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.miguelsombrero.osaan</groupId>
@@ -15,11 +15,12 @@
     <description>Microservice for managing employee competence profile</description>
 
     <properties>
-        <datasource-micrometer.version>1.2.0</datasource-micrometer.version>
+        <datasource-micrometer.version>2.0.0</datasource-micrometer.version>
         <java.version>25</java.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <osaan.core.version>1.0.0-SNAPSHOT</osaan.core.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2025.1.0</spring-cloud.version>
+        <springdoc-openapi.version>3.0.0</springdoc-openapi.version>
     </properties>
 
     <dependencies>
@@ -37,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -46,6 +47,14 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- Tracing -->
@@ -69,6 +78,11 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -102,9 +116,21 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -119,12 +145,12 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
+            <artifactId>testcontainers-postgresql</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -176,8 +202,15 @@
 
     <repositories>
         <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/MiguelSombrero/osaan</url>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>spring-snapshots</id>
@@ -187,8 +220,27 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/MiguelSombrero/osaan</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
+
     <pluginRepositories>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
         <pluginRepository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
@@ -196,6 +248,10 @@
             <releases>
                 <enabled>false</enabled>
             </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/MiguelSombrero/osaan</url>
         </pluginRepository>
     </pluginRepositories>
 

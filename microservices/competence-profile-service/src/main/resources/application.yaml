@@ -1,3 +1,24 @@
+api:
+  version: 1.0.0
+  title: Competence Service API
+  description: API for managing competences
+  license:
+    name: MIT
+    url: https://raw.githubusercontent.com/MiguelSombrero/osaan/refs/heads/main/LICENSE?token=GHSAT0AAAAAADI246M5X7R6KOEGQGCQX3GY2HJDVBA
+  contact:
+    name: Miguel Sombrero
+  security:
+    oauth2:
+      authorizationUrl: ${ISSUER_URI:https://keycloak.local/realms/osaan}/protocol/openid-connect/auth
+      tokenUrl: ${ISSUER_URI:https://keycloak.local/realms/osaan}/protocol/openid-connect/token
+      scopes:
+        read: Grants read access
+        write: Grants write access
+
+app:
+  auth:
+    disabled: ${APP_AUTH_DISABLED:false}
+
 logging:
   level:
     com.github.miguelsombrero.osaan: ${LOGGING_LEVEL_APPLICATION:INFO}

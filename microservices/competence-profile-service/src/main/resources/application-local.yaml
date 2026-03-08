@@ -1,14 +1,15 @@
+APP_AUTH_DISABLED: true
+
 employee:
   service:
-    url: http://localhost:8091/api
+    url: http://localhost:8091
 
 skill:
   service:
-    url: http://localhost:8092/api
+    url: http://localhost:8092
 
 logging:
   level:
-    com.github.miguelsombrero.osaan: TRACE
     io.github.resilience4j: TRACE
     org.springframework.jdbc: DEBUG
     web: TRACE
@@ -27,3 +28,5 @@ spring:
     port: 5672
     username: guest
     password: guest # Default RabbitMQ credentials for local development
+
+  LOGGING_LEVEL_APPLICATION: TRACE

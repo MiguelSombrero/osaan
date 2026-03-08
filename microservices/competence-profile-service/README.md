@@ -2,19 +2,7 @@
 
 ## Usage
 
-### Add Competence (skill and rating) to employee
-
-```bash
-curl -X POST http://localhost:8093/v1/competences/b52f3c8d-43af-4e6e-8dfc-6a3c2f19c8a4 \
-  -H "Content-Type: application/json" \
-  -d '[{"skillId":"c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8","rating":2}]'
-```
-
-### Search employees with skill and rating
-
-```bash
-curl -X GET http://localhost:8093/v1/competences/search?skill=Python&rating=2
-```
+When running locally see OpenAPI documentation at: http://localhost:8093/swagger-ui/index.html
 
 ## For developer
 
