@@ -1,0 +1,28 @@
+---
+description: Spring Boot — DDD/hex layout and Java conventions for microservices
+globs: microservices/**/*.java
+alwaysApply: false
+---
+
+# Spring Boot (`microservices/`)
+
+Architecture: **Domain-Driven Design + Hexagonal** (ports and adapters), applied pragmatically.
+
+## Base package
+
+Service root: `com.github.miguelsombrero.osaan.<service_snake_case>` (matches the service folder and Maven artifact).
+
+Typical layers under that root:
+
+- `api/` — REST controllers, request/response DTOs (records), API mappers
+- `application/` — port interfaces, application services
+- `domain/` — entities, value objects, domain repository interfaces
+- `infrastructure/` — driven adapters (`persistence/`, `cache/`, `client/`, `config/`, mappers, etc.); extra subpackages are normal — follow the existing service
+- `config/`, `exception/`, `util/` when present
+
+## Conventions
+
+- Constructor injection only — Lombok `@RequiredArgsConstructor`, `private final` fields
+- One class per file; package segments lowercase singular nouns where applicable
+- Business logic lives in the domain layer; not in controllers or infrastructure adapters
+- Do not use `var`; use explicit types

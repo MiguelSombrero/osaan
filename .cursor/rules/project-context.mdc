@@ -1,0 +1,24 @@
+---
+description: Repo map and stack overview for Osaan. Always applied.
+alwaysApply: true
+---
+
+# Project Context
+
+Knowledge management system built on a microservice landscape.
+
+## Repository layout
+
+- **`microservices/`** — Spring Boot services (one Maven module per service).
+- **`ui/osaan-admin-ui/`** — Admin: React (Vite) frontend, Node/Express backend.
+- **`ui/osaan-ui/`** — End-user UI: Next.js (App Router).
+
+If the codebase does not match the conventions in scoped rules under `.cursor/rules/`, **do not refactor package layout, routing structure, or architecture without asking the user**.
+
+## Technology overview
+
+**Microservices** — Java 25, Spring Boot 4, SpringDoc OpenAPI 3, Jakarta Bean Validation 3, JUnit 5, Micrometer/Actuator. Scoped rule: `spring-boot.mdc`.
+
+**Admin UI** — Frontend: React 18, TypeScript, Vite, React Router, MUI, TanStack Query, Zustand, i18next; OpenAPI-generated API clients. Backend: Node.js, Express. Scoped rule: `osaan-admin-frontend.mdc`.
+
+**User UI (`ui/osaan-ui/`)** — Next.js 15, React 19, TypeScript, TanStack Query, i18next, Tailwind CSS, NextAuth. Scoped rule: `osaan-ui-next.mdc`.

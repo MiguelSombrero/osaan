@@ -1,0 +1,14 @@
+---
+description: Admin UI — Vite React app (frontend) conventions
+globs: ui/osaan-admin-ui/frontend/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Admin UI frontend (`ui/osaan-admin-ui/frontend`)
+
+- **Tooling**: Vite; entry `src/main.tsx`, root `src/App.tsx`, routing with React Router.
+- **Folders**: `src/pages/` for route-level screens; domain areas under `src/<domain>/` (e.g. `src/skill/`); shared UI in `src/components/`; HTTP and generated clients in `src/api/` (including `generated/` from OpenAPI — regenerate via package scripts instead of hand-editing generated output).
+- **Data**: TanStack Query for server state; Zustand where used for client/UI state.
+- **UI**: MUI + Emotion; theme in `src/theme.ts`.
+- **i18n**: `src/i18n.ts` with react-i18next; keep namespaces and key style consistent with existing usage.
+- **Tests**: Vitest + Testing Library; shared test helpers and MSW under `src/test/`.

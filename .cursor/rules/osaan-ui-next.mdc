@@ -1,0 +1,14 @@
+---
+description: User UI — Next.js App Router conventions
+globs: ui/osaan-ui/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# User UI (`ui/osaan-ui`)
+
+- **Routing**: App Router under `src/app/` (`page.tsx`, `layout.tsx`, nested routes); use existing route layout patterns.
+- **API routes**: Route Handlers under `src/app/api/`; align with helpers in `src/lib/` (`api-client.ts`, `server-api.ts`, `auth.ts`, `session.ts`).
+- **Auth**: NextAuth — `src/app/api/auth/`, `src/lib/auth.ts`, `src/middleware.ts`; extend session/types carefully (`src/types/next-auth.d.ts`).
+- **Client UI**: Shared components in `src/components/`; hooks in `src/hooks/`; TanStack Query wired via `src/providers/query-provider.tsx`.
+- **i18n**: `src/i18n.ts` and providers under `src/providers/` (e.g. i18n + session).
+- **Styling**: Tailwind CSS; match typography and spacing patterns from existing pages and `layout.tsx`.

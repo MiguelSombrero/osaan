@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 .DS_Store
 maildir/
-.cursor
+.agent-works/
 
 node_modules/
 dist/
