@@ -1,8 +1,11 @@
+API_DOCS_ENABLED: true
+SWAGGER_UI_ENABLED: true
+
 logging:
   level:
     com.github.miguelsombrero.osaan: TRACE
     org.springframework.jdbc: DEBUG
-    web: TRACE
+    web: INFO
 
 management:
   server.port: 4003
