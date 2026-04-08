@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.3</version>
+        <version>4.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.miguelsombrero.osaan</groupId>
@@ -15,12 +15,12 @@
     <description>Microservice for managing skill skills</description>
 
     <properties>
-        <datasource-micrometer.version>2.0.0</datasource-micrometer.version>
+        <datasource-micrometer.version>2.2.1</datasource-micrometer.version>
         <java.version>25</java.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <osaan.core.version>1.0.0-SNAPSHOT</osaan.core.version>
-        <spring-cloud.version>2025.1.0</spring-cloud.version>
-        <springdoc-openapi.version>3.0.0</springdoc-openapi.version>
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
+        <springdoc-openapi.version>3.0.2</springdoc-openapi.version>
     </properties>
 
     <dependencies>
