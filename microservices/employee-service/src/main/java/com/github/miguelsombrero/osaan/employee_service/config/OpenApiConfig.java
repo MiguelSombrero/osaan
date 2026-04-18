@@ -44,14 +44,6 @@ public class OpenApiConfig {
     }
 
     @Bean
-    public GroupedOpenApi adminApi() {
-        return GroupedOpenApi.builder()
-                .group("admin")
-                .pathsToMatch("/v1/admin/employees/**")
-                .build();
-    }
-
-    @Bean
     public OpenAPI openApi() {
         return new OpenAPI().info(new Info().title(apiTitle).description(apiDescription).version(apiVersion)
                 .contact(new Contact().name(apiContactName))

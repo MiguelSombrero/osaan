@@ -5,21 +5,38 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/employees")
-@Tag(name = "Employee", description = "REST API for public operations on employees")
+@RequestMapping("/v1/employees")
+@Tag(name = "Employee", description = "REST API for operations on employees")
 class EmployeeController {
 
     protected final EmployeeService service;
 
     public EmployeeController(EmployeeService service) {
         this.service = service;
+    }
+
+    @Operation(
+            summary = "Create Employee",
+            description = "Creates new employee and returns created employee with generated ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    @PostMapping
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+        Employee savedEmployee = service.saveEmployee(employee);
+        URI location = URI.create("/v1/employees/" + savedEmployee.getId());
+        return ResponseEntity.created(location).body(savedEmployee);
     }
 
     @Operation(

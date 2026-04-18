@@ -21,12 +21,21 @@ management:
   zipkin.tracing.endpoint: ${TRACING_ENDPOINT:http://zipkin-server:9411/api/v2/spans}
   tracing.sampling.probability: ${SAMPLING_PROBABILITY:1.0}
 
+app:
+  auth:
+    disabled: ${APP_AUTH_DISABLED:false}
+
 spring:
   application:
     name: employee-service
   cloud:
     refresh:
       enabled: false # Compatibility issues with Spring Boot 4.0.0-SNAPSHOT
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI:https://keycloak.local/realms/osaan}
   datasource:
     url: jdbc:postgresql://${POSTGRESQL_HOST}:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
@@ -42,3 +51,9 @@ spring:
   sql:
     init:
       mode: always
+
+springdoc:
+  api-docs:
+    enabled: ${API_DOCS_ENABLED:false}
+  swagger-ui:
+    enabled: ${SWAGGER_UI_ENABLED:false}
