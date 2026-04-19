@@ -1,17 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession, signIn } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
 import { NavBar } from '@/components/layout/nav-bar';
 import { Container } from '@/components/layout/container';
 import { Button } from '@/components/ui/button';
+import { useAppSession } from '@/hooks/use-app-session';
 
 export default function Home() {
   const { t } = useTranslation();
-  const { data: session, status } = useSession();
-  const isAuthenticated = status === 'authenticated' && !!session;
-  const isLoading = status === 'loading';
+  const { isAuthenticated, isLoading, signIn } = useAppSession();
 
   return (
     <div className="min-h-screen bg-[var(--background)] flex flex-col">
@@ -47,7 +45,7 @@ export default function Home() {
                     variant="primary"
                     size="lg"
                     loading={isLoading}
-                    onClick={() => signIn('keycloak', { callbackUrl: '/competences' })}
+                    onClick={() => signIn('/competences')}
                     leftIcon={
                       !isLoading && (
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

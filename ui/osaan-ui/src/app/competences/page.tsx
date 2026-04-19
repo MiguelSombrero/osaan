@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSession } from 'next-auth/react';
 import { AppShell } from '@/components/layout/app-shell';
 import { PageHeader } from '@/components/layout/page-header';
 import { SkillBrowser, SelectionSummaryBar, SaveCompetencesDialog } from '@/components/competences';
+import { useAppSession } from '@/hooks/use-app-session';
 import { useCompetenceSelection } from '@/hooks/use-competence-selection';
 import { useSaveCompetences } from '@/hooks/use-competences';
 import { useSkills } from '@/hooks/use-skills';
@@ -16,8 +16,8 @@ export const dynamic = 'force-dynamic';
 
 export default function CompetencesPage() {
   const { t } = useTranslation();
-  const { data: session } = useSession();
-  const employeeId = session?.user?.id;
+  const { userId } = useAppSession();
+  const employeeId = userId ?? undefined;
 
   const { selected, toggle, setRating, clear, selectedCount, unratedCount } =
     useCompetenceSelection();

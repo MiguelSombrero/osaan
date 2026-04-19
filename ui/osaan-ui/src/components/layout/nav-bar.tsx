@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { useSession, signIn, signOut } from 'next-auth/react';
 import LanguageSelector from '@/components/language-selector';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
+import { useAppSession } from '@/hooks/use-app-session';
 
 interface NavLink {
   href: string;
@@ -15,12 +15,8 @@ interface NavLink {
 
 function NavBar() {
   const { t } = useTranslation();
-  const { data: session, status } = useSession();
+  const { isAuthenticated, isLoading, isManager, signIn, signOut } = useAppSession();
   const pathname = usePathname();
-
-  const isManager = (session?.user as { profile?: { realm_access?: { roles?: string[] } } })?.profile?.realm_access?.roles?.some(
-    (r) => r.toLowerCase() === 'manager' || r.toLowerCase() === 'osaan_manager'
-  ) ?? false;
 
   const links: NavLink[] = [
     { href: '/competences', label: t('mySkills') },
@@ -40,7 +36,7 @@ function NavBar() {
           </Link>
 
           {/* Nav links */}
-          {status === 'authenticated' && (
+          {isAuthenticated && (
             <nav className="flex items-center gap-1" aria-label="Main navigation">
               {links.map((link) => (
                 <Link
@@ -62,14 +58,14 @@ function NavBar() {
           {/* Right side */}
           <div className="flex items-center gap-2 ml-auto">
             <LanguageSelector />
-            {status !== 'loading' && (
+            {!isLoading && (
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => (session ? signOut() : signIn())}
+                onClick={() => (isAuthenticated ? signOut() : signIn())}
                 suppressHydrationWarning
               >
-                {session ? t('logout') : t('login')}
+                {isAuthenticated ? t('logout') : t('login')}
               </Button>
             )}
           </div>

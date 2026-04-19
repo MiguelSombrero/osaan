@@ -38,11 +38,13 @@ export const authOptions: NextAuthOptions = {
               refreshToken: token.refreshToken,
               idToken: token.idToken,
               expiresAt: token.expiresAt,
+              roles: token.roles,
             })
           );
           const sessionOnlyToken = {
             sub: token.sub,
             sessionKey,
+            roles: token.roles,
             exp: token.exp,
             iat: token.iat,
           };
@@ -85,17 +87,26 @@ export const authOptions: NextAuthOptions = {
 
   // Callbacks
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account }) {
       // Persist the OAuth access_token to the token right after signin
       if (account) {
         token.accessToken = account.access_token;
         token.idToken = account.id_token;
         token.refreshToken = account.refresh_token;
         token.expiresAt = account.expires_at;
-      }
 
-      if (profile) {
-        token.profile = profile;
+        // Decode the access token (a Keycloak JWT) to extract realm roles.
+        // realm_access is only present in the access token, not the ID token.
+        if (account.access_token) {
+          try {
+            const payload = JSON.parse(
+              Buffer.from(account.access_token.split('.')[1], 'base64url').toString()
+            ) as { realm_access?: { roles?: string[] } };
+            token.roles = payload.realm_access?.roles ?? [];
+          } catch {
+            token.roles = [];
+          }
+        }
       }
 
       return token;
@@ -106,9 +117,13 @@ export const authOptions: NextAuthOptions = {
       // Tokens are stored in Redis via JWT encode/decode, NOT sent to browser
       if (token) {
         session.error = token.error as string | undefined;
+
+        const roles: string[] = (token.roles as string[] | undefined) ?? [];
+
         session.user = {
           ...session.user,
           id: token.sub || '',
+          roles,
         };
         // Store idToken in session for logout
         session.idToken = token.idToken as string | undefined;

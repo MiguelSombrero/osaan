@@ -7,6 +7,7 @@ declare module 'next-auth' {
     name?: string | null;
     email?: string | null;
     image?: string | null;
+    roles?: string[];
   }
 
   interface Session {
@@ -23,7 +24,7 @@ declare module 'next-auth/jwt' {
     refreshToken?: string;
     expiresAt?: number;
     error?: string;
-    profile?: any;
+    roles?: string[];
     sessionKey?: string;
   }
 }
