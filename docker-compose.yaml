@@ -162,28 +162,42 @@ services:
       - keycloak
 
   osaan-admin-ui:
-    build: ./ui/osaan-admin-ui/frontend
+    build:
+      context: ./ui/osaan-admin-ui/frontend
+      dockerfile: Dockerfile.dev
     container_name: osaan-admin-ui
     ports:
-      - "8085:80"
+      - "8085:5173"
     environment:
-      - API_URL=http://osaan-admin-backend:3001
+      - BACKEND_URL=http://osaan-admin-backend:3000
     depends_on:
       - osaan-admin-backend
+    volumes:
+      - ./ui/osaan-admin-ui/frontend/src:/app/src
+      - ./ui/osaan-admin-ui/frontend/public:/app/public
+      - ./ui/osaan-admin-ui/frontend/index.html:/app/index.html
 
   osaan-ui:
-    build: ./ui/osaan-ui
+    build:
+      context: ./ui/osaan-ui
+      dockerfile: Dockerfile.dev
     container_name: osaan-ui
     ports:
       - "3002:3000"
     env_file:
       - ./ui/osaan-ui/.env.staging
+    environment:
+      - WATCHPACK_POLLING=true
     depends_on:
       - skill-catalog-service
       - competence-profile-service
       - employee-service
       - keycloak
       - osaan-redis
+    volumes:
+      - ./ui/osaan-ui/src:/app/src
+      - ./ui/osaan-ui/public:/app/public
+      - ./ui/osaan-ui/next.config.ts:/app/next.config.ts
 
 volumes:
   osaan-data:

@@ -1,8 +1,16 @@
+'use client';
+
 import Link from 'next/link';
+import { useSession, signIn } from 'next-auth/react';
 import { NavBar } from '@/components/layout/nav-bar';
 import { Container } from '@/components/layout/container';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === 'authenticated' && !!session;
+  const isLoading = status === 'loading';
+
   return (
     <div className="min-h-screen bg-[var(--background)] flex flex-col">
       <NavBar />
@@ -18,17 +26,38 @@ export default function Home() {
               <p className="mt-6 text-lg text-stone-600 font-sans leading-relaxed max-w-xl">
                 Osaan helps your organization map skills, build competence profiles, and find the right people for every challenge.
               </p>
-              <div className="mt-8 flex items-center gap-4">
-                <Link
-                  href="/competences"
-                  className="inline-flex items-center gap-2 h-11 px-6 rounded-md bg-saffron-600 text-white font-medium font-sans text-sm hover:bg-saffron-700 transition-colors"
-                >
-                  Explore Skills
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </Link>
+
+              <div className="mt-8">
+                {isAuthenticated ? (
+                  <Link
+                    href="/competences"
+                    className="inline-flex items-center gap-2 h-11 px-6 rounded-md bg-saffron-600 text-white font-medium font-sans text-sm hover:bg-saffron-700 transition-colors"
+                  >
+                    Explore Skills
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </Link>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    loading={isLoading}
+                    onClick={() => signIn('keycloak', { callbackUrl: '/competences' })}
+                    leftIcon={
+                      !isLoading && (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                          <polyline points="10 17 15 12 10 7" />
+                          <line x1="15" y1="12" x2="3" y2="12" />
+                        </svg>
+                      )
+                    }
+                  >
+                    Sign in with Keycloak
+                  </Button>
+                )}
               </div>
             </div>
           </Container>
