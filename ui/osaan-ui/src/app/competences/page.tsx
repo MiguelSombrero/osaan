@@ -1,147 +1,104 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSession } from 'next-auth/react';
+import { AppShell } from '@/components/layout/app-shell';
+import { PageHeader } from '@/components/layout/page-header';
+import { SkillBrowser, SelectionSummaryBar, SaveCompetencesDialog } from '@/components/competences';
+import { useCompetenceSelection } from '@/hooks/use-competence-selection';
+import { useSaveCompetences } from '@/hooks/use-competences';
 import { useSkills } from '@/hooks/use-skills';
-import { useDebounce } from '@/hooks/use-debounce';
-import TopBar from '@/components/top-bar';
-import type { Skill } from '@/types/skill';
+import type { Rating } from '@/types/rating';
 
 // Force dynamic rendering - disable static generation
 export const dynamic = 'force-dynamic';
 
 export default function CompetencesPage() {
   const { t } = useTranslation();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(0);
+  const { data: session } = useSession();
+  const employeeId = session?.user?.id;
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const { selected, toggle, setRating, clear, selectedCount, unratedCount } =
+    useCompetenceSelection();
 
-  // Reset to first page when debounced search query changes
-  useEffect(() => {
-    setPage(0);
-  }, [debouncedSearchQuery]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedSuccess, setSavedSuccess] = useState(false);
 
-  const { data, isLoading, error } = useSkills({
-    query: debouncedSearchQuery || undefined,
-    page,
-    size: 20,
-  });
+  const saveMutation = useSaveCompetences(employeeId);
+
+  // Fetch all skills for the save dialog display (just the selected page)
+  // We pass the selected ids to find matching skill names
+  const { data: skillsData } = useSkills({ size: 100 });
+  const allLoadedSkills = skillsData?.skills ?? [];
+
+  const handleSave = () => {
+    setSaveError(null);
+    setDialogOpen(true);
+  };
+
+  const handleConfirmSave = async () => {
+    const competences = Array.from(selected.entries()).map(([skillId, rating]) => ({
+      skillId,
+      rating: rating as Rating,
+    }));
+
+    try {
+      await saveMutation.mutateAsync(competences);
+      setDialogOpen(false);
+      clear();
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : t('saveFailed'));
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <TopBar subtitle={t('browseSkills')} />
+    <AppShell>
+      <PageHeader
+        title={t('mySkills')}
+        subtitle={t('browseSkills')}
+      />
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder={t('searchSkills')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-            />
-          </div>
+      {savedSuccess && (
+        <div className="mb-6 flex items-center gap-2 px-4 py-3 bg-success-light text-success border border-green-200 rounded-md text-sm font-medium font-sans">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          {t('profileSaved')}
         </div>
+      )}
 
-        {/* Skills List */}
-        <div className="bg-white rounded-lg shadow">
-          {/* Loading State */}
-          {isLoading && (
-            <div className="p-8 text-center">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-              <p className="mt-4 text-gray-600">{t('loading')}</p>
-            </div>
-          )}
+      {/* Add bottom padding so the sticky bar doesn't overlap last cards */}
+      <div className={selectedCount > 0 ? 'pb-20' : ''}>
+        <SkillBrowser
+          selectedSkills={selected}
+          onToggle={toggle}
+          onRate={setRating}
+        />
+      </div>
 
-          {/* Error State */}
-          {error && (
-            <div className="p-8 text-center">
-              <div className="text-red-600 mb-4">
-                <svg
-                  className="mx-auto h-12 w-12"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-              </div>
-              <p className="text-red-800 font-semibold">{t('loadingError')}</p>
-              <p className="mt-2 text-gray-600">
-                {error instanceof Error ? error.message : 'Unknown error'}
-              </p>
-            </div>
-          )}
+      <SelectionSummaryBar
+        selectedCount={selectedCount}
+        unratedCount={unratedCount}
+        onSave={handleSave}
+        isSaving={saveMutation.isPending}
+      />
 
-          {/* Skills Grid */}
-          {data && !isLoading && (
-            <>
-              {data.skills.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
-                  <p>{t('noSkills')}</p>
-                  {searchQuery && (
-                    <p className="mt-2 text-sm">{t('adjustSearch')}</p>
-                  )}
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
-                    {data.skills.map((skill: Skill) => (
-                      <div
-                        key={skill.id}
-                        className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
-                      >
-                        <h3 className="font-semibold text-gray-900">
-                          {skill.name}
-                        </h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          ID: {skill.id}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Pagination */}
-                  <div className="border-t border-gray-200 px-6 py-4 flex items-center justify-between">
-                    <div className="text-sm text-gray-700">
-                      {t('showingPage', {
-                        page: data.page + 1,
-                        totalPages: data.totalPages,
-                        totalElements: data.totalElements,
-                      })}
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setPage(page - 1)}
-                        disabled={data.first}
-                        className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
-                      >
-                        {t('previous')}
-                      </button>
-                      <button
-                        onClick={() => setPage(page + 1)}
-                        disabled={data.last}
-                        className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 text-gray-700"
-                      >
-                        {t('next')}
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </main>
-    </div>
+      <SaveCompetencesDialog
+        open={dialogOpen}
+        onClose={() => {
+          setDialogOpen(false);
+          setSaveError(null);
+        }}
+        onConfirm={handleConfirmSave}
+        skills={allLoadedSkills}
+        selection={selected}
+        isSaving={saveMutation.isPending}
+        error={saveError}
+      />
+    </AppShell>
   );
 }

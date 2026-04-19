@@ -1,6 +1,7 @@
 import type { GetSkillsParams, GetSkillsResponse } from '@/types/skill';
 import type { Competence } from '@/types/competence';
 import type { Employee } from '@/types/employee';
+import type { EmployeeSearchParams, EmployeeSearchResult } from '@/types/manager';
 
 const API_BASE = '/api';
 
@@ -73,4 +74,15 @@ export const employeeApi = {
       method: 'POST',
       body: JSON.stringify(employee),
     }),
+  searchEmployees: (params: EmployeeSearchParams) => {
+    const searchParams = new URLSearchParams();
+    searchParams.set('skillId', params.skillId);
+    searchParams.set('minRating', params.minRating.toString());
+    return fetchApi<EmployeeSearchResult[]>(`/employees/search?${searchParams.toString()}`);
+  },
+};
+
+export const competenceReadApi = {
+  getCompetences: (employeeId: string) =>
+    fetchApi<Competence[]>(`/competences/${employeeId}`),
 };

@@ -1,33 +1,18 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import HttpBackend from 'i18next-http-backend';
+import fiTranslations from '../public/locales/fi.json';
+import enTranslations from '../public/locales/en.json';
 
-// Only initialize in browser environment
-if (typeof window !== 'undefined') {
-  i18n
-    .use(HttpBackend)
-    .use(initReactI18next)
-    .init({
-      lng: 'fi',
-      fallbackLng: 'fi',
-      interpolation: { escapeValue: false },
-      backend: {
-        loadPath: '/locales/{{lng}}.json',
-      },
-    });
-} else {
-  // Server-side: initialize without HttpBackend
+// Initialize once. Using static imports (not HttpBackend) ensures server and
+// client always render the same translated text, preventing hydration mismatches.
+if (!i18n.isInitialized) {
   i18n.use(initReactI18next).init({
     lng: 'fi',
     fallbackLng: 'fi',
     interpolation: { escapeValue: false },
     resources: {
-      fi: {
-        translation: {},
-      },
-      en: {
-        translation: {},
-      },
+      fi: { translation: fiTranslations },
+      en: { translation: enTranslations },
     },
   });
 }

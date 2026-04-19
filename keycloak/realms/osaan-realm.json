@@ -129,6 +129,23 @@
       ],
       "requiredActions": [],
       "realmRoles": ["USER"]
+    },
+    {
+      "username": "manager",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Manager",
+      "lastName": "User",
+      "email": "manager@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "manager",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [],
+      "realmRoles": ["MANAGER"]
     }
   ]
 }
