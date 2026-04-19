@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { Button } from './button';
 
@@ -11,11 +12,13 @@ interface ErrorStateProps {
 }
 
 function ErrorState({
-  title = 'Something went wrong',
+  title,
   message,
   onRetry,
   className,
 }: ErrorStateProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -30,14 +33,16 @@ function ErrorState({
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
       </div>
-      <p className="font-display text-lg font-medium text-stone-800">{title}</p>
+      <p className="font-display text-lg font-medium text-stone-800" suppressHydrationWarning>
+        {title ?? t('somethingWentWrong')}
+      </p>
       {message && (
         <p className="mt-1.5 text-sm text-stone-600 max-w-xs">{message}</p>
       )}
       {onRetry && (
         <div className="mt-5">
-          <Button variant="secondary" size="sm" onClick={onRetry}>
-            Try again
+          <Button variant="secondary" size="sm" onClick={onRetry} suppressHydrationWarning>
+            {t('retryAction')}
           </Button>
         </div>
       )}

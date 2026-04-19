@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import type { Rating } from '@/types/rating';
-import { RATING_LABELS } from '@/types/rating';
 
 interface RatingInputProps {
   value: Rating | null;
@@ -28,12 +28,16 @@ function RatingInput({
   size = 'md',
   className,
 }: RatingInputProps) {
+  const { t } = useTranslation();
   const [hovered, setHovered] = useState<Rating | null>(null);
 
   const dotSize = size === 'sm' ? 12 : 16;
   const gap = size === 'sm' ? 4 : 6;
 
   const active = hovered ?? value;
+
+  const ratingLabel = (r: Rating): string =>
+    t(`rating${r}`, { defaultValue: String(r) });
 
   return (
     <div className={cn('flex flex-col gap-1', className)}>
@@ -42,7 +46,7 @@ function RatingInput({
         style={{ gap }}
         onMouseLeave={() => setHovered(null)}
         role="group"
-        aria-label="Skill rating"
+        aria-label={t('minimumRating', { defaultValue: 'Skill rating' })}
       >
         {([1, 2, 3, 4, 5] as Rating[]).map((level) => {
           const isFilled = active !== null && level <= active;
@@ -51,7 +55,7 @@ function RatingInput({
               key={level}
               type="button"
               disabled={disabled}
-              aria-label={`Rate ${level} — ${RATING_LABELS[level]}`}
+              aria-label={`${level} — ${ratingLabel(level)}`}
               onClick={() => onChange(level)}
               onMouseEnter={() => setHovered(level)}
               style={{
@@ -70,8 +74,11 @@ function RatingInput({
           );
         })}
       </div>
-      <p className="text-xs text-stone-600 font-sans h-4 transition-opacity duration-100">
-        {active ? RATING_LABELS[active] : ''}
+      <p
+        className="text-xs text-stone-600 font-sans h-4 transition-opacity duration-100"
+        suppressHydrationWarning
+      >
+        {active ? ratingLabel(active) : ''}
       </p>
     </div>
   );

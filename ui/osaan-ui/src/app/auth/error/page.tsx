@@ -3,19 +3,22 @@
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 
-const ERROR_MESSAGES: Record<string, string> = {
-  Configuration: 'There is a problem with the server configuration.',
-  AccessDenied: 'You do not have permission to sign in.',
-  Verification: 'The verification token has expired or has already been used.',
-  Default: 'An error occurred during authentication.',
-};
-
 function AuthErrorContent() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
-  const message = error ? (ERROR_MESSAGES[error] ?? ERROR_MESSAGES.Default) : ERROR_MESSAGES.Default;
+
+  const errorMessageKey: Record<string, string> = {
+    Configuration: 'authErrorConfiguration',
+    AccessDenied: 'authErrorAccessDenied',
+    Verification: 'authErrorVerification',
+    Default: 'authErrorDefault',
+  };
+
+  const messageKey = error ? (errorMessageKey[error] ?? 'authErrorDefault') : 'authErrorDefault';
 
   return (
     <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4">
@@ -35,20 +38,22 @@ function AuthErrorContent() {
             </div>
           </div>
 
-          <h1 className="font-display text-xl font-semibold text-stone-950 mb-2 text-center">
-            Authentication Error
+          <h1 className="font-display text-xl font-semibold text-stone-950 mb-2 text-center" suppressHydrationWarning>
+            {t('authError')}
           </h1>
-          <p className="text-sm text-stone-600 font-sans mb-7 text-center">{message}</p>
+          <p className="text-sm text-stone-600 font-sans mb-7 text-center" suppressHydrationWarning>
+            {t(messageKey)}
+          </p>
 
           <div className="space-y-2.5">
             <Link href="/api/auth/signin" className="block">
-              <Button variant="primary" size="lg" className="w-full">
-                Try again
+              <Button variant="primary" size="lg" className="w-full" suppressHydrationWarning>
+                {t('tryAgain')}
               </Button>
             </Link>
             <Link href="/" className="block">
-              <Button variant="secondary" size="lg" className="w-full">
-                Back to home
+              <Button variant="secondary" size="lg" className="w-full" suppressHydrationWarning>
+                {t('backToHome')}
               </Button>
             </Link>
           </div>
@@ -63,7 +68,7 @@ export default function AuthErrorPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
-          <span className="font-sans text-sm text-stone-500">Loading…</span>
+          <span className="inline-block h-6 w-6 rounded-full border-2 border-stone-300 border-t-saffron-600 animate-spin" />
         </div>
       }
     >

@@ -2,7 +2,6 @@
 
 import { useTranslation } from 'react-i18next';
 import { Modal, Button } from '@/components/ui';
-import { RATING_LABELS } from '@/types/rating';
 import type { Rating } from '@/types/rating';
 import type { Skill } from '@/types/skill';
 
@@ -57,8 +56,8 @@ function SaveCompetencesDialog({
               <span className="text-sm font-medium text-stone-800 font-sans">
                 {skill.name}
               </span>
-              <span className="text-xs font-mono text-saffron-600 font-medium">
-                {rating} — {RATING_LABELS[rating]}
+              <span className="text-xs font-mono text-saffron-600 font-medium" suppressHydrationWarning>
+                {rating} — {t(`rating${rating}`)}
               </span>
             </div>
           );

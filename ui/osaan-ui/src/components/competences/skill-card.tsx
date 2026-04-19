@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import type { Skill } from '@/types/skill';
 import type { Rating } from '@/types/rating';
@@ -14,6 +15,8 @@ interface SkillCardProps {
 }
 
 function SkillCard({ skill, selected, rating, onToggle, onRate }: SkillCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -63,8 +66,8 @@ function SkillCard({ skill, selected, rating, onToggle, onRate }: SkillCardProps
 
       {/* Hover hint — only when not selected */}
       {!selected && (
-        <p className="mt-1 text-xs text-stone-400 opacity-0 group-hover:opacity-100 transition-opacity duration-150 font-sans">
-          Click to select
+        <p className="mt-1 text-xs text-stone-400 opacity-0 group-hover:opacity-100 transition-opacity duration-150 font-sans" suppressHydrationWarning>
+          {t('clickToSelect')}
         </p>
       )}
 

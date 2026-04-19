@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { Button } from './button';
 
@@ -24,6 +25,8 @@ function Pagination({
   isLast,
   className,
 }: PaginationProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -31,10 +34,8 @@ function Pagination({
         className
       )}
     >
-      <p className="text-sm text-stone-600 font-sans">
-        Page <span className="font-medium text-stone-950">{page + 1}</span> of{' '}
-        <span className="font-medium text-stone-950">{totalPages}</span>
-        <span className="ml-2 text-stone-400">({totalElements} total)</span>
+      <p className="text-sm text-stone-600 font-sans" suppressHydrationWarning>
+        {t('showingPage', { page: page + 1, totalPages, totalElements })}
       </p>
       <div className="flex gap-2">
         <Button
@@ -42,21 +43,23 @@ function Pagination({
           size="sm"
           onClick={onPrev}
           disabled={isFirst}
-          aria-label="Previous page"
+          aria-label={t('previous')}
+          suppressHydrationWarning
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <polyline points="15 18 9 12 15 6" />
           </svg>
-          Previous
+          {t('previous')}
         </Button>
         <Button
           variant="secondary"
           size="sm"
           onClick={onNext}
           disabled={isLast}
-          aria-label="Next page"
+          aria-label={t('next')}
+          suppressHydrationWarning
         >
-          Next
+          {t('next')}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <polyline points="9 18 15 12 9 6" />
           </svg>

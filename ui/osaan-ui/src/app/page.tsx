@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { useSession, signIn } from 'next-auth/react';
+import { useTranslation } from 'react-i18next';
 import { NavBar } from '@/components/layout/nav-bar';
 import { Container } from '@/components/layout/container';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
+  const { t } = useTranslation();
   const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated' && !!session;
   const isLoading = status === 'loading';
@@ -20,11 +22,11 @@ export default function Home() {
         <section className="py-20 sm:py-28">
           <Container>
             <div className="max-w-2xl">
-              <h1 className="font-display text-5xl sm:text-6xl font-semibold text-stone-950 leading-[1.1] tracking-tight whitespace-pre-line">
-                {'Know your team.\nGrow your skills.'}
+              <h1 className="font-display text-5xl sm:text-6xl font-semibold text-stone-950 leading-[1.1] tracking-tight" suppressHydrationWarning>
+                {t('heroTitleLine1')}<br />{t('heroTitleLine2')}
               </h1>
-              <p className="mt-6 text-lg text-stone-600 font-sans leading-relaxed max-w-xl">
-                Osaan helps your organization map skills, build competence profiles, and find the right people for every challenge.
+              <p className="mt-6 text-lg text-stone-600 font-sans leading-relaxed max-w-xl" suppressHydrationWarning>
+                {t('heroSubtitle')}
               </p>
 
               <div className="mt-8">
@@ -32,8 +34,9 @@ export default function Home() {
                   <Link
                     href="/competences"
                     className="inline-flex items-center gap-2 h-11 px-6 rounded-md bg-saffron-600 text-white font-medium font-sans text-sm hover:bg-saffron-700 transition-colors"
+                    suppressHydrationWarning
                   >
-                    Explore Skills
+                    {t('heroCta')}
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <line x1="5" y1="12" x2="19" y2="12" />
                       <polyline points="12 5 19 12 12 19" />
@@ -54,8 +57,9 @@ export default function Home() {
                         </svg>
                       )
                     }
+                    suppressHydrationWarning
                   >
-                    Sign in with Keycloak
+                    {t('signInButton')}
                   </Button>
                 )}
               </div>
@@ -74,8 +78,8 @@ export default function Home() {
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                 }
-                title="Your Profile"
-                description="Select the skills you know and rate your proficiency from 1 to 5."
+                title={t('featureProfileTitle')}
+                description={t('featureProfileDesc')}
               />
               <FeatureCard
                 icon={
@@ -84,8 +88,8 @@ export default function Home() {
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                   </svg>
                 }
-                title="Find Talent"
-                description="Managers can search employees by skill and minimum rating."
+                title={t('featureFindTitle')}
+                description={t('featureFindDesc')}
               />
               <FeatureCard
                 icon={
@@ -94,8 +98,8 @@ export default function Home() {
                     <polyline points="17 6 23 6 23 12" />
                   </svg>
                 }
-                title="Track Growth"
-                description="Update your profile as you learn. Growth is visible to everyone."
+                title={t('featureGrowTitle')}
+                description={t('featureGrowDesc')}
               />
             </div>
           </Container>
@@ -104,7 +108,9 @@ export default function Home() {
 
       <footer className="border-t border-stone-200 py-6">
         <Container>
-          <p className="text-sm text-stone-400 font-sans">Osaan — Competence Management</p>
+          <p className="text-sm text-stone-400 font-sans" suppressHydrationWarning>
+            Osaan — {t('competenceManagement')}
+          </p>
         </Container>
       </footer>
     </div>
@@ -123,8 +129,8 @@ function FeatureCard({
   return (
     <div className="bg-white p-6 sm:p-8">
       <div className="text-saffron-600 mb-4">{icon}</div>
-      <h3 className="font-display text-base font-semibold text-stone-950 mb-2">{title}</h3>
-      <p className="text-sm text-stone-600 font-sans leading-relaxed">{description}</p>
+      <h3 className="font-display text-base font-semibold text-stone-950 mb-2" suppressHydrationWarning>{title}</h3>
+      <p className="text-sm text-stone-600 font-sans leading-relaxed" suppressHydrationWarning>{description}</p>
     </div>
   );
 }
