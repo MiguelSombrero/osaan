@@ -60,29 +60,72 @@ spec:
           post.logout.redirect.uris: >-
             https://osaan.admin.local/*##https://osaan.admin.local:9443/*##
     users:
-      - username: admin
+      - username: anna
         enabled: true
         emailVerified: true
-        firstName: Admin
-        lastName: User
-        email: admin@example.com
+        firstName: Anna
+        lastName: Korhonen
+        email: anna.korhonen@example.com
         credentials:
           - type: password
-            value: admin
+            value: anna
             temporary: false
         requiredActions: []
         realmRoles:
           - ADMIN
 
-      - username: user
+      - username: mikko
         enabled: true
         emailVerified: true
-        firstName: Regular
-        lastName: User
-        email: user@example.com
+        firstName: Mikko
+        lastName: Virtanen
+        email: mikko.virtanen@example.com
         credentials:
           - type: password
-            value: user
+            value: mikko
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - MANAGER
+          - USER
+
+      - username: liisa
+        enabled: true
+        emailVerified: true
+        firstName: Liisa
+        lastName: Laine
+        email: liisa.laine@example.com
+        credentials:
+          - type: password
+            value: liisa
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER
+
+      - username: jari
+        enabled: true
+        emailVerified: true
+        firstName: Jari
+        lastName: Mäkinen
+        email: jari.makinen@example.com
+        credentials:
+          - type: password
+            value: jari
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER
+
+      - username: sari
+        enabled: true
+        emailVerified: true
+        firstName: Sari
+        lastName: Niemi
+        email: sari.niemi@example.com
+        credentials:
+          - type: password
+            value: sari
             temporary: false
         requiredActions: []
         realmRoles:
