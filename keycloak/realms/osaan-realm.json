@@ -97,16 +97,17 @@
   ],
   "users": [
     {
-      "username": "admin",
+      "id": "a1b2c3d4-0001-4000-a000-000000000001",
+      "username": "anna",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "Admin",
-      "lastName": "User",
-      "email": "admin@example.com",
+      "firstName": "Anna",
+      "lastName": "Korhonen",
+      "email": "anna.korhonen@example.com",
       "credentials": [
         {
           "type": "password",
-          "value": "admin",
+          "value": "anna",
           "temporary": false
         }
       ],
@@ -114,16 +115,35 @@
       "realmRoles": ["ADMIN"]
     },
     {
-      "username": "user",
+      "id": "a1b2c3d4-0002-4000-a000-000000000002",
+      "username": "mikko",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "Regular",
-      "lastName": "User",
-      "email": "user@example.com",
+      "firstName": "Mikko",
+      "lastName": "Virtanen",
+      "email": "mikko.virtanen@example.com",
       "credentials": [
         {
           "type": "password",
-          "value": "user",
+          "value": "mikko",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [],
+      "realmRoles": ["MANAGER", "USER"]
+    },
+    {
+      "id": "a1b2c3d4-0003-4000-a000-000000000003",
+      "username": "liisa",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Liisa",
+      "lastName": "Laine",
+      "email": "liisa.laine@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "liisa",
           "temporary": false
         }
       ],
@@ -131,21 +151,40 @@
       "realmRoles": ["USER"]
     },
     {
-      "username": "manager",
+      "id": "a1b2c3d4-0004-4000-a000-000000000004",
+      "username": "jari",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "Manager",
-      "lastName": "User",
-      "email": "manager@example.com",
+      "firstName": "Jari",
+      "lastName": "Mäkinen",
+      "email": "jari.makinen@example.com",
       "credentials": [
         {
           "type": "password",
-          "value": "manager",
+          "value": "jari",
           "temporary": false
         }
       ],
       "requiredActions": [],
-      "realmRoles": ["MANAGER"]
+      "realmRoles": ["USER"]
+    },
+    {
+      "id": "a1b2c3d4-0005-4000-a000-000000000005",
+      "username": "sari",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Sari",
+      "lastName": "Niemi",
+      "email": "sari.niemi@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "sari",
+          "temporary": false
+        }
+      ],
+      "requiredActions": [],
+      "realmRoles": ["USER"]
     }
   ]
 }

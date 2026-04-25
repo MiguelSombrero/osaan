@@ -207,10 +207,7 @@ kubectl apply -k .
 
 - CI/CD relesea pipelines
 
-- Authentication on microservices
-
 - Testing improvements
-
   - Integration tests for microservices
   - More e2e tests with Playwright
   - Notifications when TestWorkflow fails

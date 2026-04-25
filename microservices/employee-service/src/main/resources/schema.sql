@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS employees (
     email TEXT UNIQUE NOT NULL,
     keycloak_id TEXT UNIQUE
 );
+
+ALTER TABLE employees ADD COLUMN IF NOT EXISTS keycloak_id TEXT UNIQUE;
