@@ -45,7 +45,11 @@ public class CachingSkillRepository implements SkillRepository {
         String key = KEY_ID + id;
         Cache.ValueWrapper wrapper = cache.get(key);
         if (wrapper != null) {
-            return Optional.ofNullable((Skill) wrapper.get());
+            if (wrapper.get() instanceof Skill skill) {
+                return Optional.of(skill);
+            }
+            log.warn("Evicting incompatible cache entry for key: {}", key);
+            cache.evict(key);
         }
         Optional<Skill> skill = delegate.findById(id);
         skill.ifPresent(s -> cache.put(key, s));
@@ -58,7 +62,11 @@ public class CachingSkillRepository implements SkillRepository {
         String key = KEY_NAME + normalizedKey;
         Cache.ValueWrapper wrapper = cache.get(key);
         if (wrapper != null) {
-            return Optional.ofNullable((Skill) wrapper.get());
+            if (wrapper.get() instanceof Skill skill) {
+                return Optional.of(skill);
+            }
+            log.warn("Evicting incompatible cache entry for key: {}", key);
+            cache.evict(key);
         }
         Optional<Skill> skill = delegate.findByNameIgnoreCase(name);
         skill.ifPresent(s -> cache.put(key, s));

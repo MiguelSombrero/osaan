@@ -148,10 +148,16 @@ Start all microservices from `/microservices` folder (exept osaan-core which is 
 
 ### 2) Docker Compose
 
-Prerequisites: microservices are build with maven (Dockerfile does not build applicaitons, only copies `/target/*.jar` to build image)
+When there is changes in microservices:
 
 ```bash
-docker compose up -d --build
+make up
+```
+
+When there is not changes:
+
+```bash
+make up-no-build
 ```
 
 ### 3) Kubernetes
