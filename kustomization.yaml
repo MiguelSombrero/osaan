@@ -34,11 +34,11 @@ resources:
   - manifests/osaan-ui/service.yaml
 images:
   - name: miguelsombrero/osaan-employee-service
-    newTag: 62e357db9aaca414b92f082ab0ea3ccd72503137
+    newTag: a462ca421b6fd1de5743f90f4ea6243191a22810
   - name: miguelsombrero/osaan-skill-catalog-service
     newTag: 075f8b16be831f6cd51b84ed6695850068ca6d08
   - name: miguelsombrero/osaan-competence-profile-service
-    newTag: 442147ecffebcc774ac3e6154ca2363918532bba
+    newTag: a462ca421b6fd1de5743f90f4ea6243191a22810
   - name: miguelsombrero/osaan-competence-matching-service
     newTag: 075f8b16be831f6cd51b84ed6695850068ca6d08
   - name: miguelsombrero/osaan-admin-ui-backend
