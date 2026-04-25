@@ -19,4 +19,6 @@ public class Employee {
     private String lastName;
     @Schema(description = "Email address of the employee", requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
+    @Schema(description = "Keycloak user identifier (sub claim)", example = "a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+    private String keycloakId;
 }

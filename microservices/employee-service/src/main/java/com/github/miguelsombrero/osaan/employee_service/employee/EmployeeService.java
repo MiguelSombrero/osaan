@@ -23,8 +23,8 @@ class EmployeeService {
                 .toList();
     }
 
-    public Employee getEmployeeById(UUID employeeId) {
-        EmployeeEntity entity = repository.findById(employeeId)
+    public Employee getEmployeeByKeycloakId(String keycloakId) {
+        EmployeeEntity entity = repository.findByKeycloakId(keycloakId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
         return mapper.entityToApi(entity);
     }

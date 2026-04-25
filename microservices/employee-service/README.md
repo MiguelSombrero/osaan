@@ -2,29 +2,7 @@
 
 ## Usage
 
-Create employee
-
-```bash
-curl -i -X POST http://localhost:8091/v1/admin/employees -H "Content-Type: application/json" -d '{"firstName":"Kimmo","lastName":"Mehulainen","email":"kimmo@test.com"}'
-```
-
-### GET employees
-
-```bash
-curl -X GET http://localhost:8091/v1/employees?employeeIds=fe175997-9935-45ba-8904-6c84c2894043,ee7ced9d-4dd0-4b8d-889c-1f8da1350a56
-```
-
-### GET employee
-
-```bash
-curl -X GET http://localhost:8091/v1/employees/edd06b3a-ae13-41f8-9db3-4a15b7b743d4
-```
-
-### GET employee 404 Not Found
-
-```bash
-curl -X GET http://localhost:8080/v1/employees/eaaaaaaa-ae13-41f8-9db3-4a15b7b743d4
-```
+When running locally see OpenAPI documentation at: http://localhost:8091/swagger-ui/index.html
 
 ## For developer
 

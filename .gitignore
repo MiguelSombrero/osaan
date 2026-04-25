@@ -6,6 +6,7 @@ target/
 .DS_Store
 maildir/
 .agent-works/
+docs/
 
 node_modules/
 dist/

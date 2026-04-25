@@ -54,16 +54,16 @@ class EmployeeController {
 
     @Operation(
             summary = "Get Employee",
-            description = "Get employee by ID")
+            description = "Get employee by Keycloak ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "Bad Request"),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/{employeeId}")
-    public Employee getEmployee(@PathVariable UUID employeeId) {
-        return service.getEmployeeById(employeeId);
+    @GetMapping("/{keycloakId}")
+    public Employee getEmployee(@PathVariable String keycloakId) {
+        return service.getEmployeeByKeycloakId(keycloakId);
     }
 
 }

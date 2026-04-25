@@ -1,6 +1,7 @@
 package com.github.miguelsombrero.osaan.competence_profile_service.competence;
 
 import com.github.miguelsombrero.osaan.competence_profile_service.integration.Employee;
+import com.github.miguelsombrero.osaan.core.security.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -9,11 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/v1/competences")
@@ -34,15 +35,21 @@ class CompetenceController {
         this.service = service;
     }
 
-    @PostMapping("/{employeeId}")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiResponse(responseCode = "201", description = "Created")
-    @Operation(summary = "Create Competences", description = "Creates new competences for an employee")
+    @Operation(summary = "Create Competences", description = "Creates new competences for the authenticated user")
     public List<Competence> createCompetences(
-            @Parameter(in = ParameterIn.PATH, required = true, example = "c4a6f97b-2d51-49c7-8a7e-5f2d9a1e34b8")
-            @PathVariable UUID employeeId,
+            AuthenticatedUser user,
             @RequestBody List<Competence> competences) {
-        //TODO: EmployeeId should be extracted from OAuth2 token
-        return service.saveCompetences(employeeId, competences);
+        return service.saveCompetences(user, competences);
+    }
+
+    @GetMapping
+    @ApiResponse(responseCode = "200", description = "OK")
+    @Operation(summary = "Get Competence Profile", description = "Returns the authenticated user's competence profile")
+    public CompetenceProfile getProfile(AuthenticatedUser user) {
+        return service.getProfile(user);
     }
 
     @GetMapping("/search")
