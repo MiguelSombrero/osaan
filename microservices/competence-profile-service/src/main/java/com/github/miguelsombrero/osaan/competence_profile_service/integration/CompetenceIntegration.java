@@ -1,5 +1,6 @@
 package com.github.miguelsombrero.osaan.competence_profile_service.integration;
 
+import com.github.miguelsombrero.osaan.competence_profile_service.infrastructure.client.BearerTokenRelayInterceptor;
 import com.github.miguelsombrero.osaan.core.security.AuthenticatedUser;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -32,7 +33,9 @@ public class CompetenceIntegration {
             RestClient.Builder clientBuilder) {
         this.employeeServiceUrl = employeeServiceUrl;
         this.skillCatalogServiceUrl = skillCatalogServiceUrl;
-        this.client = clientBuilder.build();
+        this.client = clientBuilder
+                .requestInterceptor(new BearerTokenRelayInterceptor())
+                .build();
     }
 
     public Optional<Employee> getEmployeeByKeycloakId(String keycloakId) {

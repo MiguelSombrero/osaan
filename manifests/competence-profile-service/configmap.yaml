@@ -9,3 +9,4 @@ data:
   TRACING_ENDPOINT: http://jaeger-collector.istio-system:9411/api/v2/spans
   LOGGING_LEVEL_WEB: DEBUG
   LOGGING_LEVEL_APPLICATION: DEBUG
+  ISSUER_URI: https://keycloak.local/realms/osaan

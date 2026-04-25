@@ -103,9 +103,14 @@ services:
       - osaan-db
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      JAVA_TOOL_OPTIONS: >
+        -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
+        -Djavax.net.ssl.trustStorePassword=changeit
     ports:
       - "8091:8080"
       - "4001:4004"
+    volumes:
+      - ./keycloak/certs/keycloak-truststore.jks:/opt/java/keycloak-truststore.jks:ro
 
   skill-catalog-service:
     build: ./microservices/skill-catalog-service
@@ -133,9 +138,14 @@ services:
       - rabbitmq
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      JAVA_TOOL_OPTIONS: >
+        -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
+        -Djavax.net.ssl.trustStorePassword=changeit
     ports:
       - "8093:8080"
       - "4003:4004"
+    volumes:
+      - ./keycloak/certs/keycloak-truststore.jks:/opt/java/keycloak-truststore.jks:ro
 
   competence-matching-service:
     build: ./microservices/competence-matching-service

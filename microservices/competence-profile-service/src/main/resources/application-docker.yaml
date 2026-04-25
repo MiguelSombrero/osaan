@@ -25,3 +25,5 @@ spring:
     port: 5672
     username: guest
     password: guest # Default RabbitMQ credentials for local development
+
+ISSUER_URI: https://keycloak:8443/realms/osaan

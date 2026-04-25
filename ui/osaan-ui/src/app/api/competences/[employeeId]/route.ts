@@ -4,15 +4,14 @@ import { config } from '@/lib/config';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ employeeId: string }> }
+  _context: { params: Promise<{ employeeId: string }> }
 ) {
   try {
-    const { employeeId } = await params;
     const body = await request.json();
 
     const data = await fetchWithAuth(
       config.competenceProfileApiUrl,
-      `/v1/competences/${employeeId}`,
+      `/v1/competences`,
       {
         method: 'POST',
         body: JSON.stringify(body),
