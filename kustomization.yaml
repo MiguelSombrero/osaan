@@ -46,4 +46,4 @@ images:
   - name: miguelsombrero/osaan-admin-ui-frontend
     newTag: 9f14ef1a6f3982417ecc50c7b2cc64fe6f7716f0
   - name: miguelsombrero/osaan-ui
-    newTag: 1a3715c62a7b7f9f08c6bd4bd3a0797f6f093d09
+    newTag: e134c526b7b58ecb8b405d3868e2a31d3a8a893b
