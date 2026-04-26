@@ -85,13 +85,13 @@ services:
     depends_on:
       - prometheus
 
-  osaan-redis:
-    image: redis:8-alpine
-    container_name: osaan-redis
+  osaan-valkey:
+    image: valkey/valkey:9.0.3-alpine
+    container_name: osaan-valkey
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/data
+      - valkey-data:/data
 
   # -----------------
   # Microservices
@@ -118,7 +118,7 @@ services:
     depends_on:
       - osaan-db
       - keycloak
-      - osaan-redis
+      - osaan-valkey
     environment:
       SPRING_PROFILES_ACTIVE: docker
       JAVA_TOOL_OPTIONS: >
@@ -168,7 +168,7 @@ services:
     environment:
       - NODE_ENV=staging
     depends_on:
-      - osaan-redis
+      - osaan-valkey
       - keycloak
 
   osaan-admin-ui:
@@ -203,7 +203,7 @@ services:
       - competence-profile-service
       - employee-service
       - keycloak
-      - osaan-redis
+      - osaan-valkey
     volumes:
       - ./ui/osaan-ui/src:/app/src
       - ./ui/osaan-ui/public:/app/public
@@ -211,4 +211,4 @@ services:
 
 volumes:
   osaan-data:
-  redis-data:
+  valkey-data:

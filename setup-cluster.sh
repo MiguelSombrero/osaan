@@ -1,9 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CLUSTER_NAME="k3d-osaan-dev"
+# ============================================================
+# VERSION PINS — change here when upgrading a component
+# ============================================================
+CLUSTER_NAME="osaan-dev"                        # k3d prefixes context → k3d-osaan-dev
 EXPECTED_CONTEXT="k3d-${CLUSTER_NAME}"
 BACKUP_DIR="${HOME}/.osaan/backup"
+K3D_STORAGE_DIR="${HOME}/.osaan/k3d-storage"    # persistent; survives reboots
+
+# Verify each version at the linked release pages before changing
+ISTIO_VERSION="1.29.2"          # https://istio.io/latest/docs/releases/supported-releases/
+CERT_MANAGER_VERSION="v1.19.5"  # https://github.com/cert-manager/cert-manager/releases
+KEYCLOAK_VERSION="26.6.1"       # https://github.com/keycloak/keycloak-k8s-resources/tags
+ARGOCD_VERSION="v3.3.8"         # https://github.com/argoproj/argo-cd/releases
+EXTERNAL_SECRETS_CHART_VERSION="0.14.3"  # https://github.com/external-secrets/external-secrets/releases
+# ============================================================
 
 echo "===================================================="
 echo "  Setting up local Kubernetes cluster: ${CLUSTER_NAME}"
@@ -15,22 +27,38 @@ if ! command -v k3d >/dev/null 2>&1; then
   exit 1
 fi
 
-# --- 2. Tarkista onko klusteri jo olemassa ---
+# --- 2. Tarkista että kaikki tarvittavat työkalut on asennettu ---
+check_prereqs() {
+  local missing=()
+  for cmd in kubectl helm operator-sdk sops keytool docker testkube; do
+    command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
+  done
+  if [[ ${#missing[@]} -gt 0 ]]; then
+    echo "❌ Missing required tools: ${missing[*]}"
+    echo "   Install them before running this script."
+    exit 1
+  fi
+  echo "✅ All prerequisite tools found"
+}
+check_prereqs
+
+# --- 3. Tarkista onko klusteri jo olemassa ---
 if ! k3d cluster list | grep -q "${CLUSTER_NAME}"; then
   echo "==> Cluster '${CLUSTER_NAME}' not found. Creating it..."
+  mkdir -p "${K3D_STORAGE_DIR}"
   k3d cluster create "${CLUSTER_NAME}" \
     --api-port 6550 \
     -p '9080:80@loadbalancer' \
     -p '443:443@loadbalancer' \
     -p '9443:443@loadbalancer' \
-    --volume /tmp/k3d-storage:/var/lib/rancher/k3s/storage@all \
+    --volume "${K3D_STORAGE_DIR}:/var/lib/rancher/k3s/storage@all" \
     --agents 2 \
     --k3s-arg '--disable=traefik@server:*'
 else
   echo "✅ Cluster '${CLUSTER_NAME}' already exists."
 fi
 
-# --- 3. Tarkista että ollaan oikeassa klusterissa ---
+# --- 4. Tarkista että ollaan oikeassa klusterissa ---
 current_context=$(kubectl config current-context)
 if [[ "$current_context" != "$EXPECTED_CONTEXT" ]]; then
   echo "❌ Current kubectl context is '$current_context'."
@@ -41,7 +69,7 @@ else
   echo "✅ kubectl is using the correct context: $current_context"
 fi
 
-# --- 4. Odota että klusteri on käyttövalmis ---
+# --- 5. Odota että klusteri on käyttövalmis ---
 echo "==> Waiting for cluster to become ready..."
 kubectl cluster-info >/dev/null
 
@@ -62,7 +90,7 @@ wait_for_deployments() {
   kubectl -n "$namespace" wait --timeout=600s --for=condition=available deployment --all || true
 }
 
-# --- 5. Install Operator Lifecycle Manager (if not already installed) ---
+# --- 6. Install Operator Lifecycle Manager (if not already installed) ---
 echo ""
 echo "==> Checking Operator Lifecycle Manager..."
 if ! operator-sdk olm status >/dev/null 2>&1; then
@@ -78,7 +106,7 @@ else
     echo "✅ OLM is already installed"
 fi
 
-# --- 6. Installing Namespaces ---
+# --- 7. Installing Namespaces ---
 echo ""
 echo "==> Installing Namespaces..."
 kubectl apply -f manifests/common/namespaces.yaml
@@ -89,9 +117,26 @@ echo "==> Installing Secrets..."
 # TODO: add SOPS plugin for ArgoCD to automate decrypting secrets
 sops --decrypt manifests/environments/osaan-dev/secrets.enc.yaml | kubectl apply -f -
 
+# --- Ensure correct istioctl version ---
+ensure_istioctl() {
+  local bin_dir="${HOME}/.osaan/istio-${ISTIO_VERSION}/bin"
+  if [[ -x "${bin_dir}/istioctl" ]]; then
+    echo "✅ istioctl ${ISTIO_VERSION} already installed"
+    export PATH="${bin_dir}:${PATH}"
+    return
+  fi
+  echo "==> Downloading istioctl ${ISTIO_VERSION} to ${HOME}/.osaan/..."
+  mkdir -p "${HOME}/.osaan"
+  # Run in a subshell so the download extracts into ~/.osaan, not the project dir
+  (cd "${HOME}/.osaan" && curl -sL https://istio.io/downloadIstio | ISTIO_VERSION="${ISTIO_VERSION}" TARGET_ARCH="$(uname -m)" sh -)
+  export PATH="${bin_dir}:${PATH}"
+  echo "✅ istioctl ${ISTIO_VERSION} ready"
+}
+ensure_istioctl
+
 # --- Installing Istio ---
 echo ""
-echo "==> Installing Istio..."
+echo "==> Installing Istio ${ISTIO_VERSION}..."
 istioctl install -y -n istio-system \
   --set meshConfig.accessLogFile=/dev/stdout \
   --set meshConfig.accessLogEncoding=JSON \
@@ -104,9 +149,7 @@ wait_for_deployments "istio-system"
 # --- Installing Istio integrations ---
 echo ""
 echo "==> Installing Istio integrations (Kiali, Jaeger, Prometheus, Grafana)..."
-istio_version=$(istioctl version --short --remote=false | awk '{print $3}')
-echo "Detected Istio version: ${istio_version}"
-base_url="https://raw.githubusercontent.com/istio/istio/${istio_version}/samples/addons"
+base_url="https://raw.githubusercontent.com/istio/istio/${ISTIO_VERSION}/samples/addons"
 kubectl apply -n istio-system -f "${base_url}/kiali.yaml"
 kubectl apply -n istio-system -f "${base_url}/jaeger.yaml"
 kubectl apply -n istio-system -f "${base_url}/prometheus.yaml"
@@ -115,45 +158,38 @@ wait_for_deployments "istio-system"
 
 # --- Installing cert-manager ---
 echo ""
-echo "==> Installing cert-manager..."
-kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml"
+echo "==> Installing cert-manager ${CERT_MANAGER_VERSION}..."
+kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/${CERT_MANAGER_VERSION}/cert-manager.yaml"
 wait_for_deployments "cert-manager"
-
-# --- Installing Redis ---
-echo ""
-echo "=== 🧰 Installing Redis (Bitnami)..."
-helm repo add bitnami https://charts.bitnami.com/bitnami >/dev/null 2>&1
-helm repo update >/dev/null 2>&1
-helm upgrade --install redis bitnami/redis \
-  --namespace osaan-dev \
-  --set architecture=standalone \
-  --set auth.enabled=true \
-  --set auth.existingSecret=redis-secret \
-  --set master.service.ports.redis=6379 \
-  --wait
 
 # --- Installing Keycloak ---
 echo ""
-echo "=== Installing Keycloak ..."
-kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/keycloaks.k8s.keycloak.org-v1.yml
-kubectl apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml
-kubectl -n keycloak apply -f https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/26.4.2/kubernetes/kubernetes.yml
+echo "=== Installing Keycloak ${KEYCLOAK_VERSION}..."
+kubectl apply -f "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${KEYCLOAK_VERSION}/kubernetes/keycloaks.k8s.keycloak.org-v1.yml"
+kubectl apply -f "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${KEYCLOAK_VERSION}/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml"
+kubectl -n keycloak apply -f "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${KEYCLOAK_VERSION}/kubernetes/kubernetes.yml"
 wait_for_deployments "keycloak"
 
 # --- Installing Postgres Operator ---
 echo ""
 echo "=== Installing CrunchyData Postgres Operator ..."
 kubectl apply -f https://operatorhub.io/install/postgresql.yaml
+echo "⏳ Waiting for PostgresCluster CRD to be registered..."
+until kubectl get crd postgresclusters.postgres-operator.crunchydata.com >/dev/null 2>&1; do
+  sleep 5
+done
+echo "✅ PostgresCluster CRD registered"
 
 # --- Installing RabbitMQ Operator ---
 echo ""
 echo "=== Installing RabbitMQ Operator ..."
 kubectl apply -f https://operatorhub.io/install/rabbitmq-cluster-operator.yaml
+wait_for_deployments "operators"
 
 # --- Installing ArgoCD ---
 echo ""
-echo "=== Installing ArgoCD..."
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+echo "=== Installing ArgoCD ${ARGOCD_VERSION}..."
+kubectl apply -n argocd --server-side -f "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
 
 #echo "==> Configuring ArgoCD server to run in insecure mode (behind TLS ingress)..."
 kubectl -n argocd patch configmap argocd-cmd-params-cm \
@@ -183,17 +219,22 @@ wait_for_deployments "argocd"
 
 # --- Installing External Secrets ---
 echo ""
-echo "=== Installing External Secrets ..."
+echo "=== Installing External Secrets ${EXTERNAL_SECRETS_CHART_VERSION}..."
 helm repo add external-secrets https://charts.external-secrets.io >/dev/null 2>&1
 helm repo update >/dev/null 2>&1
 helm upgrade --install external-secrets \
    external-secrets/external-secrets \
+   --version "${EXTERNAL_SECRETS_CHART_VERSION}" \
     -n external-secrets \
     --create-namespace
 wait_for_deployments "external-secrets"
 
 # --- Creating Keycloak truststore Secret for osaan-dev ---
 echo "=== Creating Keycloak truststore Secret for osaan-dev ..."
+
+TRUSTSTORE_PATH="${HOME}/.osaan/keycloak-truststore-k3d.jks"
+mkdir -p "${HOME}/.osaan"
+rm -f "${TRUSTSTORE_PATH}"
 
 # Wait for ca-cert resource to be created by ArgoCD
 echo "⏳ Waiting for Certificate 'ca-cert' to be created..."
@@ -210,9 +251,6 @@ while ! kubectl -n cert-manager get certificate ca-cert >/dev/null 2>&1; do
   sleep 2
 done
 
-# Ensure we start fresh on each run
-rm -f /tmp/keycloak-truststore-k3d.jks
-
 kubectl -n cert-manager wait certificate/ca-cert \
   --for=condition=Ready --timeout=120s
 
@@ -220,13 +258,13 @@ kubectl -n cert-manager get secret ca-secret \
   -o jsonpath='{.data.tls\.crt}' | base64 -d \
   | keytool -importcert \
       -alias osaan-ca \
-      -keystore /tmp/keycloak-truststore-k3d.jks \
+      -keystore "${TRUSTSTORE_PATH}" \
       -storepass changeit \
       -noprompt \
       -file /dev/stdin
 
 kubectl -n osaan-dev create secret generic keycloak-truststore \
-  --from-file=keycloak-truststore.jks=/tmp/keycloak-truststore-k3d.jks \
+  --from-file=keycloak-truststore.jks="${TRUSTSTORE_PATH}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
 # --- Installing Testkube ---

@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: valkey
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://valkey.io/valkey-helm/
+    chart: valkey
+    targetRevision: "0.9.4"  # https://github.com/valkey-io/valkey-helm/releases
+    helm:
+      values: |
+        auth:
+          enabled: true
+          usersExistingSecret: redis-secret
+          aclUsers:
+            default:
+              permissions: "~* &* +@all"
+              passwordKey: redis-password
+        service:
+          port: 6379
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: osaan-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -25,10 +25,10 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: redis-master-dr
+  name: valkey-primary-dr
   namespace: osaan-dev
 spec:
-  host: redis-master.osaan-dev.svc.cluster.local
+  host: valkey-primary.osaan-dev.svc.cluster.local
   trafficPolicy:
     tls:
       mode: DISABLE

@@ -12,7 +12,7 @@ data:
   CORS_ENABLED: "true"
   CORS_ORIGIN: https://osaan.admin.local:9443
   REDIS_ENABLED: "true"
-  REDIS_HOST: redis-master.osaan-dev.svc.cluster.local
+  REDIS_HOST: valkey-primary.osaan-dev.svc.cluster.local
   REDIS_PORT: "6379"
   BASE_URL: https://osaan.admin.local:9443
   LOGIN_REDIRECT_URL: https://osaan.admin.local:9443/skills
