@@ -1,5 +1,5 @@
 import type { GetSkillsParams, GetSkillsResponse } from '@/types/skill';
-import type { Competence } from '@/types/competence';
+import type { Competence, CompetenceProfileData } from '@/types/competence';
 import type { Employee } from '@/types/employee';
 import type { EmployeeSearchParams, EmployeeSearchResult } from '@/types/manager';
 
@@ -83,6 +83,6 @@ export const employeeApi = {
 };
 
 export const competenceReadApi = {
-  getCompetences: (employeeId: string) =>
-    fetchApi<Competence[]>(`/competences/${employeeId}`),
+  getProfile: (employeeId: string) =>
+    fetchApi<CompetenceProfileData>(`/competences/${employeeId}`),
 };

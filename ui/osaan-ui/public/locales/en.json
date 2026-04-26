@@ -51,6 +51,14 @@
   "myList": "My Selection",
   "emptyList": "No employees selected yet",
 
+  "yourProfile": "Your Profile",
+  "profileEmpty": "No skills saved yet",
+  "profileEmptyHint": "Select skills from the browser below and save your profile.",
+  "profileLoadError": "Could not load your profile",
+  "profileLastSaved": "Saved",
+  "browseAndAdd": "Browse & Add Skills",
+  "browseAndAddHint": "Click a skill to select it, set a rating, then save.",
+
   "clickToSelect": "Click to select",
   "somethingWentWrong": "Something went wrong",
   "redirecting": "Redirecting\u2026",

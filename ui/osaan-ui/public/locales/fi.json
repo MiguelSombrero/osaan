@@ -51,6 +51,14 @@
   "myList": "Valintani",
   "emptyList": "Ei valittuja työntekijöitä",
 
+  "yourProfile": "Osaamisprofiilisi",
+  "profileEmpty": "Et ole vielä tallentanut osaamisia",
+  "profileEmptyHint": "Valitse osaamisia alla olevasta hakemistosta ja tallenna profiilisi.",
+  "profileLoadError": "Profiilin lataus epäonnistui",
+  "profileLastSaved": "Tallennettu",
+  "browseAndAdd": "Selaa ja lisää osaamisia",
+  "browseAndAddHint": "Napsauta osaamista valitaksesi sen, aseta taso ja tallenna.",
+
   "clickToSelect": "Napsauta valitaksesi",
   "somethingWentWrong": "Jokin meni pieleen",
   "redirecting": "Uudelleenohjauksessa\u2026",

@@ -4,10 +4,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppShell } from '@/components/layout/app-shell';
 import { PageHeader } from '@/components/layout/page-header';
-import { SkillBrowser, SelectionSummaryBar, SaveCompetencesDialog } from '@/components/competences';
+import {
+  SkillBrowser,
+  SelectionSummaryBar,
+  SaveCompetencesDialog,
+  CompetenceProfilePanel,
+} from '@/components/competences';
 import { useAppSession } from '@/hooks/use-app-session';
 import { useCompetenceSelection } from '@/hooks/use-competence-selection';
-import { useSaveCompetences } from '@/hooks/use-competences';
+import { useSaveCompetences, useCompetences } from '@/hooks/use-competences';
 import { useSkills } from '@/hooks/use-skills';
 import type { Rating } from '@/types/rating';
 
@@ -27,9 +32,9 @@ export default function CompetencesPage() {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const saveMutation = useSaveCompetences(employeeId);
+  const { data: profileData, isLoading: profileLoading, error: profileError } = useCompetences(employeeId);
 
-  // Fetch all skills for the save dialog display (just the selected page)
-  // We pass the selected ids to find matching skill names
+  // Fetch skills for the save dialog display
   const { data: skillsData } = useSkills({ size: 100 });
   const allLoadedSkills = skillsData?.skills ?? [];
 
@@ -70,6 +75,20 @@ export default function CompetencesPage() {
           {t('profileSaved')}
         </div>
       )}
+
+      <CompetenceProfilePanel
+        profile={profileData}
+        isLoading={profileLoading}
+        error={profileError instanceof Error ? profileError : null}
+      />
+
+      {/* Skill browser section */}
+      <div className="mb-3">
+        <h2 className="font-display text-lg font-semibold text-stone-950 leading-tight">
+          {t('browseAndAdd')}
+        </h2>
+        <p className="text-sm text-stone-500 font-sans mt-0.5">{t('browseAndAddHint')}</p>
+      </div>
 
       {/* Add bottom padding so the sticky bar doesn't overlap last cards */}
       <div className={selectedCount > 0 ? 'pb-20' : ''}>

@@ -7,7 +7,7 @@ import type { Competence } from '@/types/competence';
 function useCompetences(employeeId: string | undefined) {
   return useQuery({
     queryKey: ['competences', employeeId],
-    queryFn: () => competenceReadApi.getCompetences(employeeId!),
+    queryFn: () => competenceReadApi.getProfile(employeeId!),
     enabled: !!employeeId,
   });
 }
