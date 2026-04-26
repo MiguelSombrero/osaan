@@ -28,7 +28,7 @@ metadata:
   name: valkey-primary-dr
   namespace: osaan-dev
 spec:
-  host: valkey-primary.osaan-dev.svc.cluster.local
+  host: valkey.osaan-dev.svc.cluster.local
   trafficPolicy:
     tls:
       mode: DISABLE
