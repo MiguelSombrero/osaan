@@ -14,7 +14,7 @@ ISTIO_VERSION="1.29.2"          # https://istio.io/latest/docs/releases/supporte
 CERT_MANAGER_VERSION="v1.19.5"  # https://github.com/cert-manager/cert-manager/releases
 KEYCLOAK_VERSION="26.6.1"       # https://github.com/keycloak/keycloak-k8s-resources/tags
 ARGOCD_VERSION="v3.3.8"         # https://github.com/argoproj/argo-cd/releases
-EXTERNAL_SECRETS_CHART_VERSION="0.14.3"  # https://github.com/external-secrets/external-secrets/releases
+EXTERNAL_SECRETS_CHART_VERSION="2.4.0"   # https://github.com/external-secrets/external-secrets/releases
 # ============================================================
 
 echo "===================================================="
