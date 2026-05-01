@@ -10,3 +10,6 @@ data:
   LOGGING_LEVEL_WEB: DEBUG
   LOGGING_LEVEL_APPLICATION: DEBUG
   ISSUER_URI: https://keycloak.local/realms/osaan
+  JAVA_TOOL_OPTIONS: >-
+    -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
+    -Djavax.net.ssl.trustStorePassword=changeit

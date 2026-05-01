@@ -84,6 +84,10 @@ spec:
                 secretKeyRef:
                   name: osaan-db-pguser-osaan-user
                   key: user
+          volumeMounts:
+            - name: keycloak-truststore
+              mountPath: /opt/java/keycloak-truststore.jks
+              subPath: keycloak-truststore.jks
           resources:
             requests:
               memory: "256Mi"
@@ -91,3 +95,7 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+      volumes:
+        - name: keycloak-truststore
+          secret:
+            secretName: keycloak-truststore
