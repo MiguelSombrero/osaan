@@ -6,3 +6,5 @@ CREATE TABLE IF NOT EXISTS competences (
     skill_id UUID,
     rating INT CHECK (rating BETWEEN 1 AND 5)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS competences_employee_skill_unique ON competences(employee_id, skill_id);

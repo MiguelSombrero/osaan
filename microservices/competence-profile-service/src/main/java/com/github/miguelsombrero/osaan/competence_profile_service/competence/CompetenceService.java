@@ -43,7 +43,12 @@ class CompetenceService {
                 .toList();
 
         List<CompetenceEntity> entities = competences.stream()
-                .map(c -> mapper.apiToEntity(c, employeeId))
+                .map(c -> {
+                    CompetenceEntity entity = mapper.apiToEntity(c, employeeId);
+                    repository.findByEmployeeIdAndSkillId(employeeId, c.getSkillId())
+                            .ifPresent(existing -> entity.setId(existing.getId()));
+                    return entity;
+                })
                 .toList();
 
         List<Competence> savedCompetences = repository.saveAll(entities).stream()
