@@ -30,6 +30,7 @@ export default function CompetencesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [ratingUpdatedNotice, setRatingUpdatedNotice] = useState<{ skillName: string; rating: Rating } | null>(null);
 
   const saveMutation = useSaveCompetences(employeeId);
   const { data: profileData, isLoading: profileLoading, error: profileError } = useCompetences(employeeId);
@@ -37,6 +38,11 @@ export default function CompetencesPage() {
   // Fetch skills for the save dialog display
   const { data: skillsData } = useSkills({ size: 100 });
   const allLoadedSkills = skillsData?.skills ?? [];
+
+  const handleRatingUpdated = (skillName: string, rating: Rating) => {
+    setRatingUpdatedNotice({ skillName, rating });
+    setTimeout(() => setRatingUpdatedNotice(null), 3000);
+  };
 
   const handleSave = () => {
     setSaveError(null);
@@ -76,6 +82,18 @@ export default function CompetencesPage() {
         </div>
       )}
 
+      {ratingUpdatedNotice && (
+        <div className="mb-6 flex items-center gap-2 px-4 py-3 bg-success-light text-success border border-green-200 rounded-md text-sm font-medium font-sans">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          {t('ratingUpdated', {
+            skillName: ratingUpdatedNotice.skillName,
+            ratingLabel: t(`rating${ratingUpdatedNotice.rating}`),
+          })}
+        </div>
+      )}
+
       {/* Two-column layout: profile on left (sticky), skill browser on right */}
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-6 items-start">
         {/* Left: Competence Profile — sticky so it stays visible while browsing skills */}
@@ -85,6 +103,7 @@ export default function CompetencesPage() {
             isLoading={profileLoading}
             error={profileError instanceof Error ? profileError : null}
             employeeId={employeeId}
+            onRatingUpdated={handleRatingUpdated}
           />
         </div>
 

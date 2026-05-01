@@ -31,6 +31,7 @@
   "confirmSaveDescription": "Review your skill ratings before saving.",
   "savingProfile": "Saving…",
   "profileSaved": "Profile saved",
+  "ratingUpdated": "{{skillName}} updated to {{ratingLabel}}",
   "saveFailed": "Failed to save profile",
   "retryAction": "Try again",
   "cancel": "Cancel",

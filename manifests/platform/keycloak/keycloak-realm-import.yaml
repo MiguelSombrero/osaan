@@ -60,7 +60,8 @@ spec:
           post.logout.redirect.uris: >-
             https://osaan.admin.local/*##https://osaan.admin.local:9443/*##
     users:
-      - username: anna
+      - id: a1b2c3d4-0001-4000-a000-000000000001
+        username: anna
         enabled: true
         emailVerified: true
         firstName: Anna
@@ -74,7 +75,8 @@ spec:
         realmRoles:
           - ADMIN
 
-      - username: mikko
+      - id: a1b2c3d4-0002-4000-a000-000000000002
+        username: mikko
         enabled: true
         emailVerified: true
         firstName: Mikko
@@ -89,7 +91,8 @@ spec:
           - MANAGER
           - USER
 
-      - username: liisa
+      - id: a1b2c3d4-0003-4000-a000-000000000003
+        username: liisa
         enabled: true
         emailVerified: true
         firstName: Liisa
@@ -103,7 +106,8 @@ spec:
         realmRoles:
           - USER
 
-      - username: jari
+      - id: a1b2c3d4-0004-4000-a000-000000000004
+        username: jari
         enabled: true
         emailVerified: true
         firstName: Jari
@@ -117,7 +121,8 @@ spec:
         realmRoles:
           - USER
 
-      - username: sari
+      - id: a1b2c3d4-0005-4000-a000-000000000005
+        username: sari
         enabled: true
         emailVerified: true
         firstName: Sari

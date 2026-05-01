@@ -12,6 +12,7 @@ interface CompetenceProfilePanelProps {
   isLoading: boolean;
   error: Error | null;
   employeeId: string | undefined;
+  onRatingUpdated?: (skillName: string, rating: Rating) => void;
 }
 
 const ratingColors: Record<number, string> = {
@@ -25,7 +26,7 @@ const ratingColors: Record<number, string> = {
 interface CompetenceRowProps {
   competence: CompetenceDetail;
   onDelete: (id: string) => void;
-  onUpdateRating: (id: string, rating: Rating) => void;
+  onUpdateRating: (id: string, rating: Rating, skillName: string) => void;
   isPending: boolean;
 }
 
@@ -90,7 +91,7 @@ function CompetenceRow({ competence, onDelete, onUpdateRating, isPending }: Comp
               type="button"
               disabled={isPending}
               aria-label={`${t(`rating${level}`, { defaultValue: String(level) })}`}
-              onClick={() => onUpdateRating(competence.id, level)}
+              onClick={() => onUpdateRating(competence.id, level, competence.skillName)}
               onMouseEnter={() => setHoveredRating(level)}
               style={{
                 display: 'inline-block',
@@ -132,7 +133,7 @@ function CompetenceRow({ competence, onDelete, onUpdateRating, isPending }: Comp
   );
 }
 
-function CompetenceProfilePanel({ profile, isLoading, error, employeeId }: CompetenceProfilePanelProps) {
+function CompetenceProfilePanel({ profile, isLoading, error, employeeId, onRatingUpdated }: CompetenceProfilePanelProps) {
   const { t } = useTranslation();
   const competences = profile?.competences ?? [];
   const hasSkills = competences.length > 0;
@@ -144,8 +145,11 @@ function CompetenceProfilePanel({ profile, isLoading, error, employeeId }: Compe
     deleteMutation.mutate(competenceId);
   };
 
-  const handleUpdateRating = (competenceId: string, rating: Rating) => {
-    updateRatingMutation.mutate({ competenceId, rating });
+  const handleUpdateRating = (competenceId: string, rating: Rating, skillName: string) => {
+    updateRatingMutation.mutate(
+      { competenceId, rating },
+      { onSuccess: () => onRatingUpdated?.(skillName, rating) }
+    );
   };
 
   return (
