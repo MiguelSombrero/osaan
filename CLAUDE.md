@@ -130,6 +130,59 @@ Next.js 15 App Router with React 19.
 - **Observability**: Zipkin (local tracing), Jaeger (K8s), Prometheus + Grafana, Kiali
 - **Secrets**: SOPS with age encryption for Kubernetes secrets
 
+## Testing
+
+Write tests alongside every feature implementation. Tests are not optional — skip only for the exceptions listed below.
+
+### Java microservices
+
+Follow the patterns established in `skill-catalog-service` (the most fully tested service).
+
+| Layer | Test type | Tools | Canonical example |
+|---|---|---|---|
+| Domain entity / value object | Pure unit test | JUnit 5 + AssertJ | `SkillTest`, `SkillNameTest` |
+| Service | Unit test with mocks | JUnit 5 + Mockito | `CompetenceServiceTest`, `ManageSkillsServiceTest` |
+| Controller | MockMvc unit test | Spring MVC Test + Mockito | `SkillControllerTest`, `AdminSkillControllerTest` |
+| Repository (custom queries) | Testcontainers integration test | `@Testcontainers` + `@ServiceConnection` | `CompetenceRepositoryIT` |
+
+**What to test:**
+- Business logic in domain entities and services
+- Every controller endpoint: happy path + 400/404/403 error cases
+- Custom repository query methods (not Spring Data auto-generated ones)
+- Security / role requirements on endpoints
+
+**What to skip:**
+- Auto-generated Spring Data CRUD methods
+- Application context load tests
+- Trivial getters/setters/mappers with no logic
+
+**Patterns:**
+- `@ExtendWith(MockitoExtension.class)` + `@InjectMocks` / `@Mock` for service and controller unit tests
+- `MockMvcBuilders.standaloneSetup(controller)` — no need to load full Spring context
+- `ArgumentCaptor` to assert on what was passed to mocked collaborators
+- Share Testcontainers configuration via `@Import(TestcontainersConfiguration.class)`
+
+### Admin UI (`ui/osaan-admin-ui/frontend`)
+
+Infrastructure is already in place. Follow the patterns in `src/skill/components/__tests__/` and `src/skill/hooks/__tests__/`.
+
+- Render all components with `renderWithProviders()` from `src/test/utils/renderWithProviders.tsx`
+- Control API responses via `setMock*()` helpers and `server.use()` overrides from `src/test/mocks/`
+- Test: rendering, user interactions, error states, loading states, role-based visibility
+- Use `@testing-library/user-event` (not `fireEvent`) for interactions
+
+### User UI (`ui/osaan-ui`)
+
+Infrastructure is in place (Vitest + Testing Library + MSW). Test files live in `src/**/__tests__/`.
+
+- **Custom hooks** — test with `renderHook` + a real `QueryClient` (no retries, no cache time)
+- **Client components** (`'use client'`) — test with `renderWithProviders()` from `src/test/renderWithProviders.tsx`
+- **Pure utility functions** — plain unit tests
+- Mock HTTP calls with MSW handlers in `src/test/mocks/handlers.ts`; add new route handlers for new API endpoints
+- **Skip**: Server Components, Next.js API route handlers, NextAuth internals
+
+Run: `cd ui/osaan-ui && npm test`
+
 ### Local service URLs (Docker Compose)
 
 | Service             | URL                                  |
