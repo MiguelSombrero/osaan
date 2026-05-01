@@ -59,6 +59,10 @@
   "browseAndAdd": "Browse & Add Skills",
   "browseAndAddHint": "Click a skill to select it, set a rating, then save.",
 
+  "remove": "Remove",
+  "removeSkill": "Remove skill",
+  "updateRating": "Update rating",
+
   "clickToSelect": "Click to select",
   "somethingWentWrong": "Something went wrong",
   "redirecting": "Redirecting\u2026",

@@ -1,14 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Spinner } from '@/components/ui/spinner';
-import type { CompetenceProfileData } from '@/types/competence';
+import { useDeleteCompetence, useUpdateCompetenceRating } from '@/hooks/use-competences';
+import type { CompetenceProfileData, CompetenceDetail } from '@/types/competence';
 import type { Rating } from '@/types/rating';
 
 interface CompetenceProfilePanelProps {
   profile: CompetenceProfileData | undefined;
   isLoading: boolean;
   error: Error | null;
+  employeeId: string | undefined;
 }
 
 const ratingColors: Record<number, string> = {
@@ -19,30 +22,131 @@ const ratingColors: Record<number, string> = {
   5: 'var(--rating-5)',
 };
 
-function RatingDots({ rating }: { rating: number }) {
+interface CompetenceRowProps {
+  competence: CompetenceDetail;
+  onDelete: (id: string) => void;
+  onUpdateRating: (id: string, rating: Rating) => void;
+  isPending: boolean;
+}
+
+function CompetenceRow({ competence, onDelete, onUpdateRating, isPending }: CompetenceRowProps) {
+  const { t } = useTranslation();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [hoveredRating, setHoveredRating] = useState<Rating | null>(null);
+
+  const currentRating = competence.rating as Rating;
+  const displayRating = hoveredRating ?? currentRating;
+
+  if (confirmDelete) {
+    return (
+      <li className="flex items-center justify-between px-5 py-3 gap-4 bg-red-50 border-l-2 border-red-300">
+        <span className="text-sm font-medium text-stone-700 font-sans truncate min-w-0">
+          {competence.skillName}
+        </span>
+        <div className="flex items-center gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={() => setConfirmDelete(false)}
+            className="text-xs text-stone-500 hover:text-stone-700 font-sans transition-colors"
+          >
+            {t('cancel')}
+          </button>
+          <button
+            type="button"
+            onClick={() => onDelete(competence.id)}
+            disabled={isPending}
+            className="text-xs font-semibold text-red-600 hover:text-red-700 font-sans transition-colors disabled:opacity-50 flex items-center gap-1"
+          >
+            {isPending ? (
+              <Spinner size="sm" />
+            ) : null}
+            {t('remove')}
+          </button>
+        </div>
+      </li>
+    );
+  }
+
   return (
-    <span className="flex items-center gap-[3px]" aria-hidden="true">
-      {[1, 2, 3, 4, 5].map((level) => (
-        <span
-          key={level}
-          style={{
-            display: 'inline-block',
-            width: 8,
-            height: 8,
-            borderRadius: '50%',
-            backgroundColor: level <= rating ? ratingColors[level] : 'var(--border-subtle)',
-            flexShrink: 0,
-          }}
-        />
-      ))}
-    </span>
+    <li
+      className="group flex items-center justify-between px-5 py-3 gap-4 transition-colors hover:bg-stone-50"
+      onMouseLeave={() => setHoveredRating(null)}
+    >
+      <span className="text-sm font-medium text-stone-800 font-sans leading-tight min-w-0 truncate">
+        {competence.skillName}
+      </span>
+
+      <div className="flex items-center gap-2.5 shrink-0">
+        {/* Interactive rating dots — hover previews, click to save */}
+        <div
+          className="flex items-center gap-[3px]"
+          role="group"
+          aria-label={t('updateRating', { defaultValue: 'Update rating' })}
+          onMouseLeave={() => setHoveredRating(null)}
+        >
+          {([1, 2, 3, 4, 5] as Rating[]).map((level) => (
+            <button
+              key={level}
+              type="button"
+              disabled={isPending}
+              aria-label={`${t(`rating${level}`, { defaultValue: String(level) })}`}
+              onClick={() => onUpdateRating(competence.id, level)}
+              onMouseEnter={() => setHoveredRating(level)}
+              style={{
+                display: 'inline-block',
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: level <= displayRating ? ratingColors[level] : 'var(--border-subtle)',
+                flexShrink: 0,
+                cursor: isPending ? 'default' : 'pointer',
+                transition: 'background-color 0.1s ease',
+                border: 'none',
+                padding: 0,
+              }}
+            />
+          ))}
+        </div>
+
+        <span className="text-xs text-stone-400 font-sans w-16 text-right tabular-nums">
+          {t(`rating${displayRating}`, { defaultValue: String(displayRating) })}
+        </span>
+
+        {/* Delete button — fades in on row hover */}
+        <button
+          type="button"
+          onClick={() => setConfirmDelete(true)}
+          disabled={isPending}
+          className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-stone-300 hover:text-red-400 disabled:cursor-default"
+          aria-label={t('removeSkill', { defaultValue: 'Remove skill' })}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+            <path d="M10 11v6M14 11v6" />
+            <path d="M9 6V4h6v2" />
+          </svg>
+        </button>
+      </div>
+    </li>
   );
 }
 
-function CompetenceProfilePanel({ profile, isLoading, error }: CompetenceProfilePanelProps) {
+function CompetenceProfilePanel({ profile, isLoading, error, employeeId }: CompetenceProfilePanelProps) {
   const { t } = useTranslation();
   const competences = profile?.competences ?? [];
   const hasSkills = competences.length > 0;
+
+  const deleteMutation = useDeleteCompetence(employeeId);
+  const updateRatingMutation = useUpdateCompetenceRating(employeeId);
+
+  const handleDelete = (competenceId: string) => {
+    deleteMutation.mutate(competenceId);
+  };
+
+  const handleUpdateRating = (competenceId: string, rating: Rating) => {
+    updateRatingMutation.mutate({ competenceId, rating });
+  };
 
   return (
     <section aria-label={t('yourProfile')}>
@@ -96,20 +200,16 @@ function CompetenceProfilePanel({ profile, isLoading, error }: CompetenceProfile
         {!isLoading && !error && hasSkills && (
           <ul className="divide-y divide-stone-100" role="list">
             {competences.map((competence) => (
-              <li
+              <CompetenceRow
                 key={competence.id}
-                className="flex items-center justify-between px-5 py-3 gap-4"
-              >
-                <span className="text-sm font-medium text-stone-800 font-sans leading-tight min-w-0 truncate">
-                  {competence.skillName}
-                </span>
-                <div className="flex items-center gap-2.5 shrink-0">
-                  <RatingDots rating={competence.rating} />
-                  <span className="text-xs text-stone-400 font-sans w-16 text-right">
-                    {t(`rating${competence.rating as Rating}`, { defaultValue: String(competence.rating) })}
-                  </span>
-                </div>
-              </li>
+                competence={competence}
+                onDelete={handleDelete}
+                onUpdateRating={handleUpdateRating}
+                isPending={
+                  (deleteMutation.isPending && deleteMutation.variables === competence.id) ||
+                  (updateRatingMutation.isPending && updateRatingMutation.variables?.competenceId === competence.id)
+                }
+              />
             ))}
           </ul>
         )}

@@ -23,4 +23,26 @@ function useSaveCompetences(employeeId: string | undefined) {
   });
 }
 
-export { useCompetences, useSaveCompetences };
+function useDeleteCompetence(employeeId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (competenceId: string) =>
+      competenceApi.deleteCompetence(employeeId!, competenceId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['competences', employeeId] });
+    },
+  });
+}
+
+function useUpdateCompetenceRating(employeeId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ competenceId, rating }: { competenceId: string; rating: number }) =>
+      competenceApi.updateCompetenceRating(employeeId!, competenceId, rating),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['competences', employeeId] });
+    },
+  });
+}
+
+export { useCompetences, useSaveCompetences, useDeleteCompetence, useUpdateCompetenceRating };

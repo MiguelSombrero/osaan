@@ -7,7 +7,9 @@ import com.github.miguelsombrero.osaan.competence_profile_service.integration.Sk
 import com.github.miguelsombrero.osaan.core.event.SkillCreatedEvent;
 import com.github.miguelsombrero.osaan.core.security.AuthenticatedUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -87,6 +89,27 @@ class CompetenceService {
         return new CompetenceProfile(employee.get(), competences);
     }
 
+    public void deleteCompetence(AuthenticatedUser user, UUID competenceId) {
+        Employee employee = requireEmployee(user);
+        CompetenceEntity entity = repository.findById(competenceId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!entity.getEmployeeId().equals(employee.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        repository.delete(entity);
+    }
+
+    public Competence updateCompetenceRating(AuthenticatedUser user, UUID competenceId, int rating) {
+        Employee employee = requireEmployee(user);
+        CompetenceEntity entity = repository.findById(competenceId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!entity.getEmployeeId().equals(employee.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        entity.setRating(rating);
+        return mapper.entityToApi(repository.save(entity));
+    }
+
     public List<Employee> searchBySkillAndRating(String skillName, Optional<Integer> minRating) {
         Skill skill = integration.findSkillByName(skillName);
 
@@ -103,5 +126,10 @@ class CompetenceService {
                     log.info("Creating new employee for Keycloak user {}", user.keycloakId());
                     return integration.createEmployee(user);
                 });
+    }
+
+    private Employee requireEmployee(AuthenticatedUser user) {
+        return integration.getEmployeeByKeycloakId(user.keycloakId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

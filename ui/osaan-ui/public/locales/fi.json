@@ -59,6 +59,10 @@
   "browseAndAdd": "Selaa ja lisää osaamisia",
   "browseAndAddHint": "Napsauta osaamista valitaksesi sen, aseta taso ja tallenna.",
 
+  "remove": "Poista",
+  "removeSkill": "Poista osaaminen",
+  "updateRating": "Päivitä taso",
+
   "clickToSelect": "Napsauta valitaksesi",
   "somethingWentWrong": "Jokin meni pieleen",
   "redirecting": "Uudelleenohjauksessa\u2026",

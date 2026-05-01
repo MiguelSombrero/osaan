@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/v1/competences")
@@ -51,6 +52,26 @@ class CompetenceController {
     public CompetenceProfile getProfile(AuthenticatedUser user) {
         return service.getProfile(user);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponse(responseCode = "204", description = "No Content")
+    @Operation(summary = "Delete Competence", description = "Deletes a competence from the authenticated user's profile")
+    public void deleteCompetence(AuthenticatedUser user, @PathVariable UUID id) {
+        service.deleteCompetence(user, id);
+    }
+
+    @PatchMapping("/{id}")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @Operation(summary = "Update Competence Rating", description = "Updates the rating of a competence in the authenticated user's profile")
+    public Competence updateCompetenceRating(
+            AuthenticatedUser user,
+            @PathVariable UUID id,
+            @RequestBody UpdateRatingRequest request) {
+        return service.updateCompetenceRating(user, id, request.rating());
+    }
+
+    private record UpdateRatingRequest(int rating) {}
 
     @GetMapping("/search")
     @ApiResponse(responseCode = "200", description = "OK")

@@ -38,6 +38,10 @@ async function fetchApi<T>(
     );
   }
 
+  if (response.status === 204) {
+    return undefined as unknown as T;
+  }
+
   return response.json();
 }
 
@@ -65,6 +69,17 @@ export const competenceApi = {
     fetchApi<Competence[]>(`/competences/${employeeId}`, {
       method: 'POST',
       body: JSON.stringify(competences),
+    }),
+
+  deleteCompetence: (employeeId: string, competenceId: string) =>
+    fetchApi<void>(`/competences/${employeeId}/${competenceId}`, {
+      method: 'DELETE',
+    }),
+
+  updateCompetenceRating: (employeeId: string, competenceId: string, rating: number) =>
+    fetchApi<Competence>(`/competences/${employeeId}/${competenceId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ rating }),
     }),
 };
 

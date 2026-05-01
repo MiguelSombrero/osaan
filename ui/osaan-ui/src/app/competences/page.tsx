@@ -84,6 +84,7 @@ export default function CompetencesPage() {
             profile={profileData}
             isLoading={profileLoading}
             error={profileError instanceof Error ? profileError : null}
+            employeeId={employeeId}
           />
         </div>
 
