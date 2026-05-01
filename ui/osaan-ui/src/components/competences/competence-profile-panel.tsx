@@ -45,7 +45,7 @@ function CompetenceProfilePanel({ profile, isLoading, error }: CompetenceProfile
   const hasSkills = competences.length > 0;
 
   return (
-    <section aria-label={t('yourProfile')} className="mb-8">
+    <section aria-label={t('yourProfile')}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">

@@ -25,7 +25,7 @@ function SkillBrowser({ selectedSkills, onToggle, onRate }: SkillBrowserProps) {
   const { data, isLoading, error, refetch } = useSkills({
     query: searchQuery || undefined,
     page,
-    size: 21,
+    size: 12,
   });
 
   return (
@@ -70,7 +70,7 @@ function SkillBrowser({ selectedSkills, onToggle, onRate }: SkillBrowserProps) {
               />
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-5">
+                <div className="grid grid-cols-1 gap-3 p-5">
                   {data.skills.map((skill) => (
                     <SkillCard
                       key={skill.id}

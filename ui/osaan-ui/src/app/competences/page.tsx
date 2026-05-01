@@ -76,27 +76,31 @@ export default function CompetencesPage() {
         </div>
       )}
 
-      <CompetenceProfilePanel
-        profile={profileData}
-        isLoading={profileLoading}
-        error={profileError instanceof Error ? profileError : null}
-      />
+      {/* Two-column layout: profile on left (sticky), skill browser on right */}
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-6 items-start">
+        {/* Left: Competence Profile — sticky so it stays visible while browsing skills */}
+        <div className="lg:sticky lg:top-6">
+          <CompetenceProfilePanel
+            profile={profileData}
+            isLoading={profileLoading}
+            error={profileError instanceof Error ? profileError : null}
+          />
+        </div>
 
-      {/* Skill browser section */}
-      <div className="mb-3">
-        <h2 className="font-display text-lg font-semibold text-stone-950 leading-tight">
-          {t('browseAndAdd')}
-        </h2>
-        <p className="text-sm text-stone-500 font-sans mt-0.5">{t('browseAndAddHint')}</p>
-      </div>
-
-      {/* Add bottom padding so the sticky bar doesn't overlap last cards */}
-      <div className={selectedCount > 0 ? 'pb-20' : ''}>
-        <SkillBrowser
-          selectedSkills={selected}
-          onToggle={toggle}
-          onRate={setRating}
-        />
+        {/* Right: Skill browser */}
+        <div className={selectedCount > 0 ? 'pb-20' : ''}>
+          <div className="mb-3">
+            <h2 className="font-display text-lg font-semibold text-stone-950 leading-tight">
+              {t('browseAndAdd')}
+            </h2>
+            <p className="text-sm text-stone-500 font-sans mt-0.5">{t('browseAndAddHint')}</p>
+          </div>
+          <SkillBrowser
+            selectedSkills={selected}
+            onToggle={toggle}
+            onRate={setRating}
+          />
+        </div>
       </div>
 
       <SelectionSummaryBar
