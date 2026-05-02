@@ -110,14 +110,37 @@ class CompetenceService {
         return mapper.entityToApi(repository.save(entity));
     }
 
-    public List<Employee> searchBySkillAndRating(String skillName, Optional<Integer> minRating) {
+    public List<EmployeeSearchResult> searchBySkillAndRating(String skillName, Optional<Integer> minRating) {
         Skill skill = integration.findSkillByName(skillName);
 
         List<Competence> profiles = minRating
                 .map(rating -> repository.findBySkillIdAndRatingGreaterThanEqual(skill.getId(), rating))
                 .orElseGet(() -> repository.findBySkillId(skill.getId()));
 
-        return integration.getEmployees(profiles.stream().map(Competence::getEmployeeId).toList());
+        List<Employee> employees = integration.getEmployees(
+                profiles.stream().map(Competence::getEmployeeId).toList()
+        );
+
+        return employees.stream()
+                .map(employee -> {
+                    int rating = profiles.stream()
+                            .filter(c -> c.getEmployeeId().equals(employee.getId()))
+                            .findFirst()
+                            .map(Competence::getRating)
+                            .orElse(0);
+
+                    EmployeeSearchResult.MatchedSkill matchedSkill =
+                            new EmployeeSearchResult.MatchedSkill(skill.getId(), skill.getName(), rating);
+
+                    return new EmployeeSearchResult(
+                            employee.getId(),
+                            employee.getFirstName(),
+                            employee.getLastName(),
+                            employee.getEmail(),
+                            List.of(matchedSkill)
+                    );
+                })
+                .toList();
     }
 
     private Employee resolveOrCreateEmployee(AuthenticatedUser user) {

@@ -2,8 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
-import { Badge, Button } from '@/components/ui';
-import { RatingInput } from '@/components/ui/rating-input';
+import { Button } from '@/components/ui';
 import type { EmployeeSearchResult } from '@/types/manager';
 import type { Rating } from '@/types/rating';
 
@@ -42,16 +41,30 @@ function EmployeeResultCard({ employee, selected, onToggle }: EmployeeResultCard
         </Button>
       </div>
       {(employee.matchedSkills?.length ?? 0) > 0 && (
-        <div className="mt-3 space-y-2">
+        <div className="mt-3 pt-3 border-t border-stone-100 space-y-2">
           {employee.matchedSkills.map((ms) => (
-            <div key={ms.skillId} className="flex items-center justify-between gap-2">
-              <Badge variant="muted">{ms.skillName}</Badge>
-              <RatingInput
-                value={ms.rating as Rating}
-                onChange={() => {}}
-                disabled
-                size="sm"
-              />
+            <div key={ms.skillId} className="flex items-center gap-2">
+              <span className="text-sm font-medium text-stone-700 font-sans flex-1 min-w-0 truncate">
+                {ms.skillName}
+              </span>
+              <div className="flex items-center gap-1 shrink-0">
+                {([1, 2, 3, 4, 5] as Rating[]).map((level) => (
+                  <span
+                    key={level}
+                    className="block rounded-full shrink-0"
+                    style={{
+                      width: 9,
+                      height: 9,
+                      backgroundColor:
+                        level <= ms.rating ? `var(--rating-${ms.rating})` : 'transparent',
+                      border: `1.5px solid ${level <= ms.rating ? `var(--rating-${ms.rating})` : 'var(--border)'}`,
+                    }}
+                  />
+                ))}
+                <span className="text-xs text-stone-500 font-sans ml-1.5">
+                  {t(`rating${ms.rating}`, { defaultValue: String(ms.rating) })}
+                </span>
+              </div>
             </div>
           ))}
         </div>

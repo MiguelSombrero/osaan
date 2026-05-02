@@ -1,6 +1,5 @@
 package com.github.miguelsombrero.osaan.competence_profile_service.competence;
 
-import com.github.miguelsombrero.osaan.competence_profile_service.integration.Employee;
 import com.github.miguelsombrero.osaan.core.security.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -76,7 +75,7 @@ class CompetenceController {
     @GetMapping("/search")
     @ApiResponse(responseCode = "200", description = "OK")
     @Operation(summary = "Search Competences", description = "Searches for employees having competences by skill and rating")
-    public List<Employee> search(
+    public List<EmployeeSearchResult> search(
             @Parameter(in = ParameterIn.QUERY, schema = @Schema(type = "string", example = "java",
                     description = "Skill name to search for (case-insensitive, partial match)."))
             @RequestParam(required = false) String skillName,

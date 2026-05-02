@@ -1,6 +1,5 @@
 package com.github.miguelsombrero.osaan.competence_profile_service.competence;
 
-import com.github.miguelsombrero.osaan.competence_profile_service.integration.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class CompetenceControllerTest {
 
-    private static final Employee EMPLOYEE = new Employee(
+    private static final UUID SKILL_ID = UUID.fromString("bbbbbbbb-0000-0000-0000-000000000001");
+
+    private static final EmployeeSearchResult SEARCH_RESULT = new EmployeeSearchResult(
             UUID.fromString("aaaaaaaa-0000-0000-0000-000000000001"),
-            "John", "Doe", "john@example.com", "keycloak-123"
+            "John", "Doe", "john@example.com",
+            List.of(new EmployeeSearchResult.MatchedSkill(SKILL_ID, "Java", 3))
     );
 
     @Mock
@@ -40,8 +42,8 @@ class CompetenceControllerTest {
     }
 
     @Test
-    void search_withSkillNameAndRating_returns200AndDelegatesCorrectParams() throws Exception {
-        when(service.searchBySkillAndRating("Java", Optional.of(3))).thenReturn(List.of(EMPLOYEE));
+    void search_withSkillNameAndRating_returns200WithMatchedSkillAndRating() throws Exception {
+        when(service.searchBySkillAndRating("Java", Optional.of(3))).thenReturn(List.of(SEARCH_RESULT));
 
         mockMvc.perform(get("/v1/competences/search")
                         .param("skillName", "Java")
@@ -49,18 +51,22 @@ class CompetenceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].firstName").value("John"))
                 .andExpect(jsonPath("$[0].lastName").value("Doe"))
-                .andExpect(jsonPath("$[0].email").value("john@example.com"));
+                .andExpect(jsonPath("$[0].email").value("john@example.com"))
+                .andExpect(jsonPath("$[0].matchedSkills[0].skillName").value("Java"))
+                .andExpect(jsonPath("$[0].matchedSkills[0].rating").value(3));
 
         verify(service).searchBySkillAndRating(eq("Java"), eq(Optional.of(3)));
     }
 
     @Test
     void search_withSkillNameOnly_delegatesEmptyRatingToService() throws Exception {
-        when(service.searchBySkillAndRating("Python", Optional.empty())).thenReturn(List.of(EMPLOYEE));
+        when(service.searchBySkillAndRating("Python", Optional.empty())).thenReturn(List.of(SEARCH_RESULT));
 
         mockMvc.perform(get("/v1/competences/search").param("skillName", "Python"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].firstName").value("John"));
+                .andExpect(jsonPath("$[0].firstName").value("John"))
+                .andExpect(jsonPath("$[0].matchedSkills[0].skillName").value("Java"))
+                .andExpect(jsonPath("$[0].matchedSkills[0].rating").value(3));
 
         verify(service).searchBySkillAndRating(eq("Python"), eq(Optional.empty()));
     }
