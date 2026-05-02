@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -76,14 +78,25 @@ public class CompetenceIntegration {
     public Skill findSkillByName(String name) {
         String url = UriComponentsBuilder
                 .fromUriString(skillCatalogServiceUrl + "/v1/skills")
-                .queryParam("name", name)
+                .queryParam("query", name)
                 .toUriString();
 
-        return client.get()
+        SkillPageResponse response = client.get()
                 .uri(url)
                 .retrieve()
-                .body(Skill.class);
+                .body(SkillPageResponse.class);
+
+        if (response == null || response.skills() == null || response.skills().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Skill not found: " + name);
+        }
+
+        return response.skills().stream()
+                .filter(s -> s.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(response.skills().get(0));
     }
+
+    private record SkillPageResponse(List<Skill> skills) {}
 
     @Retry(name = "competence")
     @CircuitBreaker(name = "competence", fallbackMethod = "getEmployeesFallbackValue")

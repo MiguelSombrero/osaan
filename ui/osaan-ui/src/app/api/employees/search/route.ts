@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const skillName = searchParams.get('skillName');
     const minRating = searchParams.get('minRating');
 
-    if (skillName) queryParams.set('skill', skillName);
+    if (skillName) queryParams.set('skillName', skillName);
     if (minRating) queryParams.set('rating', minRating);
 
     const queryString = queryParams.toString();

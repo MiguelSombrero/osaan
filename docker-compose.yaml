@@ -106,6 +106,7 @@ services:
       JAVA_TOOL_OPTIONS: >
         -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
         -Djavax.net.ssl.trustStorePassword=changeit
+      LOGGING_LEVEL_APPLICATION: TRACE
     ports:
       - "8091:8080"
       - "4001:4004"
@@ -124,6 +125,7 @@ services:
       JAVA_TOOL_OPTIONS: >
         -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
         -Djavax.net.ssl.trustStorePassword=changeit
+      LOGGING_LEVEL_APPLICATION: TRACE
     ports:
       - "8092:8080"
       - "4002:4004"
@@ -141,6 +143,7 @@ services:
       JAVA_TOOL_OPTIONS: >
         -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
         -Djavax.net.ssl.trustStorePassword=changeit
+      LOGGING_LEVEL_APPLICATION: TRACE
     ports:
       - "8093:8080"
       - "4003:4004"
@@ -156,6 +159,10 @@ services:
       - rabbitmq
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      JAVA_TOOL_OPTIONS: >
+        -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
+        -Djavax.net.ssl.trustStorePassword=changeit
+      LOGGING_LEVEL_APPLICATION: TRACE
     ports:
       - "8094:8080"
       - "4004:4004"

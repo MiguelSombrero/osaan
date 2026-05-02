@@ -6,11 +6,6 @@ skill:
   service:
     url: http://skill-catalog-service:8080
 
-logging:
-  level:
-    org.springframework.resilience: DEBUG
-    com.github.miguelsombrero.osaan: DEBUG
-
 management:
   zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans
   tracing.sampling.probability: 1.0
