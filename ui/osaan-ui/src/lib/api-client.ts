@@ -91,7 +91,7 @@ export const employeeApi = {
     }),
   searchEmployees: (params: EmployeeSearchParams) => {
     const searchParams = new URLSearchParams();
-    searchParams.set('skillId', params.skillId);
+    searchParams.set('skillName', params.skillName);
     searchParams.set('minRating', params.minRating.toString());
     return fetchApi<EmployeeSearchResult[]>(`/employees/search?${searchParams.toString()}`);
   },

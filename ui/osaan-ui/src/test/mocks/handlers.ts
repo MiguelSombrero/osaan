@@ -1,10 +1,12 @@
 import { http, HttpResponse } from 'msw';
 import type { CompetenceProfileData } from '@/types/competence';
 import type { GetSkillsResponse } from '@/types/skill';
-import { mockCompetenceProfile, mockSkillsResponse } from './data';
+import type { EmployeeSearchResult } from '@/types/manager';
+import { mockCompetenceProfile, mockSkillsResponse, mockEmployeeSearchResults } from './data';
 
 let currentProfile: CompetenceProfileData = structuredClone(mockCompetenceProfile);
 let currentSkillsResponse: GetSkillsResponse = structuredClone(mockSkillsResponse);
+let currentEmployeeSearchResults: EmployeeSearchResult[] = structuredClone(mockEmployeeSearchResults);
 
 export function setMockProfile(profile: CompetenceProfileData) {
   currentProfile = structuredClone(profile);
@@ -14,9 +16,14 @@ export function setMockSkillsResponse(response: GetSkillsResponse) {
   currentSkillsResponse = structuredClone(response);
 }
 
+export function setMockEmployeeSearchResults(results: EmployeeSearchResult[]) {
+  currentEmployeeSearchResults = structuredClone(results);
+}
+
 export function resetMocks() {
   currentProfile = structuredClone(mockCompetenceProfile);
   currentSkillsResponse = structuredClone(mockSkillsResponse);
+  currentEmployeeSearchResults = structuredClone(mockEmployeeSearchResults);
 }
 
 export const handlers = [
@@ -49,6 +56,15 @@ export const handlers = [
     };
     const updated = currentProfile.competences.find((c) => c.id === competenceId);
     return HttpResponse.json(updated);
+  }),
+
+  http.get('*/api/employees/search', ({ request }) => {
+    const url = new URL(request.url);
+    const skillName = url.searchParams.get('skillName');
+    if (!skillName) {
+      return HttpResponse.json({ error: 'skillName is required' }, { status: 400 });
+    }
+    return HttpResponse.json(currentEmployeeSearchResults);
   }),
 
   http.get('*/api/skills', ({ request }) => {

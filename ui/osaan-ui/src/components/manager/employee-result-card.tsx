@@ -41,7 +41,7 @@ function EmployeeResultCard({ employee, selected, onToggle }: EmployeeResultCard
           {selected ? t('removeFromList') : t('addToList')}
         </Button>
       </div>
-      {employee.matchedSkills.length > 0 && (
+      {(employee.matchedSkills?.length ?? 0) > 0 && (
         <div className="mt-3 space-y-2">
           {employee.matchedSkills.map((ms) => (
             <div key={ms.skillId} className="flex items-center justify-between gap-2">

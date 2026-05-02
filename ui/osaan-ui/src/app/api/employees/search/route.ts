@@ -7,16 +7,16 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const queryParams = new URLSearchParams();
 
-    const skillId = searchParams.get('skillId');
+    const skillName = searchParams.get('skillName');
     const minRating = searchParams.get('minRating');
 
-    if (skillId) queryParams.set('skillId', skillId);
-    if (minRating) queryParams.set('minRating', minRating);
+    if (skillName) queryParams.set('skill', skillName);
+    if (minRating) queryParams.set('rating', minRating);
 
     const queryString = queryParams.toString();
-    const endpoint = `/v1/matches${queryString ? `?${queryString}` : ''}`;
+    const endpoint = `/v1/competences/search${queryString ? `?${queryString}` : ''}`;
 
-    const data = await fetchWithAuth(config.competenceMatchingApiUrl, endpoint);
+    const data = await fetchWithAuth(config.competenceProfileApiUrl, endpoint);
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error searching employees:', error);

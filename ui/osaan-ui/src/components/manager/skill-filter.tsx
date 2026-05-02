@@ -20,7 +20,7 @@ function SkillFilter({ onSearch, isLoading }: SkillFilterProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!skillQuery.trim() || !minRating) return;
-    onSearch({ skillId: skillQuery.trim(), minRating });
+    onSearch({ skillName: skillQuery.trim(), minRating });
   };
 
   return (

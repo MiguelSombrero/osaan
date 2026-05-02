@@ -1,29 +1,31 @@
 import type { Metadata } from 'next';
-import { Fraunces, DM_Sans, DM_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import { QueryProvider } from '@/providers/query-provider';
 import { I18nProvider } from '@/providers/i18n-provider';
 import { SessionProvider } from '@/providers/session-provider';
 
-const fraunces = Fraunces({
-  subsets: ['latin'],
+const fraunces = localFont({
+  src: [
+    { path: './fonts/fraunces.woff2', weight: '400 700', style: 'normal' },
+    { path: './fonts/fraunces-italic.woff2', weight: '400 700', style: 'italic' },
+  ],
   variable: '--font-fraunces',
-  weight: ['400', '500', '600', '700'],
-  style: ['normal', 'italic'],
   display: 'swap',
 });
 
-const dmSans = DM_Sans({
-  subsets: ['latin'],
+const dmSans = localFont({
+  src: [{ path: './fonts/dm-sans.woff2', weight: '300 500', style: 'normal' }],
   variable: '--font-dm-sans',
-  weight: ['300', '400', '500'],
   display: 'swap',
 });
 
-const dmMono = DM_Mono({
-  subsets: ['latin'],
+const dmMono = localFont({
+  src: [
+    { path: './fonts/dm-mono-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/dm-mono-500.woff2', weight: '500', style: 'normal' },
+  ],
   variable: '--font-dm-mono',
-  weight: ['400', '500'],
   display: 'swap',
 });
 

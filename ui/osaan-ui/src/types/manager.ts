@@ -1,7 +1,7 @@
 import type { Rating } from './rating';
 
 export interface EmployeeSearchParams {
-  skillId: string;
+  skillName: string;
   minRating: Rating;
 }
 

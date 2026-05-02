@@ -1,5 +1,6 @@
 import type { CompetenceProfileData } from '@/types/competence';
 import type { GetSkillsResponse } from '@/types/skill';
+import type { EmployeeSearchResult } from '@/types/manager';
 
 export const MOCK_EMPLOYEE_ID = 'aaaaaaaa-0000-0000-0000-000000000001';
 
@@ -15,6 +16,23 @@ export const mockCompetenceProfile: CompetenceProfileData = {
     { id: 'c2', skillName: 'TypeScript', rating: 3 },
   ],
 };
+
+export const mockEmployeeSearchResults: EmployeeSearchResult[] = [
+  {
+    id: 'eeeeeeee-0000-0000-0000-000000000001',
+    firstName: 'Jane',
+    lastName: 'Smith',
+    email: 'jane@example.com',
+    matchedSkills: [],
+  },
+  {
+    id: 'eeeeeeee-0000-0000-0000-000000000002',
+    firstName: 'Bob',
+    lastName: 'Jones',
+    email: 'bob@example.com',
+    matchedSkills: [],
+  },
+];
 
 export const mockSkillsResponse: GetSkillsResponse = {
   skills: [

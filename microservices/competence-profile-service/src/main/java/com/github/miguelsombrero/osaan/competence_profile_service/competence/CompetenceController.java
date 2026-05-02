@@ -79,10 +79,10 @@ class CompetenceController {
     public List<Employee> search(
             @Parameter(in = ParameterIn.QUERY, schema = @Schema(type = "string", example = "java",
                     description = "Skill name to search for (case-insensitive, partial match)."))
-            @RequestParam(required = false) String skill,
+            @RequestParam(required = false) String skillName,
             @Parameter(in = ParameterIn.QUERY, schema = @Schema(type = "number", example = "3",
                     description = "Minimum rating to filter competences (inclusive)."))
             @RequestParam(required = false) Integer rating) {
-        return service.searchBySkillAndRating(skill, Optional.ofNullable(rating));
+        return service.searchBySkillAndRating(skillName, Optional.ofNullable(rating));
     }
 }
