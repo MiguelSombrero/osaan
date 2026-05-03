@@ -135,3 +135,78 @@ spec:
         requiredActions: []
         realmRoles:
           - USER
+
+      - id: a1b2c3d4-0006-4000-a000-000000000006
+        username: aleksi
+        enabled: true
+        emailVerified: true
+        firstName: Aleksi
+        lastName: Järvinen
+        email: aleksi.jarvinen@example.com
+        credentials:
+          - type: password
+            value: aleksi
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER
+
+      - id: a1b2c3d4-0007-4000-a000-000000000007
+        username: kaisa
+        enabled: true
+        emailVerified: true
+        firstName: Kaisa
+        lastName: Hautamäki
+        email: kaisa.hautamaki@example.com
+        credentials:
+          - type: password
+            value: kaisa
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER
+
+      - id: a1b2c3d4-0008-4000-a000-000000000008
+        username: timo
+        enabled: true
+        emailVerified: true
+        firstName: Timo
+        lastName: Heikkinen
+        email: timo.heikkinen@example.com
+        credentials:
+          - type: password
+            value: timo
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER
+
+      - id: a1b2c3d4-0009-4000-a000-000000000009
+        username: emilia
+        enabled: true
+        emailVerified: true
+        firstName: Emilia
+        lastName: Salonen
+        email: emilia.salonen@example.com
+        credentials:
+          - type: password
+            value: emilia
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER
+
+      - id: a1b2c3d4-0010-4000-a000-000000000010
+        username: petri
+        enabled: true
+        emailVerified: true
+        firstName: Petri
+        lastName: Leinonen
+        email: petri.leinonen@example.com
+        credentials:
+          - type: password
+            value: petri
+            temporary: false
+        requiredActions: []
+        realmRoles:
+          - USER
