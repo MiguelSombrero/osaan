@@ -1,13 +1,10 @@
 name: competence-profile-service
 svcName: competence-profile-svc
-
 image:
   repository: miguelsombrero/osaan-competence-profile-service
-  tag: latest
-
+  tag: 5f8c54d56b6f2c49c3182fc737f8f986ad172538
 rabbitmq:
   enabled: true
-
 configMap:
   data:
     EMPLOYEE_SERVICE_URL: http://employee-svc:80
@@ -17,5 +14,4 @@ configMap:
     LOGGING_LEVEL_APPLICATION: DEBUG
     ISSUER_URI: https://keycloak.local/realms/osaan
     JAVA_TOOL_OPTIONS: >-
-      -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
-      -Djavax.net.ssl.trustStorePassword=changeit
+      -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks -Djavax.net.ssl.trustStorePassword=changeit
