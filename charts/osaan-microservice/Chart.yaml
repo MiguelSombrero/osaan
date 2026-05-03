@@ -1,0 +1,6 @@
+apiVersion: v2
+name: osaan-microservice
+description: Shared chart for OSAAN Java Spring Boot microservices
+type: application
+version: 0.1.0
+appVersion: "latest"

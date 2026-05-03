@@ -313,11 +313,9 @@ jobs:
         run: |
           echo "Changed services: $CHANGED_SERVICES"
           for svc in $(echo "$CHANGED_SERVICES" | jq -r '.[]'); do
-            IMAGE_BASE="miguelsombrero/osaan-${svc}"
-            echo "Updating $IMAGE_BASE to tag $GIT_SHA"
-            yq -i "
-              (.images[] | select(.name == \"$IMAGE_BASE\") | .newTag) = \"$GIT_SHA\"
-            " kustomization.yaml
+            VALUES_FILE="charts/osaan-microservice/values/${svc}.yaml"
+            echo "Updating $VALUES_FILE image tag to $GIT_SHA"
+            yq -i ".image.tag = \"$GIT_SHA\"" "$VALUES_FILE"
           done
 
       - name: Update admin backend/frontend image tags in kustomization.yaml
@@ -329,13 +327,13 @@ jobs:
           if [ "$ADMIN_BACKEND_CHANGED" = "true" ]; then
             yq -i '
               (.images[] | select(.name == "miguelsombrero/osaan-admin-ui-backend") | .newTag) = env(GIT_SHA)
-            ' kustomization.yaml
+            ' manifests/kustomization.yaml
           fi
 
           if [ "$ADMIN_FRONTEND_CHANGED" = "true" ]; then
             yq -i '
               (.images[] | select(.name == "miguelsombrero/osaan-admin-ui-frontend") | .newTag) = env(GIT_SHA)
-            ' kustomization.yaml
+            ' manifests/kustomization.yaml
           fi
 
       - name: Update osaan-ui image tag in kustomization.yaml
@@ -346,7 +344,7 @@ jobs:
           if [ "$OSAAN_UI_CHANGED" = "true" ]; then
             yq -i '
               (.images[] | select(.name == "miguelsombrero/osaan-ui") | .newTag) = env(GIT_SHA)
-            ' kustomization.yaml
+            ' manifests/kustomization.yaml
           fi
 
       - name: Commit and push kustomization changes
@@ -361,6 +359,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add kustomization.yaml
+          git add manifests/kustomization.yaml
+          git add charts/osaan-microservice/values/
           git commit -m "chore: update kustomization images for $GIT_SHA"
           git push

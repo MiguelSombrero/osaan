@@ -1,0 +1,68 @@
+name: ""       # e.g. employee-service — used for deployment, configmap, pod label
+svcName: ""    # e.g. employee-svc    — kubernetes Service resource name
+namespace: osaan-dev
+
+image:
+  repository: ""
+  tag: latest
+  pullPolicy: Always
+
+replicas: 1
+
+ports:
+  app: 8080
+  management: 4004
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+probes:
+  readiness:
+    path: /actuator/health/readiness
+    port: 4004
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+  liveness:
+    path: /actuator/health/liveness
+    port: 4004
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+
+prometheus:
+  enabled: true
+  port: "4004"
+  scheme: http
+  path: /actuator/prometheus
+
+keycloak:
+  truststore:
+    secretName: keycloak-truststore
+    mountPath: /opt/java/keycloak-truststore.jks
+    subPath: keycloak-truststore.jks
+
+postgres:
+  secretName: osaan-db-pguser-osaan-user
+
+redis:
+  enabled: false
+  secretName: redis-secret
+
+rabbitmq:
+  enabled: false
+  secretName: rabbitmq-default-user
+
+istio:
+  destinationRule:
+    enabled: true
+
+configMap:
+  data: {}

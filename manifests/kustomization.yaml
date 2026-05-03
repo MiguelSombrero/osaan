@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - gateway/grafana-gateway.yaml
+  - gateway/jaeger-gateway.yaml
+  - gateway/keycloak-gateway.yaml
+  - gateway/keycloak-mesh-egress.yaml
+  - gateway/kiali-gateway.yaml
+  - gateway/mail-gateway.yaml
+  - gateway/osaan-gateway.yaml
+  - gateway/osaan-admin-gateway.yaml
+  - gateway/argocd-gateway.yaml
+  - osaan-admin-backend/configmap.yaml
+  - osaan-admin-backend/deployment.yaml
+  - osaan-admin-backend/service.yaml
+  - osaan-admin-backend/destinationrule.yaml
+  - osaan-admin-ui/configmap.yaml
+  - osaan-admin-ui/deployment.yaml
+  - osaan-admin-ui/service.yaml
+  - osaan-ui/configmap.yaml
+  - osaan-ui/deployment.yaml
+  - osaan-ui/service.yaml
+images:
+  - name: miguelsombrero/osaan-admin-ui-backend
+    newTag: 9f14ef1a6f3982417ecc50c7b2cc64fe6f7716f0
+  - name: miguelsombrero/osaan-admin-ui-frontend
+    newTag: 9f14ef1a6f3982417ecc50c7b2cc64fe6f7716f0
+  - name: miguelsombrero/osaan-ui
+    newTag: bf447c880d7007a5e85970427644d3047684f7f2

@@ -1,0 +1,16 @@
+name: employee-service
+svcName: employee-svc
+
+image:
+  repository: miguelsombrero/osaan-employee-service
+  tag: latest
+
+configMap:
+  data:
+    TRACING_ENDPOINT: http://jaeger-collector.istio-system:9411/api/v2/spans
+    LOGGING_LEVEL_WEB: DEBUG
+    LOGGING_LEVEL_APPLICATION: DEBUG
+    ISSUER_URI: https://keycloak.local/realms/osaan
+    JAVA_TOOL_OPTIONS: >-
+      -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
+      -Djavax.net.ssl.trustStorePassword=changeit

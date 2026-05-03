@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "osaan-microservice.svcName" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ include "osaan-microservice.name" . }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: {{ .Values.ports.app }}
+    - name: management
+      protocol: TCP
+      port: {{ .Values.ports.management }}
+      targetPort: {{ .Values.ports.management }}
+  type: ClusterIP

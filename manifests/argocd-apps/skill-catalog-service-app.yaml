@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-osaan
+  name: skill-catalog-service
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -10,8 +10,10 @@ spec:
   source:
     repoURL: https://github.com/MiguelSombrero/osaan.git
     targetRevision: dev
-    path: manifests
-    kustomize: {}
+    path: charts/osaan-microservice
+    helm:
+      valueFiles:
+        - values/skill-catalog-service.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: osaan-dev
