@@ -51,6 +51,10 @@
   "removeFromList": "Poista",
   "myList": "Valintani",
   "emptyList": "Ei valittuja työntekijöitä",
+  "myTeam": "Tiimini",
+  "noTeamSkills": "Valituilla työntekijöillä ei ole näytettäviä osaamisia.",
+  "teamMemberSingle": "1 henkilö",
+  "teamMemberPlural": "{{count}} henkilöä",
 
   "yourProfile": "Osaamisprofiilisi",
   "profileEmpty": "Et ole vielä tallentanut osaamisia",

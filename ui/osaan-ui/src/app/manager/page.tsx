@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { AppShell } from '@/components/layout/app-shell';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState, Spinner, ErrorState } from '@/components/ui';
-import { SkillFilter, EmployeeResultCard, SelectionList } from '@/components/manager';
+import { SkillFilter, EmployeeResultCard, SelectionList, TeamSkillsPanel } from '@/components/manager';
 import { useEmployeeSearch } from '@/hooks/use-employee-search';
 import type { EmployeeSearchResult } from '@/types/manager';
 
@@ -112,6 +112,8 @@ export default function ManagerPage() {
           </div>
         </div>
       </div>
+
+      <TeamSkillsPanel selected={selected} />
     </AppShell>
   );
 }

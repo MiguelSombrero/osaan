@@ -93,4 +93,22 @@
     max-height: 120px;
     opacity: 1;
   }
+
+  .team-panel {
+    animation: teamPanelIn 0.3s ease both;
+  }
+
+  .team-skill-card {
+    animation: teamCardIn 0.22s ease both;
+  }
+}
+
+@keyframes teamPanelIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes teamCardIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

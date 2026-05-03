@@ -51,6 +51,10 @@
   "removeFromList": "Remove",
   "myList": "My Selection",
   "emptyList": "No employees selected yet",
+  "myTeam": "My Team",
+  "noTeamSkills": "Selected employees have no skills to display.",
+  "teamMemberSingle": "1 person",
+  "teamMemberPlural": "{{count}} people",
 
   "yourProfile": "Your Profile",
   "profileEmpty": "No skills saved yet",
