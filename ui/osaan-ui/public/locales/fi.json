@@ -46,6 +46,7 @@
   "minimumRating": "Vähimmäistaso",
   "searchEmployees": "Hae työntekijöitä",
   "noSearchResults": "Työntekijöitä ei löytynyt",
+  "noSearchResultsDescription": "Ei työntekijöitä osaamisella {{skillName}} ja vähimmäistasolla {{minRating}}",
   "noSearchYet": "Syötä osaaminen ja vähimmäistaso hakuun",
   "addToList": "Lisää listaan",
   "removeFromList": "Poista",

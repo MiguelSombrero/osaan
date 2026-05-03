@@ -13,6 +13,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +58,19 @@ class CompetenceServiceTest {
         employee = new Employee(EMPLOYEE_ID, "John", "Doe", "john@example.com", KEYCLOAK_ID);
         skill = new Skill(SKILL_ID, "Python");
 
-        when(integration.getEmployeeByKeycloakId(KEYCLOAK_ID)).thenReturn(Optional.of(employee));
-        when(integration.findSkillById(SKILL_ID)).thenReturn(skill);
-        doNothing().when(producer).publishSkillCreatedEvent(any(SkillCreatedEvent.class));
+        lenient().when(integration.getEmployeeByKeycloakId(KEYCLOAK_ID)).thenReturn(Optional.of(employee));
+        lenient().when(integration.findSkillById(SKILL_ID)).thenReturn(skill);
+        lenient().doNothing().when(producer).publishSkillCreatedEvent(any(SkillCreatedEvent.class));
+    }
+
+    @Test
+    void searchBySkillAndRating_returnsEmptyList_whenSkillNotFound() {
+        when(integration.findSkillByName("spring boot"))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        List<EmployeeSearchResult> result = service.searchBySkillAndRating("spring boot", Optional.empty());
+
+        assertThat(result).isEmpty();
     }
 
     @Test

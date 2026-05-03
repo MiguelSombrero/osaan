@@ -111,7 +111,15 @@ class CompetenceService {
     }
 
     public List<EmployeeSearchResult> searchBySkillAndRating(String skillName, Optional<Integer> minRating) {
-        Skill skill = integration.findSkillByName(skillName);
+        Skill skill;
+        try {
+            skill = integration.findSkillByName(skillName);
+        } catch (ResponseStatusException e) {
+            if (e.getStatusCode().value() == 404) {
+                return List.of();
+            }
+            throw e;
+        }
 
         List<Competence> profiles = minRating
                 .map(rating -> repository.findBySkillIdAndRatingGreaterThanEqual(skill.getId(), rating))

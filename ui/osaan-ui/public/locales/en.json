@@ -46,6 +46,7 @@
   "minimumRating": "Minimum rating",
   "searchEmployees": "Search employees",
   "noSearchResults": "No employees found",
+  "noSearchResultsDescription": "No employees with skill {{skillName}} and minimum rating {{minRating}}",
   "noSearchYet": "Enter a skill and minimum rating to search",
   "addToList": "Add to list",
   "removeFromList": "Remove",

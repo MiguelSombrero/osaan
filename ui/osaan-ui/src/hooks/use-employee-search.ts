@@ -18,6 +18,7 @@ function useEmployeeSearch() {
     ...query,
     search: setParams,
     hasSearched: params !== null,
+    params,
   };
 }
 

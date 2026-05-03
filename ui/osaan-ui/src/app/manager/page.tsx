@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 
 export default function ManagerPage() {
   const { t } = useTranslation();
-  const { data, isLoading, error, search, hasSearched, refetch } = useEmployeeSearch();
+  const { data, isLoading, error, search, hasSearched, params, refetch } = useEmployeeSearch();
   const [selected, setSelected] = useState<EmployeeSearchResult[]>([]);
 
   const toggleEmployee = (employee: EmployeeSearchResult) => {
@@ -88,6 +88,10 @@ export default function ManagerPage() {
                 {data.length === 0 ? (
                   <EmptyState
                     title={t('noSearchResults')}
+                    description={params ? t('noSearchResultsDescription', {
+                      skillName: params.skillName,
+                      minRating: params.minRating,
+                    }) : undefined}
                     icon={
                       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
