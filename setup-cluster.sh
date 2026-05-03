@@ -14,6 +14,7 @@ ISTIO_VERSION="1.29.2"          # https://istio.io/latest/docs/releases/supporte
 CERT_MANAGER_VERSION="v1.19.5"  # https://github.com/cert-manager/cert-manager/releases
 KEYCLOAK_VERSION="26.6.1"       # https://github.com/keycloak/keycloak-k8s-resources/tags
 ARGOCD_VERSION="v3.3.8"         # https://github.com/argoproj/argo-cd/releases
+IMAGE_UPDATER_VERSION="v1.1.1"   # https://github.com/argoproj-labs/argocd-image-updater/releases
 EXTERNAL_SECRETS_CHART_VERSION="2.4.0"   # https://github.com/external-secrets/external-secrets/releases
 # ============================================================
 
@@ -216,6 +217,26 @@ kubectl -n argocd patch secret argocd-secret \
 kubectl -n argocd rollout restart deployment argocd-server
 kubectl -n argocd rollout status deployment argocd-server
 wait_for_deployments "argocd"
+
+# --- Installing ArgoCD Image Updater ---
+echo ""
+echo "=== Installing ArgoCD Image Updater ${IMAGE_UPDATER_VERSION}..."
+kubectl apply -n argocd -f "https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/${IMAGE_UPDATER_VERSION}/manifests/install.yaml"
+wait_for_deployments "argocd"
+
+# Create git write-back credentials for Image Updater.
+# Requires GITHUB_TOKEN env var with repo scope.
+if [ -z "${GITHUB_TOKEN:-}" ]; then
+  echo "⚠️  GITHUB_TOKEN is not set — Image Updater cannot write back image tags."
+  echo "   Set GITHUB_TOKEN and run:"
+  echo "   kubectl create secret generic argocd-image-updater-secret --from-literal=git.token=\$GITHUB_TOKEN -n argocd"
+else
+  kubectl create secret generic argocd-image-updater-secret \
+    --from-literal=git.token="${GITHUB_TOKEN}" \
+    -n argocd \
+    --dry-run=client -o yaml | kubectl apply -f -
+  echo "✅ ArgoCD Image Updater git credentials configured"
+fi
 
 # --- Installing External Secrets ---
 echo ""
