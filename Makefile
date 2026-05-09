@@ -1,6 +1,14 @@
 SERVICES = employee-service skill-catalog-service competence-profile-service competence-matching-service
 
-.PHONY: build-services up up-no-build down
+.PHONY: setup-cluster delete-cluster build-services up up-no-build down
+
+setup-cluster:
+	@echo "Setting up the cluster..."
+	./setup-cluster.sh
+
+delete-cluster:
+	@echo "Deleting the cluster..."
+	k3d cluster delete osaan-dev
 
 build-services:
 	@for svc in $(SERVICES); do \

@@ -14,7 +14,6 @@ ISTIO_VERSION="1.29.2"          # https://istio.io/latest/docs/releases/supporte
 CERT_MANAGER_VERSION="v1.19.5"  # https://github.com/cert-manager/cert-manager/releases
 KEYCLOAK_VERSION="26.6.1"       # https://github.com/keycloak/keycloak-k8s-resources/tags
 ARGOCD_VERSION="v3.3.8"         # https://github.com/argoproj/argo-cd/releases
-IMAGE_UPDATER_VERSION="v1.1.1"   # https://github.com/argoproj-labs/argocd-image-updater/releases
 EXTERNAL_SECRETS_CHART_VERSION="2.4.0"   # https://github.com/external-secrets/external-secrets/releases
 # ============================================================
 
@@ -220,8 +219,8 @@ wait_for_deployments "argocd"
 
 # --- Installing ArgoCD Image Updater ---
 echo ""
-echo "=== Installing ArgoCD Image Updater ${IMAGE_UPDATER_VERSION}..."
-kubectl apply -n argocd -f "https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/${IMAGE_UPDATER_VERSION}/manifests/install.yaml"
+echo "=== Installing ArgoCD Image Updater..."
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/config/install.yaml
 wait_for_deployments "argocd"
 
 # Create git write-back credentials for Image Updater.

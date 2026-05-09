@@ -135,19 +135,19 @@ For subdomain to work add to your local `/etc/hosts`file:
   127.0.0.1 argocd.local
 ```
 
-## Run
+## Develop
 
-There are 3 options for running Osaan system:
+There are 3 options for running Osaan system locally:
 
 1. IDE
 2. Docker Dompose
 3. Kubernetes
 
-### 1) IDE
+### IDE
 
 Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in the project root, which will start the necessary dependencies for that service. Start `competence-matching-service` first as its `compose.yaml` file contains all the shared dependecies like RabbitMQ.
 
-### 2) Docker Compose
+### Docker Compose
 
 When there is changes in microservices:
 
@@ -161,7 +161,7 @@ When there is not changes:
 make up-no-build
 ```
 
-### 3) Kubernetes
+### Kubernetes
 
 These instructions are k3d specific but can be applied to other Kubernetes distributions as well.
 
@@ -184,10 +184,10 @@ sops encrypt \
  secrets-template.yaml > secrets.enc.yaml
 ```
 
-Push encrypted Secrets to GitHub (ArgoCD watches Git repository for changes). Then create cluster and install all necessary operators etc. with script:
+Push encrypted Secrets to GitHub (ArgoCD watches Git repository for changes). Then create cluster and install all necessary operators etc. with script `./setup-cluster.sh`:
 
 ```bash
-  ./setup-cluster.sh
+  make setup-cluster
 ```
 
 ## Deploy
@@ -202,7 +202,7 @@ kubectl apply -k .
 
 ## Test Data
 
-The following users are seeded for local development. Each user's username is also their password.
+The following AI generated users are seeded for local development. Each user's username is also their password.
 
 ### Users
 
