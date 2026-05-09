@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: image.repository
+    value: miguelsombrero/osaan-employee-service
+    forcestring: true
+  - name: image.tag
+    value: latest@sha256:3909c9065300a471fdd832d1a3cae4b608c07f183c6e0565461cb2baad707cb3
+    forcestring: true
