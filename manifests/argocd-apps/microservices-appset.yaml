@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: osaan-microservices
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - service: employee-service
+            alias: employee-svc
+          - service: competence-profile-service
+            alias: competence-profile
+          - service: competence-matching-service
+            alias: competence-matching
+          - service: skill-catalog-service
+            alias: skill-catalog
+  template:
+    metadata:
+      name: "{{service}}"
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+        argocd-image-updater.argoproj.io/image-list: "{{alias}}=miguelsombrero/osaan-{{service}}:latest"
+        argocd-image-updater.argoproj.io/{{alias}}.update-strategy: digest
+        argocd-image-updater.argoproj.io/{{alias}}.helm.image-name: image.repository
+        argocd-image-updater.argoproj.io/{{alias}}.helm.image-tag: image.tag
+        argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/argocd-image-updater-secret
+        argocd-image-updater.argoproj.io/git-branch: dev
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/MiguelSombrero/osaan.git
+        targetRevision: dev
+        path: charts/osaan-microservice
+        helm:
+          valueFiles:
+            - values/{{service}}.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: osaan-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

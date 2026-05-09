@@ -1,15 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - gateway/grafana-gateway.yaml
-  - gateway/jaeger-gateway.yaml
-  - gateway/keycloak-gateway.yaml
-  - gateway/keycloak-mesh-egress.yaml
-  - gateway/kiali-gateway.yaml
-  - gateway/mail-gateway.yaml
-  - gateway/osaan-gateway.yaml
-  - gateway/osaan-admin-gateway.yaml
-  - gateway/argocd-gateway.yaml
   - osaan-admin-backend/configmap.yaml
   - osaan-admin-backend/deployment.yaml
   - osaan-admin-backend/service.yaml

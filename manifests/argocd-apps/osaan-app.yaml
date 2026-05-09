@@ -9,9 +9,9 @@ metadata:
       admin-backend=miguelsombrero/osaan-admin-ui-backend:latest,
       admin-frontend=miguelsombrero/osaan-admin-ui-frontend:latest,
       osaan-ui=miguelsombrero/osaan-ui:latest
-    argocd-image-updater.argoproj.io/admin-backend.update-strategy: latest
-    argocd-image-updater.argoproj.io/admin-frontend.update-strategy: latest
-    argocd-image-updater.argoproj.io/osaan-ui.update-strategy: latest
+    argocd-image-updater.argoproj.io/admin-backend.update-strategy: digest
+    argocd-image-updater.argoproj.io/admin-frontend.update-strategy: digest
+    argocd-image-updater.argoproj.io/osaan-ui.update-strategy: digest
     argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/argocd-image-updater-secret
     argocd-image-updater.argoproj.io/git-branch: dev
 spec:

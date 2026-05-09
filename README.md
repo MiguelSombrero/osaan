@@ -173,6 +173,8 @@ Prerequisites for running `setup-cluster.sh` script:
 - istioctl
 - helm
 - sops
+- keytool
+- docker
 - testkube
 
 First make a copy of `manifests/environments/osaan-dev/secrets-template.yaml.example` and encrypt it with SOPS:
@@ -242,11 +244,7 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
 
 - Add toast notifications for user actions in osaan-admin-ui
 
-- Build pipeline optimization: do not update kustomization.yaml if pipeline fails
-
 - Change keycloak initial admin passwords
-
-- Refactoring manifests and maybe using Helm
 
 - CI/CD relesea pipelines
 
