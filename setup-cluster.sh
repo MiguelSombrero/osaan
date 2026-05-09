@@ -223,18 +223,42 @@ echo "=== Installing ArgoCD Image Updater..."
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/config/install.yaml
 wait_for_deployments "argocd"
 
-# Create git write-back credentials for Image Updater.
-# Requires GITHUB_TOKEN env var with repo scope.
-if [ -z "${GITHUB_TOKEN:-}" ]; then
-  echo "⚠️  GITHUB_TOKEN is not set — Image Updater cannot write back image tags."
-  echo "   Set GITHUB_TOKEN and run:"
-  echo "   kubectl create secret generic argocd-image-updater-secret --from-literal=git.token=\$GITHUB_TOKEN -n argocd"
+# Create git write-back credentials for Image Updater (v1.2.0+).
+# Requires GITHUB_USERNAME and GITHUB_TOKEN env vars.
+if [ -z "${GITHUB_USERNAME:-}" ] || [ -z "${GITHUB_TOKEN:-}" ]; then
+  echo "⚠️  GITHUB_USERNAME or GITHUB_TOKEN is not set — Image Updater cannot write back image tags."
+  echo "   Set both and run:"
+  echo "   kubectl create secret generic argocd-image-updater-secret \\"
+  echo "     --from-literal=username=\$GITHUB_USERNAME \\"
+  echo "     --from-literal=password=\$GITHUB_TOKEN \\"
+  echo "     -n argocd"
 else
   kubectl create secret generic argocd-image-updater-secret \
-    --from-literal=git.token="${GITHUB_TOKEN}" \
+    --from-literal=username="${GITHUB_USERNAME}" \
+    --from-literal=password="${GITHUB_TOKEN}" \
     -n argocd \
     --dry-run=client -o yaml | kubectl apply -f -
   echo "✅ ArgoCD Image Updater git credentials configured"
+fi
+
+# Create Docker Hub credentials for Image Updater registry polling.
+# Requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN env vars.
+if [ -z "${DOCKERHUB_USERNAME:-}" ] || [ -z "${DOCKERHUB_TOKEN:-}" ]; then
+  echo "⚠️  DOCKERHUB_USERNAME or DOCKERHUB_TOKEN is not set — Image Updater will poll Docker Hub anonymously (rate-limited)."
+else
+  kubectl create secret generic argocd-image-updater-dockerhub \
+    --from-literal=credentials="${DOCKERHUB_USERNAME}:${DOCKERHUB_TOKEN}" \
+    -n argocd \
+    --dry-run=client -o yaml | kubectl apply -f -
+
+  kubectl -n argocd patch configmap argocd-image-updater-config \
+    --type merge \
+    -p '{
+      "data": {
+        "registries.conf": "registries:\n- name: Docker Hub\n  prefix: docker.io\n  api_url: https://registry-1.docker.io\n  credentials: secret:argocd/argocd-image-updater-dockerhub#credentials\n  defaultns: library\n  default: true\n"
+      }
+    }'
+  echo "✅ ArgoCD Image Updater Docker Hub credentials configured"
 fi
 
 # --- Installing External Secrets ---

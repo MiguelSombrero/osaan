@@ -1,0 +1,21 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: osaan-image-updater
+  namespace: argocd
+spec:
+  applicationRefs:
+    - namePattern: employee-service
+      useAnnotations: true
+    - namePattern: competence-profile-service
+      useAnnotations: true
+    - namePattern: competence-matching-service
+      useAnnotations: true
+    - namePattern: skill-catalog-service
+      useAnnotations: true
+    - namePattern: osaan-ui
+      useAnnotations: true
+    - namePattern: osaan-admin-ui
+      useAnnotations: true
+    - namePattern: osaan-admin-backend
+      useAnnotations: true
