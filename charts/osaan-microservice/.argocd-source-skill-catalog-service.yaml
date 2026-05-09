@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: image.repository
+    value: miguelsombrero/osaan-skill-catalog-service
+    forcestring: true
+  - name: image.tag
+    value: latest@sha256:a82589af0131515f03cce429e590ea27d0072cc7096c2bd5bc86fe44f7e4005a
+    forcestring: true
