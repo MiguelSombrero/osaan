@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: image.repository
+    value: miguelsombrero/osaan-competence-matching-service
+    forcestring: true
+  - name: image.tag
+    value: latest@sha256:2f17445a26dce05b5679d7e47c902841106f62f6cf915105ecb4560abbcc5ff5
+    forcestring: true
