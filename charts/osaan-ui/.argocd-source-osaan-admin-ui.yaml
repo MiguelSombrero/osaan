@@ -1,0 +1,8 @@
+helm:
+  parameters:
+  - name: image.repository
+    value: miguelsombrero/osaan-admin-ui-frontend
+    forcestring: true
+  - name: image.tag
+    value: latest@sha256:f7fda82337212f254caf539f7c5fc21f17eadf51ae1e6c910cc06cf5c3d6f3c9
+    forcestring: true
