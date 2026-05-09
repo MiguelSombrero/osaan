@@ -2,4 +2,4 @@
 
 Osaan core is library for Osaan system.
 
-TODO: Add more details.
+TODO: Add more details

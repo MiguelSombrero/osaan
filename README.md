@@ -255,3 +255,20 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
   - UI for watching Playwright reports
 
 - Tracing is not working for osaan-admin-backend (Jaeger not showing spans)
+
+## Notes for developer
+
+### Build and push multi-arch image
+
+Requires login to Docker Hub. Run command in todo-app directory.
+
+```bash
+docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-competence-matching-service:latest --push .
+```
+
+If you got error "Multi-platform build is not supported for the docker driver", you need to switch `buildx` driver to
+`docker-container`:
+
+```bash
+docker buildx create --name multiarch-builder --driver docker-container --use
+```

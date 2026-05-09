@@ -1,6 +1,6 @@
 # osaan-admin-ui
 
-Osaan Admin UI is for Osaan admins to manage skills and employees.
+Osaan Admin UI is for Osaan admins to manage skills and employees
 
 ## Develop
 

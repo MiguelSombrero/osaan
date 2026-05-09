@@ -1,0 +1,16 @@
+name: osaan-admin-ui
+svcName: osaan-admin-ui-svc
+image:
+  repository: miguelsombrero/osaan-admin-ui-frontend
+  tag: latest
+port: 80
+probes:
+  readiness:
+    path: /health
+    port: 80
+  liveness:
+    path: /health
+    port: 80
+configMap:
+  data:
+    API_URL: http://osaan-admin-backend-svc

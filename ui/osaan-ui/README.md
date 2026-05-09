@@ -204,24 +204,20 @@ Unlike `osaan-admin-ui` (Node + Express backend + React SPA), this application u
 ## Future Enhancements
 
 1. **Authentication & Authorization**
-
    - Integrate Keycloak for SSO
    - Extract user identity from OAuth tokens
    - Implement role-based access control
 
 2. **Session Management**
-
    - Redis-backed sessions
    - Secure cookie handling
 
 3. **Competence Profile UI**
-
    - Form for adding skills with ratings
    - Visual skill matrix
    - Employee profile page
 
 4. **Performance**
-
    - Server-side rendering for initial page load
    - Optimistic UI updates
    - Request deduplication
@@ -229,4 +225,4 @@ Unlike `osaan-admin-ui` (Node + Express backend + React SPA), this application u
 5. **Observability**
    - OpenTelemetry tracing
    - Error tracking
-   - Performance monitoring
+   - Performance monitorin
