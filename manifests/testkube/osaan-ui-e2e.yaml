@@ -32,7 +32,8 @@ spec:
 
     - name: Run Playwright tests
       env:
-        NODE_ENV: development
+        - name: NODE_ENV
+          value: development
       shell: |
         npx --yes playwright test
       artifacts:
