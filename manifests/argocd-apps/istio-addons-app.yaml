@@ -1,0 +1,143 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-addon-prometheus
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: prometheus
+    targetRevision: "29.6.0"   # https://github.com/prometheus-community/helm-charts/releases
+    helm:
+      releaseName: prometheus
+      values: |
+        alertmanager:
+          enabled: false
+        prometheus-pushgateway:
+          enabled: false
+        server:
+          service:
+            type: ClusterIP
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-addon-grafana
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: grafana
+    targetRevision: "10.5.15"   # https://github.com/grafana/helm-charts/releases
+    helm:
+      releaseName: grafana
+      values: |
+        adminPassword: admin
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://prometheus-server.istio-system:9090
+              isDefault: true
+        service:
+          type: ClusterIP
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-addon-jaeger
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://jaegertracing.github.io/helm-charts
+    chart: jaeger
+    targetRevision: "4.7.0"   # https://github.com/jaegertracing/helm-charts/releases
+    helm:
+      releaseName: jaeger
+      values: |
+        provisionDataStore:
+          cassandra: false
+        allInOne:
+          enabled: true
+        storage:
+          type: none
+        agent:
+          enabled: false
+        collector:
+          enabled: false
+        query:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-addon-kiali
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://kiali.io/helm-charts
+    chart: kiali-server
+    targetRevision: "1.30.0"   # https://github.com/kiali/helm-charts/releases
+    helm:
+      releaseName: kiali
+      values: |
+        external_services:
+          prometheus:
+            url: http://prometheus-server.istio-system:9090
+          tracing:
+            enabled: true
+            in_cluster_url: http://jaeger-all-in-one.istio-system:16686
+            use_grpc: false
+          grafana:
+            enabled: true
+            in_cluster_url: http://grafana.istio-system:3000
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

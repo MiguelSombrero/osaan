@@ -14,6 +14,7 @@ ISTIO_VERSION="1.29.2"          # https://istio.io/latest/docs/releases/supporte
 CERT_MANAGER_VERSION="v1.19.5"  # https://github.com/cert-manager/cert-manager/releases
 KEYCLOAK_VERSION="26.6.1"       # https://github.com/keycloak/keycloak-k8s-resources/tags
 ARGOCD_VERSION="v3.3.8"         # https://github.com/argoproj/argo-cd/releases
+ARGOCD_IMAGE_UPDATER_VERSION="v1.2.0"   # https://github.com/argoproj-labs/argocd-image-updater/releases
 EXTERNAL_SECRETS_CHART_VERSION="2.4.0"   # https://github.com/external-secrets/external-secrets/releases
 # ============================================================
 
@@ -137,23 +138,7 @@ ensure_istioctl
 # --- Installing Istio ---
 echo ""
 echo "==> Installing Istio ${ISTIO_VERSION}..."
-istioctl install -y -n istio-system \
-  --set meshConfig.accessLogFile=/dev/stdout \
-  --set meshConfig.accessLogEncoding=JSON \
-  --set meshConfig.enableTracing=true \
-  --set meshConfig.defaultConfig.tracing.sampling=100 \
-  --set profile=default \
-  --set meshConfig.defaultConfig.proxyMetadata.ISTIO_META_DNS_CAPTURE=true
-wait_for_deployments "istio-system"
-
-# --- Installing Istio integrations ---
-echo ""
-echo "==> Installing Istio integrations (Kiali, Jaeger, Prometheus, Grafana)..."
-base_url="https://raw.githubusercontent.com/istio/istio/${ISTIO_VERSION}/samples/addons"
-kubectl apply -n istio-system -f "${base_url}/kiali.yaml"
-kubectl apply -n istio-system -f "${base_url}/jaeger.yaml"
-kubectl apply -n istio-system -f "${base_url}/prometheus.yaml"
-kubectl apply -n istio-system -f "${base_url}/grafana.yaml"
+istioctl install -y -n istio-system -f manifests/platform/istio/istio-operator.yaml
 wait_for_deployments "istio-system"
 
 # --- Installing cert-manager ---
@@ -220,7 +205,7 @@ wait_for_deployments "argocd"
 # --- Installing ArgoCD Image Updater ---
 echo ""
 echo "=== Installing ArgoCD Image Updater..."
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/config/install.yaml
+kubectl apply -n argocd -f "https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/${ARGOCD_IMAGE_UPDATER_VERSION}/config/install.yaml"
 wait_for_deployments "argocd"
 
 # Create git write-back credentials for Image Updater (v1.2.0+).

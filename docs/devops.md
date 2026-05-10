@@ -12,13 +12,13 @@ push to dev → GitHub Actions (test + build) → Docker Hub → ArgoCD Image Up
 
 File: `.github/workflows/build.yml` — triggers on push to `dev` for changed paths only.
 
-| Job | When | Output |
-|-----|------|--------|
-| detect-changes | always | matrix of changed components |
-| build-core | `osaan-core/` or `pom.xml` changed | published to GitHub Packages (Maven) |
-| build-and-push-services | any microservice changed | Docker Hub image (`latest` + SHA tag) |
-| build-and-push-admin-ui | `ui/osaan-admin-ui/` changed | Docker Hub image (`latest` + SHA tag) |
-| build-and-push-osaan-ui | `ui/osaan-ui/` changed | Docker Hub image (`latest` + SHA tag) |
+| Job                     | When                               | Output                                |
+| ----------------------- | ---------------------------------- | ------------------------------------- |
+| detect-changes          | always                             | matrix of changed components          |
+| build-core              | `osaan-core/` or `pom.xml` changed | published to GitHub Packages (Maven)  |
+| build-and-push-services | any microservice changed           | Docker Hub image (`latest` + SHA tag) |
+| build-and-push-admin-ui | `ui/osaan-admin-ui/` changed       | Docker Hub image (`latest` + SHA tag) |
+| build-and-push-osaan-ui | `ui/osaan-ui/` changed             | Docker Hub image (`latest` + SHA tag) |
 
 - Maven tests run before image push for Java services
 - Vitest runs before image push for UI services
@@ -34,14 +34,18 @@ App-of-apps pattern. Root application (`argocd/app-of-apps.yaml`) watches `manif
 
 ### Applications
 
-| App | Type | Source | Namespace | Wave |
-|-----|------|--------|-----------|------|
-| argocd-platform | Application | `manifests/platform/` | osaan-dev | 0 |
-| argocd-gateways | Application | `manifests/gateway/` | istio-system | 0 |
-| valkey | Application | Helm (valkey.io 0.9.4) | osaan-dev | 0 |
-| osaan-microservices | ApplicationSet | `charts/osaan-microservice` | osaan-dev | 1 |
-| osaan-ui-services | ApplicationSet | `charts/osaan-ui` | osaan-dev | 1 |
-| argocd-testkube | Application | `manifests/testkube/` | testkube | 1 |
+| App                    | Type           | Source                             | Namespace    | Wave |
+| ---------------------- | -------------- | ---------------------------------- | ------------ | ---- |
+| argocd-platform        | Application    | `manifests/platform/`              | osaan-dev    | 0    |
+| argocd-gateways        | Application    | `manifests/gateway/`               | istio-system | 0    |
+| istio-addon-prometheus | Application    | Helm (prometheus-community 29.6.0) | istio-system | 0    |
+| istio-addon-grafana    | Application    | Helm (grafana 10.5.15)             | istio-system | 0    |
+| istio-addon-jaeger     | Application    | Helm (jaegertracing 4.7.0)         | istio-system | 0    |
+| istio-addon-kiali      | Application    | Helm (kiali-server 1.30.0)         | istio-system | 0    |
+| valkey                 | Application    | Helm (valkey.io 0.9.4)             | osaan-dev    | 0    |
+| osaan-microservices    | ApplicationSet | `charts/osaan-microservice`        | osaan-dev    | 1    |
+| osaan-ui-services      | ApplicationSet | `charts/osaan-ui`                  | osaan-dev    | 1    |
+| argocd-testkube        | Application    | `manifests/testkube/`              | testkube     | 1    |
 
 Wave 0 deploys infrastructure first; wave 1 deploys workloads after.
 
@@ -57,23 +61,28 @@ ArgoCD Image Updater polls Docker Hub for new image digests and commits updated 
 
 Set up with `make setup-cluster` (runs `./setup-cluster.sh`).
 
-| Component | Version | Purpose |
-|-----------|---------|---------|
-| k3d | latest | Local Kubernetes, 2 agents, ports 9080/9443 |
-| Istio | 1.29.2 | Service mesh + ingress gateways |
-| cert-manager | v1.19.5 | TLS certificates (self-signed CA) |
-| Keycloak | 26.6.1 | OAuth2 / IAM |
-| PostgreSQL | via CrunchyData operator | Databases |
-| RabbitMQ | via RabbitMQ operator | Messaging |
-| Valkey | 0.9.4 (Helm) | Redis-compatible cache |
-| ArgoCD | v3.3.8 | GitOps controller |
-| ArgoCD Image Updater | stable | Automatic image updates |
-| External Secrets | 2.4.0 | Secret sync |
-| Testkube | standalone | E2E test runner (Playwright) |
-| Mailhog | — | Dev SMTP server |
-| Prometheus + Grafana + Kiali + Jaeger | — | Observability |
+| Component            | Version                        | Purpose                                     |
+| -------------------- | ------------------------------ | ------------------------------------------- |
+| k3d                  | latest                         | Local Kubernetes, 2 agents, ports 9080/9443 |
+| Istio                | 1.29.2                         | Service mesh + ingress gateways             |
+| cert-manager         | v1.19.5                        | TLS certificates (self-signed CA)           |
+| Keycloak             | 26.6.1                         | OAuth2 / IAM                                |
+| PostgreSQL           | via CrunchyData operator       | Databases                                   |
+| RabbitMQ             | via RabbitMQ operator          | Messaging                                   |
+| Valkey               | 0.9.4 (Helm)                   | Redis-compatible cache                      |
+| ArgoCD               | v3.3.8                         | GitOps controller                           |
+| ArgoCD Image Updater | v1.2.0                         | Automatic image updates                     |
+| External Secrets     | 2.4.0                          | Secret sync                                 |
+| Testkube             | standalone                     | E2E test runner (Playwright)                |
+| Mailhog              | —                              | Dev SMTP server                             |
+| Prometheus           | 27.2.0 (Helm, ArgoCD-managed)  | Metrics                                     |
+| Grafana              | 8.5.2 (Helm, ArgoCD-managed)   | Dashboards                                  |
+| Jaeger               | 0.71.14 (Helm, ArgoCD-managed) | Distributed tracing                         |
+| Kiali                | 2.6.0 (Helm, ArgoCD-managed)   | Service mesh observability                  |
 
-Script install order: OLM → namespaces → secrets → Istio → cert-manager → Keycloak → PostgreSQL operator → RabbitMQ operator → ArgoCD → Image Updater → External Secrets → Testkube → app-of-apps.
+Istio mesh config (access logging, tracing, sampling) is declared in `manifests/platform/istio/istio-operator.yaml` and passed to `istioctl install -f` — single source of truth in Git.
+
+Script install order: OLM → namespaces → secrets → Istio → cert-manager → Keycloak → PostgreSQL operator → RabbitMQ operator → ArgoCD → Image Updater → External Secrets → Testkube → app-of-apps (observability stack deployed by ArgoCD).
 
 ---
 
