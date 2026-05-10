@@ -36,6 +36,9 @@ App-of-apps pattern. Root application (`argocd/app-of-apps.yaml`) watches `manif
 
 | App                    | Type           | Source                             | Namespace    | Wave |
 | ---------------------- | -------------- | ---------------------------------- | ------------ | ---- |
+| istio-base             | Application    | Helm (istio/base 1.29.2)           | istio-system | -2   |
+| istiod                 | Application    | Helm (istio/istiod 1.29.2)         | istio-system | -1   |
+| istio-ingressgateway   | Application    | Helm (istio/gateway 1.29.2)        | istio-system | -1   |
 | argocd-platform        | Application    | `manifests/platform/`              | osaan-dev    | 0    |
 | argocd-gateways        | Application    | `manifests/gateway/`               | istio-system | 0    |
 | istio-addon-prometheus | Application    | Helm (prometheus-community 29.6.0) | istio-system | 0    |
@@ -47,7 +50,7 @@ App-of-apps pattern. Root application (`argocd/app-of-apps.yaml`) watches `manif
 | osaan-ui-services      | ApplicationSet | `charts/osaan-ui`                  | osaan-dev    | 1    |
 | argocd-testkube        | Application    | `manifests/testkube/`              | testkube     | 1    |
 
-Wave 0 deploys infrastructure first; wave 1 deploys workloads after.
+Waves: -2 (Istio CRDs) → -1 (Istio control plane + gateway) → 0 (platform + observability) → 1 (workloads).
 
 ### Image Updater
 
@@ -64,7 +67,7 @@ Set up with `make setup-cluster` (runs `./setup-cluster.sh`).
 | Component            | Version                        | Purpose                                     |
 | -------------------- | ------------------------------ | ------------------------------------------- |
 | k3d                  | latest                         | Local Kubernetes, 2 agents, ports 9080/9443 |
-| Istio                | 1.29.2                         | Service mesh + ingress gateways             |
+| Istio                | 1.29.2 (Helm, ArgoCD-managed)  | Service mesh + ingress gateways             |
 | cert-manager         | v1.19.5                        | TLS certificates (self-signed CA)           |
 | Keycloak             | 26.6.1                         | OAuth2 / IAM                                |
 | PostgreSQL           | via CrunchyData operator       | Databases                                   |
@@ -80,9 +83,9 @@ Set up with `make setup-cluster` (runs `./setup-cluster.sh`).
 | Jaeger               | 0.71.14 (Helm, ArgoCD-managed) | Distributed tracing                         |
 | Kiali                | 2.6.0 (Helm, ArgoCD-managed)   | Service mesh observability                  |
 
-Istio mesh config (access logging, tracing, sampling) is declared in `manifests/platform/istio/istio-operator.yaml` and passed to `istioctl install -f` — single source of truth in Git.
+Istio is installed via Helm (three charts: `istio/base`, `istio/istiod`, `istio/gateway`) and fully managed by ArgoCD (waves -2 and -1). Mesh config (access logging, tracing, sampling) lives in the `istiod` ArgoCD Application's Helm values — single source of truth in Git, reconciled automatically.
 
-Script install order: OLM → namespaces → secrets → Istio → cert-manager → Keycloak → PostgreSQL operator → RabbitMQ operator → ArgoCD → Image Updater → External Secrets → Testkube → app-of-apps (observability stack deployed by ArgoCD).
+Script install order: OLM → namespaces → secrets → Istio (Helm bootstrap) → cert-manager → Keycloak → PostgreSQL operator → RabbitMQ operator → ArgoCD → Image Updater → External Secrets → Testkube → app-of-apps (ArgoCD then manages Istio + observability stack via sync waves).
 
 ---
 

@@ -118,27 +118,25 @@ echo "==> Installing Secrets..."
 # TODO: add SOPS plugin for ArgoCD to automate decrypting secrets
 sops --decrypt manifests/environments/osaan-dev/secrets.enc.yaml | kubectl apply -f -
 
-# --- Ensure correct istioctl version ---
-ensure_istioctl() {
-  local bin_dir="${HOME}/.osaan/istio-${ISTIO_VERSION}/bin"
-  if [[ -x "${bin_dir}/istioctl" ]]; then
-    echo "✅ istioctl ${ISTIO_VERSION} already installed"
-    export PATH="${bin_dir}:${PATH}"
-    return
-  fi
-  echo "==> Downloading istioctl ${ISTIO_VERSION} to ${HOME}/.osaan/..."
-  mkdir -p "${HOME}/.osaan"
-  # Run in a subshell so the download extracts into ~/.osaan, not the project dir
-  (cd "${HOME}/.osaan" && curl -sL https://istio.io/downloadIstio | ISTIO_VERSION="${ISTIO_VERSION}" TARGET_ARCH="$(uname -m)" sh -)
-  export PATH="${bin_dir}:${PATH}"
-  echo "✅ istioctl ${ISTIO_VERSION} ready"
-}
-ensure_istioctl
-
-# --- Installing Istio ---
+# --- Installing Istio via Helm ---
 echo ""
-echo "==> Installing Istio ${ISTIO_VERSION}..."
-istioctl install -y -n istio-system -f manifests/platform/istio/istio-operator.yaml
+echo "==> Installing Istio ${ISTIO_VERSION} via Helm..."
+helm repo add istio https://istio-release.storage.googleapis.com/charts >/dev/null 2>&1
+helm repo update >/dev/null 2>&1
+
+helm upgrade --install istio-base istio/base \
+  --version "${ISTIO_VERSION}" \
+  -n istio-system \
+  --create-namespace
+
+helm upgrade --install istiod istio/istiod \
+  --version "${ISTIO_VERSION}" \
+  -n istio-system
+
+helm upgrade --install istio-ingressgateway istio/gateway \
+  --version "${ISTIO_VERSION}" \
+  -n istio-system
+
 wait_for_deployments "istio-system"
 
 # --- Installing cert-manager ---
