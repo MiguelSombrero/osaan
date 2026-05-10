@@ -2,7 +2,7 @@ name: competence-profile-service
 svcName: competence-profile-svc
 image:
   repository: miguelsombrero/osaan-competence-profile-service
-  tag: 5f8c54d56b6f2c49c3182fc737f8f986ad172538
+  tag: latest
 rabbitmq:
   enabled: true
 configMap:
@@ -10,7 +10,6 @@ configMap:
     EMPLOYEE_SERVICE_URL: http://employee-svc:80
     SKILL_SERVICE_URL: http://skill-catalog-svc:80
     TRACING_ENDPOINT: http://jaeger.istio-system:9411/api/v2/spans
-    LOGGING_LEVEL_WEB: DEBUG
     LOGGING_LEVEL_APPLICATION: DEBUG
     ISSUER_URI: https://keycloak.local/realms/osaan
     JAVA_TOOL_OPTIONS: >-
