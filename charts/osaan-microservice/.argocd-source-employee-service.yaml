@@ -4,5 +4,5 @@ helm:
     value: miguelsombrero/osaan-employee-service
     forcestring: true
   - name: image.tag
-    value: latest@sha256:3909c9065300a471fdd832d1a3cae4b608c07f183c6e0565461cb2baad707cb3
+    value: latest@sha256:e0dbc649e19898e567324f37d02c1b1d29853524a322f88c76a6422cad19843c
     forcestring: true
