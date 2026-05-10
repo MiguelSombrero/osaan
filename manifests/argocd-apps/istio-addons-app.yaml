@@ -54,7 +54,7 @@ spec:
             datasources:
             - name: Prometheus
               type: prometheus
-              url: http://prometheus-server.istio-system:9090
+              url: http://prometheus-server.istio-system:80
               isDefault: true
         service:
           type: ClusterIP
@@ -118,7 +118,7 @@ spec:
   source:
     repoURL: https://kiali.org/helm-charts
     chart: kiali-server
-    targetRevision: "1.30.0"   # https://github.com/kiali/helm-charts/releases
+    targetRevision: "2.25.0"   # https://kiali.org/helm-charts
     helm:
       releaseName: kiali
       values: |
