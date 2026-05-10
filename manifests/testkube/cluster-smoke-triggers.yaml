@@ -1,0 +1,77 @@
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
+metadata:
+  name: smoke-trigger-osaan-dev
+  namespace: testkube
+spec:
+  resource: deployment
+  resourceSelector:
+    namespace: osaan-dev
+    nameRegex: ".*"
+  event: modified
+  conditionSpec:
+    timeout: 120
+    delay: 5
+    conditions:
+      - type: Progressing
+        status: "True"
+        reason: NewReplicaSetAvailable
+      - type: Available
+        status: "True"
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: cluster-smoke
+    namespace: testkube
+---
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
+metadata:
+  name: smoke-trigger-istio-system
+  namespace: testkube
+spec:
+  resource: deployment
+  resourceSelector:
+    namespace: istio-system
+    nameRegex: ".*"
+  event: modified
+  conditionSpec:
+    timeout: 120
+    delay: 5
+    conditions:
+      - type: Progressing
+        status: "True"
+        reason: NewReplicaSetAvailable
+      - type: Available
+        status: "True"
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: cluster-smoke
+    namespace: testkube
+---
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
+metadata:
+  name: smoke-trigger-keycloak
+  namespace: testkube
+spec:
+  resource: deployment
+  resourceSelector:
+    namespace: keycloak
+    nameRegex: ".*"
+  event: modified
+  conditionSpec:
+    timeout: 120
+    delay: 5
+    conditions:
+      - type: Progressing
+        status: "True"
+        reason: NewReplicaSetAvailable
+      - type: Available
+        status: "True"
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: cluster-smoke
+    namespace: testkube

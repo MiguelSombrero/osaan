@@ -1,0 +1,38 @@
+apiVersion: testworkflows.testkube.io/v1
+kind: TestWorkflow
+metadata:
+  name: cluster-smoke
+  namespace: testkube
+  labels:
+    app: osaan
+    type: smoke
+spec:
+  content:
+    git:
+      uri: https://github.com/MiguelSombrero/osaan
+      revision: dev
+      paths:
+        - e2e
+
+  container:
+    image: mcr.microsoft.com/playwright:v1.57.0-noble
+    workingDir: /data/repo/e2e
+    resources:
+      requests:
+        cpu: "500m"
+        memory: 256Mi
+      limits:
+        cpu: "1"
+        memory: 512Mi
+
+  steps:
+    - name: Install dependencies
+      shell: |
+        npm ci
+
+    - name: Run smoke tests
+      shell: |
+        npx --yes playwright test --config playwright.smoke.config.ts
+      artifacts:
+        paths:
+          - playwright-report/**/*
