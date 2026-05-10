@@ -13,7 +13,6 @@ configMap:
     SPRING_MAIL_HOST: mailhog-svc
     SPRING_MAIL_PORT: "1025"
     TRACING_ENDPOINT: http://jaeger.istio-system:9411/api/v2/spans
-    LOGGING_LEVEL_WEB: DEBUG
     LOGGING_LEVEL_APPLICATION: DEBUG
     ISSUER_URI: https://keycloak.local/realms/osaan
     JAVA_TOOL_OPTIONS: >-

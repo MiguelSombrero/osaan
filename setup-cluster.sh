@@ -312,6 +312,23 @@ echo ""
 echo "=== Installing Testkube..."
 testkube init standalone-agent --namespace testkube --no-confirm
 
+# Create Docker Hub pull secret for testkube so runner pods can pull
+# kubeshop/testkube-tw-toolkit and other images without hitting the rate limit.
+if [ -z "${DOCKERHUB_USERNAME:-}" ] || [ -z "${DOCKERHUB_TOKEN:-}" ]; then
+  echo "⚠️  DOCKERHUB_USERNAME or DOCKERHUB_TOKEN is not set — Testkube will pull Docker Hub images anonymously (rate-limited)."
+else
+  kubectl create secret docker-registry dockerhub-credentials \
+    --docker-server=https://index.docker.io/v1/ \
+    --docker-username="${DOCKERHUB_USERNAME}" \
+    --docker-password="${DOCKERHUB_TOKEN}" \
+    -n testkube \
+    --dry-run=client -o yaml | kubectl apply -f -
+
+  kubectl patch serviceaccount default -n testkube \
+    -p '{"imagePullSecrets": [{"name": "dockerhub-credentials"}]}'
+  echo "✅ Docker Hub image pull secret configured for testkube"
+fi
+
 # --- Deploying ArgoCD app-of-apps ---
 echo ""
 echo "=== Deploying ArgoCD app-of-apps ..."

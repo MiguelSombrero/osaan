@@ -59,7 +59,7 @@ There are also multiple management UI:s for development:
 #### Kubernetes
 
 - Kiali: http://kiali.local:9080
-- Grafana: http://grafana.local:9080
+- Grafana: http://grafana.local:9080 (admin/admin)
 - Jaeger: http://jaeger.local:9080
 - Prometheus: http://prometheus.local:9080
 - RabbitMQ: http://rabbit.local:9080
