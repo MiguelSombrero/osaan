@@ -9,7 +9,7 @@ configMap:
   data:
     EMPLOYEE_SERVICE_URL: http://employee-svc:80
     SKILL_SERVICE_URL: http://skill-catalog-svc:80
-    TRACING_ENDPOINT: http://jaeger-collector.istio-system:9411/api/v2/spans
+    TRACING_ENDPOINT: http://jaeger.istio-system:9411/api/v2/spans
     LOGGING_LEVEL_WEB: DEBUG
     LOGGING_LEVEL_APPLICATION: DEBUG
     ISSUER_URI: https://keycloak.local/realms/osaan

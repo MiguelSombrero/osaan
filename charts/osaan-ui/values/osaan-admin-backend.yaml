@@ -42,4 +42,4 @@ configMap:
     KEYCLOAK_ENABLED: "true"
     KEYCLOAK_ISSUER_BASE_URL: https://keycloak.local/realms/osaan
     KEYCLOAK_CLIENT_ID: osaan-admin-ui
-    TRACING_ENDPOINT: http://jaeger-collector.istio-system:9411/api/v2/spans
+    TRACING_ENDPOINT: http://jaeger.istio-system:9411/api/v2/spans
