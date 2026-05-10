@@ -1,32 +1,32 @@
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: prometheus-gateway
+  name: rabbit-gateway
   namespace: istio-system
 spec:
   selector:
     istio: ingressgateway
   servers:
   - hosts:
-    - "prometheus.local"
+    - "rabbit.local"
     port:
       number: 80
-      name: http-prometheus
+      name: http-rabbit
       protocol: HTTP
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: prometheus-vs
+  name: rabbit-vs
   namespace: istio-system
 spec:
   hosts:
-  - "prometheus.local"
+  - "rabbit.local"
   gateways:
-  - prometheus-gateway
+  - rabbit-gateway
   http:
   - route:
     - destination:
-        host: prometheus-server
+        host: rabbitmq.osaan-dev.svc.cluster.local
         port:
-          number: 80
+          number: 15672

@@ -131,7 +131,10 @@ spec:
             use_grpc: false
           grafana:
             enabled: true
-            in_cluster_url: http://grafana.istio-system:3000
+            in_cluster_url: http://grafana.istio-system:80
+        deployment:
+          ingress:
+            enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
