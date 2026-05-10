@@ -10,32 +10,7 @@ This is a modern web application built with Next.js that allows users to:
 - Create and manage competence profiles
 - Link skills to employees with ratings (1-5)
 
-## Technology Stack
-
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Data Fetching**: TanStack Query (React Query)
-- **API Integration**: Next.js API Routes as proxy to microservices
-
-## Architecture
-
-The application uses Next.js API routes (`/src/app/api/*`) to proxy requests to backend microservices:
-
-```
-Browser → Next.js API Routes → Microservices
-                ↓
-        - skill-catalog-service (port 8092)
-        - competence-profile-service (port 8090)
-        - employee-service (port 8091)
-```
-
-This architecture provides:
-
-- Single origin for the frontend (no CORS issues)
-- Future integration point for authentication/authorization
-- Session management with Redis (future)
-- Request logging and monitoring
+See [docs/architecture.md](../../docs/architecture.md) for the full system architecture.
 
 ## Project Structure
 
