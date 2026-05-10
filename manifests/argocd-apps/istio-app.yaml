@@ -47,7 +47,7 @@ spec:
             tracing:
               sampling: 100
               zipkin:
-                address: jaeger-all-in-one.istio-system:9411
+                address: jaeger.istio-system:9411
             proxyMetadata:
               ISTIO_META_DNS_CAPTURE: "true"
   destination:
