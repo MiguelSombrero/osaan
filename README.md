@@ -23,8 +23,7 @@ get notified via email when matching profiles are added. You can create and mana
   - [Osaan UI](#osaan-ui)
   - [Osaan Admin UI](#osaan-admin-ui)
   - [Microservices](#microservices)
-  - [CI/CD](#cicd)
-  - [Platform](#platform)
+  - [CI/CD & Platform](#cicd--platform)
 - [UI](#ui)
   - [Osaan Admin UI](#osaan-admin-ui-1)
   - [Osaan UI](#osaan-ui-1)
@@ -32,13 +31,10 @@ get notified via email when matching profiles are added. You can create and mana
     - [Local](#local)
     - [Kubernetes](#kubernetes)
 - [Test Data](#test-data)
-- [Run](#run)
-  - [1) IDE](#1-ide)
-  - [2) Docker Compose](#2-docker-compose)
-  - [3) Kubernetes](#3-kubernetes)
-- [Deploy](#deploy)
-- [Notes and instructions](#notes-and-instructions)
-  - [How to create SealedSecrets from Secrets](#how-to-create-sealedsecrets-from-secrets)
+- [Develop](#develop)
+  - [IDE](#ide)
+  - [Docker Compose](#docker-compose)
+  - [Kubernetes](#kubernetes)
 - [Bugs, issues and TODOs](#bugs-issues-and-todos)
 
 ## Stack
@@ -68,16 +64,9 @@ get notified via email when matching profiles are added. You can create and mana
 - Monitoring - Prometheus, Grafana
 - Resilience - Resilience4j
 
-### CI/CD
+### CI/CD & Platform
 
-- CI/CD - GitHub Actions
-- Deployment - ArgoCD
-- E2E tests - Playwright, TestKube
-
-### Platform
-
-- Kubernetes - k3d
-- Service Mesh - Istio
+See [docs/devops.md](docs/devops.md) for the full CI/CD pipeline and platform setup.
 
 ## UI
 
@@ -163,44 +152,9 @@ make up-no-build
 
 ### Kubernetes
 
-These instructions are k3d specific but can be applied to other Kubernetes distributions as well.
+Set up with `make setup-cluster` (runs `./setup-cluster.sh`).
 
-Prerequisites for running `setup-cluster.sh` script:
-
-- k3d
-- kubectl
-- operator-sdk
-- istioctl
-- helm
-- sops
-- keytool
-- docker
-- testkube
-
-First make a copy of `manifests/environments/osaan-dev/secrets-template.yaml.example` and encrypt it with SOPS:
-
-```bash
-sops encrypt \
- --age <AGE_PUBLIC_KEY> \
- --encrypted-regex '^(stringData)$' \
- secrets-template.yaml > secrets.enc.yaml
-```
-
-Push encrypted Secrets to GitHub (ArgoCD watches Git repository for changes). Then create cluster and install all necessary operators etc. with script `./setup-cluster.sh`:
-
-```bash
-  make setup-cluster
-```
-
-## Deploy
-
-ArgoCD that was installed previous step will sync all the resources in `kustomization.yaml` file to the cluster.
-
-If needed, you can apply manifests manually with command:
-
-```bash
-kubectl apply -k .
-```
+See [docs/devops.md](docs/devops.md) for cluster setup, prerequisites, and secrets.
 
 ## Test Data
 
