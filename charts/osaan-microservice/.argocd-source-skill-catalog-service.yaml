@@ -4,5 +4,5 @@ helm:
     value: miguelsombrero/osaan-skill-catalog-service
     forcestring: true
   - name: image.tag
-    value: latest@sha256:a82589af0131515f03cce429e590ea27d0072cc7096c2bd5bc86fe44f7e4005a
+    value: latest@sha256:09b6cd81c04bb088b34a62537436b8935f430e6e6748b2d2b8014713ada54b92
     forcestring: true
