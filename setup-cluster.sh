@@ -242,6 +242,19 @@ else
       }
     }'
   echo "✅ ArgoCD Image Updater Docker Hub credentials configured"
+
+  # Create image pull secret for osaan-dev so k3d nodes can pull images
+  # from Docker Hub without hitting the unauthenticated rate limit.
+  kubectl create secret docker-registry dockerhub-credentials \
+    --docker-server=https://index.docker.io/v1/ \
+    --docker-username="${DOCKERHUB_USERNAME}" \
+    --docker-password="${DOCKERHUB_TOKEN}" \
+    -n osaan-dev \
+    --dry-run=client -o yaml | kubectl apply -f -
+
+  kubectl patch serviceaccount default -n osaan-dev \
+    -p '{"imagePullSecrets": [{"name": "dockerhub-credentials"}]}'
+  echo "✅ Docker Hub image pull secret configured for osaan-dev"
 fi
 
 # --- Installing External Secrets ---
