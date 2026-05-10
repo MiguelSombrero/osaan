@@ -122,6 +122,8 @@ spec:
     helm:
       releaseName: kiali
       values: |
+        auth:
+          strategy: anonymous
         external_services:
           prometheus:
             url: http://prometheus-server.istio-system:80
