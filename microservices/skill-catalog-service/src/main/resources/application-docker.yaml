@@ -1,5 +1,5 @@
 management:
-  zipkin.tracing.endpoint: http://zipkin-server:9411/api/v2/spans
+  tracing.export.zipkin.endpoint: http://zipkin-server:9411/api/v2/spans
   tracing.sampling.probability: 1.0
 
 spring:

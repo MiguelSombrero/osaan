@@ -18,7 +18,7 @@ management:
   endpoints.web.exposure.include: "*"
   endpoint.health.probes.enabled: true
   metrics.tags.application: ${spring.application.name}
-  zipkin.tracing.endpoint: ${TRACING_ENDPOINT:http://zipkin-server:9411/api/v2/spans}
+  tracing.export.zipkin.endpoint: ${TRACING_ENDPOINT:http://zipkin-server:9411/api/v2/spans}
   tracing.sampling.probability: ${SAMPLING_PROBABILITY:1.0}
 
 app:

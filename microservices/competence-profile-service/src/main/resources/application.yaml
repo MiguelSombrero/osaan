@@ -31,7 +31,7 @@ management:
   metrics.tags.application: ${spring.application.name}
   health.rabbit.enabled: true
   health.circuitbreakers.enabled: true
-  zipkin.tracing.endpoint: ${TRACING_ENDPOINT:http://zipkin-server:9411/api/v2/spans}
+  tracing.export.zipkin.endpoint: ${TRACING_ENDPOINT:http://zipkin-server:9411/api/v2/spans}
   tracing.sampling.probability: ${SAMPLING_PROBABILITY:1.0}
 
 spring:
