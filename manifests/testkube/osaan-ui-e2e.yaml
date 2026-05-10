@@ -17,6 +17,9 @@ spec:
   container:
     image: mcr.microsoft.com/playwright:v1.57.0-noble
     workingDir: /data/repo/e2e
+    env:
+      - name: NODE_ENV
+        value: development
     resources:
       requests:
         cpu: "2"
@@ -31,9 +34,6 @@ spec:
         npm ci
 
     - name: Run Playwright tests
-      env:
-        - name: NODE_ENV
-          value: development
       shell: |
         npx --yes playwright test
       artifacts:
