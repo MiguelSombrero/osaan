@@ -241,6 +241,10 @@ else
         "registries.conf": "registries:\n- name: Docker Hub\n  prefix: docker.io\n  api_url: https://registry-1.docker.io\n  credentials: secret:argocd/argocd-image-updater-dockerhub#credentials\n  defaultns: library\n  default: true\n"
       }
     }'
+  # Restart the controller so it reloads registries.conf from the updated configmap.
+  # The pod reads the file only at startup, so patching the configmap alone is not enough.
+  kubectl -n argocd rollout restart deployment/argocd-image-updater-controller
+  kubectl -n argocd rollout status deployment/argocd-image-updater-controller
   echo "✅ ArgoCD Image Updater Docker Hub credentials configured"
 
   # Create image pull secret for osaan-dev so k3d nodes can pull images
