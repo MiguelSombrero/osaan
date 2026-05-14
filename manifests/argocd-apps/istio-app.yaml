@@ -21,6 +21,9 @@ spec:
       kind: ValidatingWebhookConfiguration
       jqPathExpressions:
         - .webhooks[].clientConfig.caBundle
+        - .webhooks[].failurePolicy
+        - .webhooks[].matchPolicy
+        - .webhooks[].rules[].scope
   syncPolicy:
     automated:
       prune: true
@@ -63,6 +66,9 @@ spec:
       kind: ValidatingWebhookConfiguration
       jqPathExpressions:
         - .webhooks[].clientConfig.caBundle
+        - .webhooks[].failurePolicy
+        - .webhooks[].matchPolicy
+        - .webhooks[].rules[].scope
   syncPolicy:
     automated:
       prune: true
