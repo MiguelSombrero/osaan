@@ -310,6 +310,20 @@ kubectl -n osaan-dev create secret generic keycloak-truststore \
 # --- Installing Testkube ---
 echo ""
 echo "=== Installing Testkube..."
+# The Testkube Helm chart has a race condition: post-install hooks reference
+# TestWorkflowTemplate CRDs before the API server has registered them.
+# First attempt installs the CRDs (and fails at the hook); second attempt succeeds.
+testkube init standalone-agent --namespace testkube --no-confirm || true
+
+echo "⏳ Waiting for Testkube CRDs to be established..."
+until kubectl get crd testworkflowtemplates.testworkflows.testkube.io >/dev/null 2>&1; do
+  sleep 3
+done
+kubectl wait --for=condition=established \
+  crd/testworkflowtemplates.testworkflows.testkube.io \
+  --timeout=120s
+echo "✅ Testkube CRDs established"
+
 testkube init standalone-agent --namespace testkube --no-confirm
 
 # Create Docker Hub pull secret for testkube so runner pods can pull
