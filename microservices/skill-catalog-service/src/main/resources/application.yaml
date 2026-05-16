@@ -20,8 +20,6 @@ app:
     disabled: ${APP_AUTH_DISABLED:false}
 
 logging:
-  pattern:
-    level: "%5p [${spring.application.name},%X{traceId:-},%X{spanId:-}]"
   level:
     com.github.miguelsombrero.osaan: ${LOGGING_LEVEL_APPLICATION:INFO}
 
@@ -33,8 +31,6 @@ management:
   metrics.tags.application: ${spring.application.name}
   tracing.export.zipkin.endpoint: ${TRACING_ENDPOINT:http://zipkin-server:9411/api/v2/spans}
   tracing.sampling.probability: ${SAMPLING_PROBABILITY:1.0}
-  tracing.propagation.consume: [W3C, B3]
-  tracing.propagation.produce: [B3]
 
 spring:
   application:
