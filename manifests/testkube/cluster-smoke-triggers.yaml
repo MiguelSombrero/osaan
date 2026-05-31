@@ -1,68 +1,56 @@
-apiVersion: testworkflows.testkube.io/v1
-kind: WorkflowTrigger
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
 metadata:
   name: smoke-trigger-osaan-dev
   namespace: testkube
 spec:
-  watch:
-    resource:
-      kind: Deployment
-      namespace: osaan-dev
-    selector:
-      nameRegex: ".*"
-  when:
-    event: modified
-  match:
-    - path: ".status.availableReplicas"
-      operator: changed
-  run:
-    workflow:
-      name: cluster-smoke
-    concurrencyPolicy: replace
-    delay: 15s
+  resource: deployment
+  resourceSelector:
+    namespace: osaan-dev
+    nameRegex: ".*"
+  event: deployment-image-update
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: cluster-smoke
+    namespace: testkube
+  concurrencyPolicy: replace
+  delay: "15s"
 ---
-apiVersion: testworkflows.testkube.io/v1
-kind: WorkflowTrigger
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
 metadata:
   name: smoke-trigger-istio-system
   namespace: testkube
 spec:
-  watch:
-    resource:
-      kind: Deployment
-      namespace: istio-system
-    selector:
-      nameRegex: ".*"
-  when:
-    event: modified
-  match:
-    - path: ".status.availableReplicas"
-      operator: changed
-  run:
-    workflow:
-      name: cluster-smoke
-    concurrencyPolicy: replace
-    delay: 15s
+  resource: deployment
+  resourceSelector:
+    namespace: istio-system
+    nameRegex: ".*"
+  event: deployment-image-update
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: cluster-smoke
+    namespace: testkube
+  concurrencyPolicy: replace
+  delay: "15s"
 ---
-apiVersion: testworkflows.testkube.io/v1
-kind: WorkflowTrigger
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
 metadata:
   name: smoke-trigger-keycloak
   namespace: testkube
 spec:
-  watch:
-    resource:
-      kind: Deployment
-      namespace: keycloak
-    selector:
-      nameRegex: ".*"
-  when:
-    event: modified
-  match:
-    - path: ".status.availableReplicas"
-      operator: changed
-  run:
-    workflow:
-      name: cluster-smoke
-    concurrencyPolicy: replace
-    delay: 15s
+  resource: deployment
+  resourceSelector:
+    namespace: keycloak
+    nameRegex: ".*"
+  event: deployment-image-update
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: cluster-smoke
+    namespace: testkube
+  concurrencyPolicy: replace
+  delay: "15s"

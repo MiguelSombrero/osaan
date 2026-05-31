@@ -1,22 +1,18 @@
-apiVersion: testworkflows.testkube.io/v1
-kind: WorkflowTrigger
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
 metadata:
   name: osaan-dev-deployment-trigger
   namespace: testkube
 spec:
-  watch:
-    resource:
-      kind: Deployment
-      namespace: osaan-dev
-    selector:
-      nameRegex: ".*"
-  when:
-    event: modified
-  match:
-    - path: ".status.availableReplicas"
-      operator: changed
-  run:
-    workflow:
-      name: osaan-ui-e2e
-    concurrencyPolicy: replace
-    delay: 30s
+  resource: deployment
+  resourceSelector:
+    namespace: osaan-dev
+    nameRegex: ".*"
+  event: deployment-image-update
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: osaan-ui-e2e
+    namespace: testkube
+  concurrencyPolicy: replace
+  delay: "30s"
