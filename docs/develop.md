@@ -40,7 +40,13 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
 
 ## Bugs, issues and TODOs
 
-- Lots of cool stuff in osaan-ui
+- Tracing works in k3d - test that it work in Docker Compose too
+
+- Debug why Testkube containers not created with Triggers
+
+- Refactor setup-cluster script (lots of secret creation)
+
+- Add lots of cool stuff in osaan-ui
 
 - Add toast notifications for user actions in osaan-admin-ui
 
@@ -53,8 +59,6 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
   - More e2e tests with Playwright
   - Notifications when TestWorkflow fails
   - UI for watching Playwright reports
-
-- Tracing is not working for osaan-admin-backend (Jaeger not showing spans)
 
 ## Notes for developer
 

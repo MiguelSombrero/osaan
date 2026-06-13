@@ -16,6 +16,7 @@ KEYCLOAK_VERSION="26.6.1"       # https://github.com/keycloak/keycloak-k8s-resou
 ARGOCD_VERSION="v3.3.8"         # https://github.com/argoproj/argo-cd/releases
 ARGOCD_IMAGE_UPDATER_VERSION="v1.2.0"   # https://github.com/argoproj-labs/argocd-image-updater/releases
 EXTERNAL_SECRETS_CHART_VERSION="2.4.0"   # https://github.com/external-secrets/external-secrets/releases
+TESTKUBE_VERSION="2.9.5"                # https://github.com/kubeshop/testkube/releases
 # ============================================================
 
 echo "===================================================="
@@ -31,7 +32,7 @@ fi
 # --- 2. Tarkista että kaikki tarvittavat työkalut on asennettu ---
 check_prereqs() {
   local missing=()
-  for cmd in kubectl helm operator-sdk sops keytool docker testkube; do
+  for cmd in kubectl helm operator-sdk sops keytool docker; do
     command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
   done
   if [[ ${#missing[@]} -gt 0 ]]; then
@@ -313,11 +314,25 @@ kubectl -n osaan-dev create secret generic keycloak-truststore \
 
 # --- Installing Testkube ---
 echo ""
-echo "=== Installing Testkube..."
+echo "=== Installing Testkube ${TESTKUBE_VERSION}..."
+helm repo add kubeshop https://kubeshop.github.io/helm-charts >/dev/null 2>&1
+helm repo update kubeshop >/dev/null 2>&1
+
 # The Testkube Helm chart has a race condition: post-install hooks reference
 # TestWorkflowTemplate CRDs before the API server has registered them.
 # First attempt installs the CRDs (and fails at the hook); second attempt succeeds.
-testkube init standalone-agent --namespace testkube --no-confirm || true
+helm upgrade --install testkube kubeshop/testkube \
+  --version "${TESTKUBE_VERSION}" \
+  --namespace testkube \
+  --create-namespace \
+  --set mongodb.enabled=true \
+  --set postgresql.enabled=false \
+  --set testkube-api.logs.storage=minio \
+  --set testkube-api.minio.enabled=true \
+  --set testkube-api.multinamespace.enabled=true \
+  --set "testkube-api.additionalNamespaces={osaan-dev,keycloak,istio-system}" \
+  --set testkube-operator.installCRD=true \
+  --timeout 10m || true
 
 echo "⏳ Waiting for Testkube CRDs to be established..."
 until kubectl get crd testworkflowtemplates.testworkflows.testkube.io >/dev/null 2>&1; do
@@ -328,7 +343,17 @@ kubectl wait --for=condition=established \
   --timeout=120s
 echo "✅ Testkube CRDs established"
 
-testkube init standalone-agent --namespace testkube --no-confirm
+helm upgrade --install testkube kubeshop/testkube \
+  --version "${TESTKUBE_VERSION}" \
+  --namespace testkube \
+  --set mongodb.enabled=true \
+  --set postgresql.enabled=false \
+  --set testkube-api.logs.storage=minio \
+  --set testkube-api.minio.enabled=true \
+  --set testkube-api.multinamespace.enabled=true \
+  --set "testkube-api.additionalNamespaces={osaan-dev,keycloak,istio-system}" \
+  --set testkube-operator.installCRD=true \
+  --timeout 10m
 
 # Create Docker Hub pull secret for testkube so runner pods can pull
 # kubeshop/testkube-tw-toolkit and other images without hitting the rate limit.
