@@ -4,5 +4,5 @@ helm:
     value: miguelsombrero/osaan-ui
     forcestring: true
   - name: image.tag
-    value: latest@sha256:78646cdf8ad65a58033ab7093c0651e7dcbd0bf3c3afcb82452228a69142d554
+    value: latest@sha256:fd1bf71a66ebabfbabf31c4d6cabee5fd83ff3f0a47d38b10a8a2329e5bb4e00
     forcestring: true
