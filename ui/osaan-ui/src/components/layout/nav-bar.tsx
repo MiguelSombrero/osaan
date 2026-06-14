@@ -20,7 +20,12 @@ function NavBar() {
 
   const links: NavLink[] = [
     { href: '/competences', label: t('mySkills') },
-    ...(isManager ? [{ href: '/manager', label: t('findTalent') }] : []),
+    ...(isManager
+      ? [
+          { href: '/manager', label: t('findTalent') },
+          { href: '/subscriptions', label: t('subscriptions') },
+        ]
+      : []),
   ];
 
   return (

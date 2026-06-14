@@ -1,6 +1,6 @@
 SERVICES = employee-service skill-catalog-service competence-profile-service competence-matching-service
 
-.PHONY: setup-cluster delete-cluster build-services up up-no-build down
+.PHONY: setup-cluster delete-cluster build-services up up-no-build down restart
 
 setup-cluster:
 	@echo "Setting up the cluster..."
@@ -24,3 +24,5 @@ up-no-build:
 
 down:
 	docker compose down
+
+restart: down up

@@ -18,7 +18,43 @@
 
   "mySkills": "My Skills",
   "findTalent": "Find Talent",
+  "subscriptions": "Subscriptions",
   "home": "Home",
+
+  "subscriptionsKicker": "Standing Watch",
+  "subscriptionsTitle": "Watch the wires.",
+  "subscriptionsTitleItalic": "We'll write when talent arrives.",
+  "subscriptionsSubtitle": "Open a watch on any skill and proficiency. The moment a matching competence profile is published, a dispatch lands in the inbox you choose.",
+  "subscriptionsActive": "Active watches",
+  "subscriptionsListening": "listening for orders",
+  "subscriptionsLive": "wire is live",
+
+  "composerSection": "Compose a watch",
+  "composerHeading": "New subscription",
+  "composerStep1": "Send the dispatch to",
+  "composerStep2": "When someone adds the skill",
+  "composerStep3": "at a minimum proficiency of",
+  "composerEmailPlaceholder": "recipient@example.com",
+  "composerEmailInvalid": "Enter a valid email address",
+  "composerOrHigher": "or higher",
+  "composerSubmit": "Open the watch",
+  "composerHint": "You will receive an email the moment a matching profile is published.",
+
+  "skillComboPlaceholder": "Type a skill name…",
+  "skillComboHeading": "Skill registry",
+
+  "cardStanding": "Standing watch",
+  "cardDismiss": "Close watch",
+  "cardWatchingSkill": "Skill on watch",
+  "cardThreshold": "{{label}} or higher",
+  "cardOpened": "opened",
+
+  "ledgerHeading": "Open watches",
+  "ledgerEmptyTitle": "The wire is quiet.",
+  "ledgerEmptyDesc": "Open your first watch above. We will write to you the moment a matching profile arrives.",
+
+  "toastCreated": "Watch opened on {{skill}}.",
+  "toastRemoved": "Watch on {{skill}} closed.",
 
   "selectSkill": "Select",
   "deselectSkill": "Remove",

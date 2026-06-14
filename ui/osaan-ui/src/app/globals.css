@@ -101,6 +101,14 @@
   .team-skill-card {
     animation: teamCardIn 0.22s ease both;
   }
+
+  .pulse-dot {
+    animation: pulseDot 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .watch-slip {
+    animation: watchSlipIn 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
 }
 
 @keyframes teamPanelIn {
@@ -111,4 +119,14 @@
 @keyframes teamCardIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%      { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes watchSlipIn {
+  from { opacity: 0; transform: translateY(10px) rotate(-0.3deg); }
+  to   { opacity: 1; transform: translateY(0) rotate(0); }
 }

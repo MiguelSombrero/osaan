@@ -18,7 +18,43 @@
 
   "mySkills": "Osaamiseni",
   "findTalent": "Etsi osaajia",
+  "subscriptions": "Tilaukset",
   "home": "Etusivu",
+
+  "subscriptionsKicker": "Vahtipalvelu",
+  "subscriptionsTitle": "Kuuntele linjoja.",
+  "subscriptionsTitleItalic": "Ilmoitamme kun osaajia ilmaantuu.",
+  "subscriptionsSubtitle": "Avaa vahti mille tahansa osaamiselle ja tasolle. Heti kun vastaava osaamisprofiili julkaistaan, viesti saapuu valitsemaasi sähköpostiin.",
+  "subscriptionsActive": "Aktiiviset vahdit",
+  "subscriptionsListening": "kuunnellaan tilauksia",
+  "subscriptionsLive": "linja on auki",
+
+  "composerSection": "Avaa vahti",
+  "composerHeading": "Uusi tilaus",
+  "composerStep1": "Lähetä ilmoitus osoitteeseen",
+  "composerStep2": "Kun joku lisää osaamisen",
+  "composerStep3": "vähintään tasolla",
+  "composerEmailPlaceholder": "vastaanottaja@esimerkki.fi",
+  "composerEmailInvalid": "Anna kelvollinen sähköpostiosoite",
+  "composerOrHigher": "tai korkeampi",
+  "composerSubmit": "Avaa vahti",
+  "composerHint": "Saat sähköpostin heti kun vastaava profiili julkaistaan.",
+
+  "skillComboPlaceholder": "Kirjoita osaamisen nimi…",
+  "skillComboHeading": "Osaamisrekisteri",
+
+  "cardStanding": "Vahti käynnissä",
+  "cardDismiss": "Sulje vahti",
+  "cardWatchingSkill": "Vahdittava osaaminen",
+  "cardThreshold": "{{label}} tai korkeampi",
+  "cardOpened": "avattu",
+
+  "ledgerHeading": "Avoimet vahdit",
+  "ledgerEmptyTitle": "Linja on hiljainen.",
+  "ledgerEmptyDesc": "Avaa ensimmäinen vahti yltä. Ilmoitamme heti kun vastaava profiili saapuu.",
+
+  "toastCreated": "Vahti avattu osaamiselle {{skill}}.",
+  "toastRemoved": "Vahti osaamiselle {{skill}} suljettu.",
 
   "selectSkill": "Valitse",
   "deselectSkill": "Poista",

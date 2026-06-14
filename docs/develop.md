@@ -42,6 +42,12 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
 
 - Tracing works in k3d - test that it work in Docker Compose too
 
+- Add Zod for validation
+
+- Add Zustand store for osaan-ui
+
+- Add some library for generating API related models
+
 - Debug why Testkube containers not created with Triggers
 
 - Refactor setup-cluster script (lots of secret creation)
