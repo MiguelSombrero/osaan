@@ -32,3 +32,14 @@ spec:
   trafficPolicy:
     tls:
       mode: DISABLE
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: rabbitmq-dr
+  namespace: osaan-dev
+spec:
+  host: rabbitmq.osaan-dev.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
