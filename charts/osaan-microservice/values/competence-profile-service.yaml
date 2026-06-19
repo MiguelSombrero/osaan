@@ -1,10 +1,13 @@
 name: competence-profile-service
 svcName: competence-profile-svc
+
 image:
   repository: miguelsombrero/osaan-competence-profile-service
   tag: latest
+
 rabbitmq:
   enabled: true
+
 configMap:
   data:
     EMPLOYEE_SERVICE_URL: http://employee-svc:80
