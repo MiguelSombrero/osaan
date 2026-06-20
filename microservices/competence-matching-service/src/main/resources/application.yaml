@@ -37,6 +37,8 @@ spring:
   application:
     name: competence-matching-service
   cloud:
+    function:
+      definition: skillCreated
     stream:
       bindings:
         skillCreated-in-0:

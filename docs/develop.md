@@ -40,6 +40,10 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
 
 ## Bugs, issues and TODOs
 
+- Osaan Admin UI - does it work?
+
+- Make microservices configuration better
+
 - Tracing works in k3d - test that it work in Docker Compose too
 
 - Add Zod for validation
@@ -47,6 +51,8 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
 - Add Zustand store for osaan-ui
 
 - Add some library for generating API related models
+
+- Add log aggregation tool in k3d cluster
 
 - Debug why Testkube containers not created with Triggers
 

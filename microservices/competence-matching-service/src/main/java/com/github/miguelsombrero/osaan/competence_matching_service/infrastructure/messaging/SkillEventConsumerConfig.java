@@ -6,12 +6,14 @@ import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.propagation.Propagator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 
 import java.util.function.Consumer;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class SkillEventConsumerConfig {
@@ -28,6 +30,7 @@ public class SkillEventConsumerConfig {
                     .name("skillCreated process")
                     .start();
             try (Tracer.SpanInScope ignored = tracer.withSpan(span)) {
+                log.debug("Consuming skillCreatedEvent: {}", message.getPayload());
                 processSkillEventPort.processEvent(message.getPayload());
             } catch (RuntimeException e) {
                 span.error(e);

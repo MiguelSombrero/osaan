@@ -38,12 +38,12 @@ spring:
   application:
     name: competence-profile-service
   cloud:
+    function:
+      definition: skillCreated
     stream:
       bindings:
         skillCreated-out-0:
           destination: skill.created.queue
-    refresh:
-      enabled: false # Compatibility issues with Spring Boot 4.0.0-SNAPSHOT
   security:
     oauth2:
       resourceserver:

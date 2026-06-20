@@ -4,6 +4,7 @@ import com.github.miguelsombrero.osaan.core.event.SkillCreatedEvent;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.propagation.Propagator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.support.MessageBuilder;
@@ -11,6 +12,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Configuration
 public class SkillEventProducerConfig {
 
@@ -30,6 +32,7 @@ public class SkillEventProducerConfig {
         if (currentSpan != null) {
             propagator.inject(currentSpan.context(), traceHeaders, Map::put);
         }
+        log.debug("Publishing SkillCreatedEvent with skill: {}, rating: {}", event.skill(), event.rating());
         streamBridge.send("skillCreated-out-0",
                 MessageBuilder.withPayload(event).copyHeaders(traceHeaders).build());
     }
