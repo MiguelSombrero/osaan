@@ -166,6 +166,8 @@ services:
     ports:
       - "8094:8080"
       - "4004:4004"
+    volumes:
+      - ./keycloak/certs/keycloak-truststore.jks:/opt/java/keycloak-truststore.jks:ro
 
   osaan-admin-backend:
     build: ./ui/osaan-admin-ui/backend
@@ -209,6 +211,7 @@ services:
       - skill-catalog-service
       - competence-profile-service
       - employee-service
+      - competence-matching-service
       - keycloak
       - osaan-valkey
     volumes:

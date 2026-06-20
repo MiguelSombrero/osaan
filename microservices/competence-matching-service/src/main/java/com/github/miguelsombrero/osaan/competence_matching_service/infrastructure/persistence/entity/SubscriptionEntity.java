@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -15,7 +16,9 @@ import java.util.UUID;
 public class SubscriptionEntity {
     @Id
     private UUID id;
+    private String userId;
     private String email;
     private String skill;
     private int rating;
+    private Instant createdAt;
 }

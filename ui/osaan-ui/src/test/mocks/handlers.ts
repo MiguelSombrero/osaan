@@ -2,11 +2,13 @@ import { http, HttpResponse } from 'msw';
 import type { CompetenceProfileData } from '@/types/competence';
 import type { GetSkillsResponse } from '@/types/skill';
 import type { EmployeeSearchResult } from '@/types/manager';
+import type { Subscription } from '@/types/subscription';
 import { mockCompetenceProfile, mockSkillsResponse, mockEmployeeSearchResults } from './data';
 
 let currentProfile: CompetenceProfileData = structuredClone(mockCompetenceProfile);
 let currentSkillsResponse: GetSkillsResponse = structuredClone(mockSkillsResponse);
 let currentEmployeeSearchResults: EmployeeSearchResult[] = structuredClone(mockEmployeeSearchResults);
+let currentSubscriptions: Subscription[] = [];
 
 export function setMockProfile(profile: CompetenceProfileData) {
   currentProfile = structuredClone(profile);
@@ -20,10 +22,15 @@ export function setMockEmployeeSearchResults(results: EmployeeSearchResult[]) {
   currentEmployeeSearchResults = structuredClone(results);
 }
 
+export function setMockSubscriptions(subs: Subscription[]) {
+  currentSubscriptions = structuredClone(subs);
+}
+
 export function resetMocks() {
   currentProfile = structuredClone(mockCompetenceProfile);
   currentSkillsResponse = structuredClone(mockSkillsResponse);
   currentEmployeeSearchResults = structuredClone(mockEmployeeSearchResults);
+  currentSubscriptions = [];
 }
 
 export const handlers = [
@@ -67,6 +74,34 @@ export const handlers = [
     return HttpResponse.json(currentEmployeeSearchResults);
   }),
 
+  http.get('*/api/subscriptions', () => {
+    return HttpResponse.json(currentSubscriptions);
+  }),
+
+  http.post('*/api/subscriptions', async ({ request }) => {
+    const body = (await request.json()) as { skill: string; rating: number };
+    const created: Subscription = {
+      id: `sub-${currentSubscriptions.length + 1}`,
+      userId: 'test-user',
+      email: 'test@example.com',
+      skill: body.skill,
+      rating: body.rating as Subscription['rating'],
+      createdAt: new Date().toISOString(),
+    };
+    currentSubscriptions = [created, ...currentSubscriptions];
+    return HttpResponse.json(created, { status: 201 });
+  }),
+
+  http.delete('*/api/subscriptions/:id', ({ params }) => {
+    const { id } = params as { id: string };
+    const existed = currentSubscriptions.some((s) => s.id === id);
+    if (!existed) {
+      return new HttpResponse(null, { status: 404 });
+    }
+    currentSubscriptions = currentSubscriptions.filter((s) => s.id !== id);
+    return new HttpResponse(null, { status: 204 });
+  }),
+
   http.get('*/api/skills', ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get('query')?.toLowerCase();
@@ -96,5 +131,20 @@ export const deleteCompetenceErrorHandler = (status: number) =>
 
 export const updateRatingErrorHandler = (status: number) =>
   http.patch('*/api/competences/:employeeId/:competenceId', () =>
+    HttpResponse.json({ error: 'Failed' }, { status })
+  );
+
+export const subscriptionsGetErrorHandler = (status: number) =>
+  http.get('*/api/subscriptions', () =>
+    HttpResponse.json({ error: 'Failed' }, { status })
+  );
+
+export const createSubscriptionErrorHandler = (status: number) =>
+  http.post('*/api/subscriptions', () =>
+    HttpResponse.json({ error: 'Failed' }, { status })
+  );
+
+export const deleteSubscriptionErrorHandler = (status: number) =>
+  http.delete('*/api/subscriptions/:id', () =>
     HttpResponse.json({ error: 'Failed' }, { status })
   );

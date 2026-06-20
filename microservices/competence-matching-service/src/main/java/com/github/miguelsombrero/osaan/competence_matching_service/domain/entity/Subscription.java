@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -11,7 +12,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Subscription {
     private UUID id;
+    private String userId;
     private String email;
     private String skill;
     private int rating;
+    private Instant createdAt;
 }

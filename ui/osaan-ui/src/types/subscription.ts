@@ -2,6 +2,7 @@ import type { Rating } from './rating';
 
 export interface Subscription {
   id: string;
+  userId: string;
   email: string;
   skill: string;
   rating: Rating;
@@ -9,7 +10,6 @@ export interface Subscription {
 }
 
 export interface SubscriptionDraft {
-  email: string;
   skill: string;
   rating: Rating;
 }

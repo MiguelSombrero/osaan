@@ -15,6 +15,10 @@ api:
         read: Grants read access
         write: Grants write access
 
+app:
+  auth:
+    disabled: ${APP_AUTH_DISABLED:false}
+
 logging:
   level:
     com.github.miguelsombrero.osaan: ${LOGGING_LEVEL_APPLICATION:INFO}
@@ -44,6 +48,12 @@ spring:
             consumer:
               autoBindDlq: true
               republishToDlq: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI:https://keycloak.local/realms/osaan}
+
   datasource:
     url: jdbc:postgresql://${POSTGRESQL_HOST}:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}

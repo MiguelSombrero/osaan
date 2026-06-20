@@ -2,6 +2,7 @@ import type { GetSkillsParams, GetSkillsResponse } from '@/types/skill';
 import type { Competence, CompetenceProfileData } from '@/types/competence';
 import type { Employee } from '@/types/employee';
 import type { EmployeeSearchParams, EmployeeSearchResult } from '@/types/manager';
+import type { Subscription, SubscriptionDraft } from '@/types/subscription';
 
 const API_BASE = '/api';
 
@@ -100,4 +101,17 @@ export const employeeApi = {
 export const competenceReadApi = {
   getProfile: (employeeId: string) =>
     fetchApi<CompetenceProfileData>(`/competences/${employeeId}`),
+};
+
+export const subscriptionApi = {
+  getSubscriptions: () => fetchApi<Subscription[]>('/subscriptions'),
+
+  createSubscription: (draft: SubscriptionDraft) =>
+    fetchApi<Subscription>('/subscriptions', {
+      method: 'POST',
+      body: JSON.stringify(draft),
+    }),
+
+  deleteSubscription: (id: string) =>
+    fetchApi<void>(`/subscriptions/${id}`, { method: 'DELETE' }),
 };

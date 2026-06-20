@@ -10,33 +10,28 @@ import type { SubscriptionDraft } from '@/types/subscription';
 import { SkillCombobox } from './skill-combobox';
 
 interface SubscriptionComposerProps {
-  defaultEmail?: string;
+  recipientEmail?: string;
   onCreate: (draft: SubscriptionDraft) => void;
-}
-
-function isValidEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  submitting?: boolean;
 }
 
 export function SubscriptionComposer({
-  defaultEmail = '',
+  recipientEmail,
   onCreate,
+  submitting = false,
 }: SubscriptionComposerProps) {
   const { t } = useTranslation();
-  const [email, setEmail] = useState(defaultEmail);
   const [skill, setSkill] = useState('');
   const [rating, setRating] = useState<Rating | null>(null);
-  const [emailTouched, setEmailTouched] = useState(false);
 
-  const emailOk = isValidEmail(email);
   const skillOk = skill.trim().length > 0;
   const ratingOk = rating !== null;
-  const canSubmit = emailOk && skillOk && ratingOk;
+  const canSubmit = skillOk && ratingOk && !submitting;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit || rating === null) return;
-    onCreate({ email: email.trim(), skill: skill.trim(), rating });
+    onCreate({ skill: skill.trim(), rating });
     setSkill('');
     setRating(null);
   };
@@ -72,45 +67,9 @@ export function SubscriptionComposer({
       </div>
 
       <div className="relative space-y-7 sm:space-y-9">
-        {/* Step 01 — Email */}
+        {/* Step 01 — Skill */}
         <ComposerStep
           number="01"
-          lead={t('composerStep1', {
-            defaultValue: 'Send the dispatch to',
-          })}
-        >
-          <div className="relative flex items-center">
-            <span className="absolute left-0 font-display text-saffron-600 text-xl select-none pointer-events-none">
-              ›
-            </span>
-            <input
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onBlur={() => setEmailTouched(true)}
-              placeholder={t('composerEmailPlaceholder', {
-                defaultValue: 'recipient@example.com',
-              })}
-              className={cn(
-                'w-full bg-transparent pl-7 pr-2 py-2',
-                'font-mono text-base sm:text-lg text-stone-950 placeholder:text-stone-300',
-                'border-0 border-b border-stone-300 focus:border-saffron-600',
-                'outline-none transition-colors duration-150',
-                emailTouched && !emailOk && 'border-error focus:border-error'
-              )}
-            />
-          </div>
-          {emailTouched && !emailOk && email.length > 0 && (
-            <p className="mt-2 text-xs text-error font-sans">
-              {t('composerEmailInvalid', { defaultValue: 'Enter a valid email address' })}
-            </p>
-          )}
-        </ComposerStep>
-
-        {/* Step 02 — Skill */}
-        <ComposerStep
-          number="02"
           lead={t('composerStep2', {
             defaultValue: 'When someone adds the skill',
           })}
@@ -118,9 +77,9 @@ export function SubscriptionComposer({
           <SkillCombobox value={skill} onChange={setSkill} />
         </ComposerStep>
 
-        {/* Step 03 — Rating */}
+        {/* Step 02 — Rating */}
         <ComposerStep
-          number="03"
+          number="02"
           lead={t('composerStep3', {
             defaultValue: 'at a minimum proficiency of',
           })}
@@ -147,10 +106,16 @@ export function SubscriptionComposer({
           {t('composerSubmit', { defaultValue: 'Open the watch' })}
         </Button>
         <p className="text-xs text-stone-500 font-sans italic max-w-xs leading-relaxed">
-          {t('composerHint', {
-            defaultValue:
-              'You will receive an email the moment a matching profile is published.',
-          })}
+          {recipientEmail
+            ? t('composerHintToEmail', {
+                defaultValue:
+                  'Dispatches will be sent to {{email}} the moment a matching profile is published.',
+                email: recipientEmail,
+              })
+            : t('composerHint', {
+                defaultValue:
+                  'You will receive an email the moment a matching profile is published.',
+              })}
         </p>
       </div>
     </form>

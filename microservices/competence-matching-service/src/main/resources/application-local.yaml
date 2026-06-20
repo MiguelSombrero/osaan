@@ -1,5 +1,6 @@
 API_DOCS_ENABLED: true
 SWAGGER_UI_ENABLED: true
+APP_AUTH_DISABLED: true
 
 logging:
   level:
