@@ -36,7 +36,7 @@ spec:
   selector:
     app: mailhog
   ports:
-    - name: smtp
+    - name: tcp-smtp
       port: 1025
       targetPort: 1025
     - name: http
