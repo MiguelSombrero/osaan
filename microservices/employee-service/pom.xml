@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.5</version>
+        <version>4.1.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.miguelsombrero.osaan</groupId>
@@ -19,8 +19,8 @@
         <java.version>25</java.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <osaan.core.version>1.0.0-SNAPSHOT</osaan.core.version>
-        <spring-cloud.version>2025.1.1</spring-cloud.version>
-        <springdoc-openapi.version>3.0.2</springdoc-openapi.version>
+        <spring-cloud.version>2025.1.2</spring-cloud.version>
+        <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
     </properties>
 
     <dependencies>
