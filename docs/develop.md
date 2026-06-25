@@ -40,7 +40,7 @@ Java appears in 7 employees with ratings 1–5, making it especially useful for 
 
 ## Bugs, issues and TODOs
 
-- Osaan Admin UI - does it work?
+- Draw component diagram of the system landscape
 
 - Make microservices configuration better
 

@@ -188,7 +188,7 @@ services:
     ports:
       - "8085:5173"
     environment:
-      - BACKEND_URL=http://osaan-admin-backend:3000
+      - BACKEND_URL=http://osaan-admin-backend:3001
     depends_on:
       - osaan-admin-backend
     volumes:
