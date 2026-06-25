@@ -4,5 +4,5 @@ helm:
     value: miguelsombrero/osaan-competence-matching-service
     forcestring: true
   - name: image.tag
-    value: latest@sha256:d79f130c47b77c5e88caa5ac93b014d48b9c2bc9e9c4401b3d2347ecafe8a78a
+    value: latest@sha256:018f942084fdf0d7dd9e95d89e5ef1bb12e80923fe863a6f22949d0ea0a614b0
     forcestring: true
