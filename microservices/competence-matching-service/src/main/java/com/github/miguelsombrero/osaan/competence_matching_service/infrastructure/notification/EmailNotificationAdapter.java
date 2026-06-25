@@ -23,7 +23,8 @@ public class EmailNotificationAdapter implements NotificationPort {
         message.setFrom("competence-matching-service");
         message.setTo(to);
         message.setSubject("New Skill Created");
-        message.setText("A new skill was created: " + event.skill() + " with rating " + event.rating());
+        message.setText("A new skill was created: " + event.skill() + " with rating " + event.rating()
+                + "\nAdded by: " + event.firstName() + " " + event.lastName() + " (" + event.email() + ")");
         mailSender.send(message);
     }
 }

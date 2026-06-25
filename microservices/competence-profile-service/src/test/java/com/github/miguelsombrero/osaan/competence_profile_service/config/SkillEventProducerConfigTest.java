@@ -42,7 +42,7 @@ class SkillEventProducerConfigTest {
     @InjectMocks
     private SkillEventProducerConfig producer;
 
-    private static final SkillCreatedEvent EVENT = new SkillCreatedEvent("Python", 3);
+    private static final SkillCreatedEvent EVENT = new SkillCreatedEvent("Python", 3, "John", "Doe", "john@example.com");
 
     @Test
     @SuppressWarnings("unchecked")

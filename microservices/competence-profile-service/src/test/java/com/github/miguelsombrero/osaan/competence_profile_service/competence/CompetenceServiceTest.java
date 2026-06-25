@@ -123,6 +123,31 @@ class CompetenceServiceTest {
     }
 
     @Test
+    void saveCompetences_publishesEventWithEmployeeInfo() {
+        Competence incoming = new Competence(null, null, SKILL_ID, 3);
+        CompetenceEntity newEntity = new CompetenceEntity(null, EMPLOYEE_ID, SKILL_ID, 3);
+        CompetenceEntity savedEntity = new CompetenceEntity(UUID.randomUUID(), EMPLOYEE_ID, SKILL_ID, 3);
+        Competence savedApi = new Competence(savedEntity.getId(), EMPLOYEE_ID, SKILL_ID, 3);
+
+        when(mapper.apiToEntity(incoming, EMPLOYEE_ID)).thenReturn(newEntity);
+        when(repository.findByEmployeeIdAndSkillId(EMPLOYEE_ID, SKILL_ID)).thenReturn(Optional.empty());
+        when(repository.saveAll(anyList())).thenReturn(List.of(savedEntity));
+        when(mapper.entityToApi(savedEntity)).thenReturn(savedApi);
+
+        service.saveCompetences(user, List.of(incoming));
+
+        ArgumentCaptor<SkillCreatedEvent> eventCaptor = ArgumentCaptor.captor();
+        verify(producer).publishSkillCreatedEvent(eventCaptor.capture());
+
+        SkillCreatedEvent published = eventCaptor.getValue();
+        assertThat(published.skill()).isEqualTo("Python");
+        assertThat(published.rating()).isEqualTo(3);
+        assertThat(published.firstName()).isEqualTo("John");
+        assertThat(published.lastName()).isEqualTo("Doe");
+        assertThat(published.email()).isEqualTo("john@example.com");
+    }
+
+    @Test
     void saveCompetences_upserts_whenSameSkillSavedTwiceWithDifferentRatings() {
         UUID existingId = UUID.randomUUID();
 

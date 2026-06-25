@@ -38,8 +38,6 @@ spring:
   application:
     name: competence-profile-service
   cloud:
-    function:
-      definition: skillCreated
     stream:
       bindings:
         skillCreated-out-0:

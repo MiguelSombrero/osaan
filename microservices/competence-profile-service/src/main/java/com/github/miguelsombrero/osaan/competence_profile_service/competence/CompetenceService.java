@@ -64,7 +64,12 @@ class CompetenceService {
                     .map(Skill::getName)
                     .orElseThrow();
 
-            producer.publishSkillCreatedEvent(new SkillCreatedEvent(skillName, c.getRating()));
+            producer.publishSkillCreatedEvent(new SkillCreatedEvent(
+                    skillName,
+                    c.getRating(),
+                    employee.getFirstName(),
+                    employee.getLastName(),
+                    employee.getEmail()));
         });
 
         return savedCompetences;
