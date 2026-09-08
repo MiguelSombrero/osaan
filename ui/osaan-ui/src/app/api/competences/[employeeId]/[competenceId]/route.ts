@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { fetchWithAuth } from '@/lib/server-api';
 import { config } from '@/lib/config';
+import { updateCompetenceRatingBodySchema } from '@/lib/validation/schemas/competence.schema';
 
 type Context = { params: Promise<{ employeeId: string; competenceId: string }> };
 
@@ -30,13 +32,22 @@ export async function PATCH(
   request: NextRequest,
   context: Context
 ) {
+  const rawBody = await request.json().catch(() => null);
+  const parsed = updateCompetenceRatingBodySchema.safeParse(rawBody);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: z.flattenError(parsed.error) },
+      { status: 400 }
+    );
+  }
+
   try {
     const { competenceId } = await context.params;
-    const body = await request.json();
     const data = await fetchWithAuth(
       config.competenceProfileApiUrl,
       `/v1/competences/${competenceId}`,
-      { method: 'PATCH', body: JSON.stringify(body) }
+      { method: 'PATCH', body: JSON.stringify(parsed.data) }
     );
     return NextResponse.json(data);
   } catch (error) {

@@ -1,4 +1,6 @@
-export type Rating = 1 | 2 | 3 | 4 | 5;
+import type { RatingInferred as Rating } from '@/lib/validation/schemas/rating.schema';
+
+export type { RatingInferred as Rating } from '@/lib/validation/schemas/rating.schema';
 
 export const RATING_LABELS: Record<Rating, string> = {
   1: 'Beginner',

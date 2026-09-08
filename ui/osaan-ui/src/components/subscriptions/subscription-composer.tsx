@@ -1,17 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { RatingInput } from '@/components/ui/rating-input';
 import { Button } from '@/components/ui/button';
-import type { Rating } from '@/types/rating';
-import type { SubscriptionDraft } from '@/types/subscription';
+import {
+  subscriptionDraftSchema,
+  type SubscriptionDraftInferred,
+} from '@/lib/validation/schemas/subscription.schema';
+import { getFieldErrorMessage } from '@/lib/validation/i18n-error-map';
 import { SkillCombobox } from './skill-combobox';
 
 interface SubscriptionComposerProps {
   recipientEmail?: string;
-  onCreate: (draft: SubscriptionDraft) => void;
+  onCreate: (draft: SubscriptionDraftInferred) => void;
   submitting?: boolean;
 }
 
@@ -21,24 +25,25 @@ export function SubscriptionComposer({
   submitting = false,
 }: SubscriptionComposerProps) {
   const { t } = useTranslation();
-  const [skill, setSkill] = useState('');
-  const [rating, setRating] = useState<Rating | null>(null);
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm<SubscriptionDraftInferred>({
+    resolver: zodResolver(subscriptionDraftSchema),
+    mode: 'onChange',
+    defaultValues: { skill: '', rating: undefined },
+  });
 
-  const skillOk = skill.trim().length > 0;
-  const ratingOk = rating !== null;
-  const canSubmit = skillOk && ratingOk && !submitting;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!canSubmit || rating === null) return;
-    onCreate({ skill: skill.trim(), rating });
-    setSkill('');
-    setRating(null);
+  const onSubmit = (data: SubscriptionDraftInferred) => {
+    onCreate(data);
+    reset();
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className={cn(
         'relative bg-white rounded-md border border-stone-200',
         'p-6 sm:p-10',
@@ -74,7 +79,20 @@ export function SubscriptionComposer({
             defaultValue: 'When someone adds the skill',
           })}
         >
-          <SkillCombobox value={skill} onChange={setSkill} />
+          <Controller
+            name="skill"
+            control={control}
+            render={({ field }) => (
+              <>
+                <SkillCombobox value={field.value} onChange={field.onChange} />
+                {errors.skill && (
+                  <p className="text-xs text-error font-sans mt-1">
+                    {getFieldErrorMessage('skill', errors.skill, t)}
+                  </p>
+                )}
+              </>
+            )}
+          />
         </ComposerStep>
 
         {/* Step 02 — Rating */}
@@ -84,25 +102,33 @@ export function SubscriptionComposer({
             defaultValue: 'at a minimum proficiency of',
           })}
         >
-          <div className="flex items-center gap-4">
-            <RatingInput value={rating} onChange={setRating} size="md" />
-            {rating !== null && (
-              <span className="font-display text-stone-500 text-sm italic">
-                {t('composerOrHigher', { defaultValue: 'or higher' })}
-              </span>
+          <Controller
+            name="rating"
+            control={control}
+            render={({ field }) => (
+              <>
+                <div className="flex items-center gap-4">
+                  <RatingInput value={field.value ?? null} onChange={field.onChange} size="md" />
+                  {field.value != null && (
+                    <span className="font-display text-stone-500 text-sm italic">
+                      {t('composerOrHigher', { defaultValue: 'or higher' })}
+                    </span>
+                  )}
+                </div>
+                {errors.rating && (
+                  <p className="text-xs text-error font-sans mt-1">
+                    {getFieldErrorMessage('rating', errors.rating, t)}
+                  </p>
+                )}
+              </>
             )}
-          </div>
+          />
         </ComposerStep>
       </div>
 
       {/* Submit */}
       <div className="relative mt-10 flex items-center gap-4 pt-6 border-t border-stone-200">
-        <Button
-          type="submit"
-          variant="primary"
-          size="lg"
-          disabled={!canSubmit}
-        >
+        <Button type="submit" variant="primary" size="lg" disabled={!isValid || submitting}>
           {t('composerSubmit', { defaultValue: 'Open the watch' })}
         </Button>
         <p className="text-xs text-stone-500 font-sans italic max-w-xs leading-relaxed">

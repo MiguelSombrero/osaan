@@ -1,49 +1,80 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { SearchInput, Button } from '@/components/ui';
 import { RatingInput } from '@/components/ui/rating-input';
-import type { Rating } from '@/types/rating';
-import type { EmployeeSearchParams } from '@/types/manager';
+import {
+  employeeSearchParamsSchema,
+  type EmployeeSearchParamsInferred,
+} from '@/lib/validation/schemas/manager.schema';
+import { getFieldErrorMessage } from '@/lib/validation/i18n-error-map';
 
 interface SkillFilterProps {
-  onSearch: (params: EmployeeSearchParams) => void;
+  onSearch: (params: EmployeeSearchParamsInferred) => void;
   isLoading?: boolean;
 }
 
 function SkillFilter({ onSearch, isLoading }: SkillFilterProps) {
   const { t } = useTranslation();
-  const [skillQuery, setSkillQuery] = useState('');
-  const [minRating, setMinRating] = useState<Rating | null>(null);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<EmployeeSearchParamsInferred>({
+    resolver: zodResolver(employeeSearchParamsSchema),
+    mode: 'onChange',
+    defaultValues: { skillName: '', minRating: undefined },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!skillQuery.trim() || !minRating) return;
-    onSearch({ skillName: skillQuery.trim(), minRating });
+  const onSubmit = (data: EmployeeSearchParamsInferred) => {
+    onSearch(data);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-stone-800 font-sans mb-1.5">
           {t('skills')}
         </label>
-        <SearchInput
-          value={skillQuery}
-          onChange={setSkillQuery}
-          placeholder={t('searchSkills')}
-          debounceMs={0}
+        <Controller
+          name="skillName"
+          control={control}
+          render={({ field }) => (
+            <>
+              <SearchInput
+                value={field.value}
+                onChange={field.onChange}
+                placeholder={t('searchSkills')}
+                debounceMs={0}
+              />
+              {errors.skillName && (
+                <p className="text-xs text-error font-sans mt-1">
+                  {getFieldErrorMessage('skillName', errors.skillName, t)}
+                </p>
+              )}
+            </>
+          )}
         />
       </div>
       <div>
         <label className="block text-sm font-medium text-stone-800 font-sans mb-1.5">
           {t('minimumRating')}
         </label>
-        <RatingInput
-          value={minRating}
-          onChange={setMinRating}
-          size="md"
+        <Controller
+          name="minRating"
+          control={control}
+          render={({ field }) => (
+            <>
+              <RatingInput value={field.value ?? null} onChange={field.onChange} size="md" />
+              {errors.minRating && (
+                <p className="text-xs text-error font-sans mt-1">
+                  {getFieldErrorMessage('minRating', errors.minRating, t)}
+                </p>
+              )}
+            </>
+          )}
         />
       </div>
       <Button
@@ -51,7 +82,7 @@ function SkillFilter({ onSearch, isLoading }: SkillFilterProps) {
         variant="primary"
         size="md"
         className="w-full"
-        disabled={!skillQuery.trim() || !minRating}
+        disabled={!isValid}
         loading={isLoading}
       >
         {t('searchEmployees')}

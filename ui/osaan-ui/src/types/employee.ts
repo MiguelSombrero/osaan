@@ -1,6 +1,1 @@
-export interface Employee {
-  id?: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
+export type { EmployeeInferred as Employee } from '@/lib/validation/schemas/employee.schema';

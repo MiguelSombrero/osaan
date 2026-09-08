@@ -1,15 +1,4 @@
-import type { Rating } from './rating';
-
-export interface Subscription {
-  id: string;
-  userId: string;
-  email: string;
-  skill: string;
-  rating: Rating;
-  createdAt: string;
-}
-
-export interface SubscriptionDraft {
-  skill: string;
-  rating: Rating;
-}
+export type {
+  SubscriptionInferred as Subscription,
+  SubscriptionDraftInferred as SubscriptionDraft,
+} from '@/lib/validation/schemas/subscription.schema';

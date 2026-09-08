@@ -3,6 +3,7 @@ import type { CompetenceProfileData } from '@/types/competence';
 import type { GetSkillsResponse } from '@/types/skill';
 import type { EmployeeSearchResult } from '@/types/manager';
 import type { Subscription } from '@/types/subscription';
+import type { Rating } from '@/types/rating';
 import { mockCompetenceProfile, mockSkillsResponse, mockEmployeeSearchResults } from './data';
 
 let currentProfile: CompetenceProfileData = structuredClone(mockCompetenceProfile);
@@ -54,7 +55,7 @@ export const handlers = [
 
   http.patch('*/api/competences/:employeeId/:competenceId', async ({ params, request }) => {
     const { competenceId } = params as { competenceId: string };
-    const { rating } = (await request.json()) as { rating: number };
+    const { rating } = (await request.json()) as { rating: Rating };
     currentProfile = {
       ...currentProfile,
       competences: currentProfile.competences.map((c) =>

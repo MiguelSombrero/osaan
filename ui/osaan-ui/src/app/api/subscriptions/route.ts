@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { fetchWithAuth } from '@/lib/server-api';
 import { config } from '@/lib/config';
-import type { Subscription, SubscriptionDraft } from '@/types/subscription';
+import { subscriptionDraftSchema } from '@/lib/validation/schemas/subscription.schema';
+import type { Subscription } from '@/types/subscription';
 
 export async function GET() {
   try {
@@ -22,14 +24,23 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const rawBody = await request.json().catch(() => null);
+  const parsed = subscriptionDraftSchema.safeParse(rawBody);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: z.flattenError(parsed.error) },
+      { status: 400 }
+    );
+  }
+
   try {
-    const body = (await request.json()) as SubscriptionDraft;
     const created = await fetchWithAuth<Subscription>(
       config.competenceMatchingApiUrl,
       '/v1/subscriptions',
       {
         method: 'POST',
-        body: JSON.stringify({ skill: body.skill, rating: body.rating }),
+        body: JSON.stringify({ skill: parsed.data.skill, rating: parsed.data.rating }),
       }
     );
     return NextResponse.json(created, { status: 201 });

@@ -129,5 +129,33 @@
   "featureFindTitle": "Etsi osaajia",
   "featureFindDesc": "Esimiehet voivat hakea työntekijöitä osaamisella ja vähimmäistasolla.",
   "featureGrowTitle": "Seuraa kehitystä",
-  "featureGrowDesc": "Päivitä profiilisi oppimisen myötä. Kehitys näkyy kaikille."
+  "featureGrowDesc": "Päivitä profiilisi oppimisen myötä. Kehitys näkyy kaikille.",
+
+  "validation": {
+    "generic": "Tarkista syöttämäsi tiedot ja yritä uudelleen.",
+    "codes": {
+      "too_small": "Tämä kenttä on pakollinen.",
+      "too_big": "Tämä arvo on liian pitkä.",
+      "invalid_type": "Tämä arvo ei kelpaa.",
+      "invalid_value": "Valitse jokin annetuista vaihtoehdoista.",
+      "invalid_format": {
+        "email": "Anna kelvollinen sähköpostiosoite."
+      }
+    },
+    "fields": {
+      "skill": {
+        "too_small": "Anna osaamisen nimi."
+      },
+      "skillName": {
+        "too_small": "Anna osaamisen nimi."
+      },
+      "rating": {
+        "invalid_value": "Valitse taso väliltä 1–5."
+      },
+      "minRating": {
+        "invalid_value": "Valitse vähimmäistaso väliltä 1–5.",
+        "invalid_type": "Valitse vähimmäistaso väliltä 1–5."
+      }
+    }
+  }
 }

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { fetchWithAuth } from '@/lib/server-api';
 import { config } from '@/lib/config';
+import { createCompetencesBodySchema } from '@/lib/validation/schemas/competence.schema';
 
 export async function GET(
   _request: NextRequest,
@@ -28,15 +30,23 @@ export async function POST(
   request: NextRequest,
   _context: { params: Promise<{ employeeId: string }> }
 ) {
-  try {
-    const body = await request.json();
+  const rawBody = await request.json().catch(() => null);
+  const parsed = createCompetencesBodySchema.safeParse(rawBody);
 
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: z.flattenError(parsed.error) },
+      { status: 400 }
+    );
+  }
+
+  try {
     const data = await fetchWithAuth(
       config.competenceProfileApiUrl,
       `/v1/competences`,
       {
         method: 'POST',
-        body: JSON.stringify(body),
+        body: JSON.stringify(parsed.data),
       }
     );
 

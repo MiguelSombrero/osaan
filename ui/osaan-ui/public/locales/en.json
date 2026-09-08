@@ -129,5 +129,33 @@
   "featureFindTitle": "Find Talent",
   "featureFindDesc": "Managers can search employees by skill and minimum rating.",
   "featureGrowTitle": "Track Growth",
-  "featureGrowDesc": "Update your profile as you learn. Growth is visible to everyone."
+  "featureGrowDesc": "Update your profile as you learn. Growth is visible to everyone.",
+
+  "validation": {
+    "generic": "Please check your input and try again.",
+    "codes": {
+      "too_small": "This field is required.",
+      "too_big": "This value is too long.",
+      "invalid_type": "This value is not valid.",
+      "invalid_value": "Choose one of the available options.",
+      "invalid_format": {
+        "email": "Enter a valid email address."
+      }
+    },
+    "fields": {
+      "skill": {
+        "too_small": "Enter a skill name."
+      },
+      "skillName": {
+        "too_small": "Enter a skill name."
+      },
+      "rating": {
+        "invalid_value": "Choose a rating from 1 to 5."
+      },
+      "minRating": {
+        "invalid_value": "Choose a minimum rating from 1 to 5.",
+        "invalid_type": "Choose a minimum rating from 1 to 5."
+      }
+    }
+  }
 }
