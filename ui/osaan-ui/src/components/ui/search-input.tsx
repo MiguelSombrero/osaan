@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/cn';
 
 interface SearchInputProps {
@@ -19,10 +19,16 @@ function SearchInput({
   debounceMs = 300,
 }: SearchInputProps) {
   const [localValue, setLocalValue] = useState(value);
+  // While focused, the user may be actively typing further ahead of what's
+  // been sent upstream. An in-flight debounced onChange echoing back as the
+  // value prop can otherwise arrive after — and overwrite — newer keystrokes.
+  const isFocusedRef = useRef(false);
 
-  // Sync from outside
+  // Sync from outside, but never clobber active local edits.
   useEffect(() => {
-    setLocalValue(value);
+    if (!isFocusedRef.current) {
+      setLocalValue(value);
+    }
   }, [value]);
 
   // Debounce to parent
@@ -45,6 +51,12 @@ function SearchInput({
         type="search"
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
+        onFocus={() => {
+          isFocusedRef.current = true;
+        }}
+        onBlur={() => {
+          isFocusedRef.current = false;
+        }}
         placeholder={placeholder}
         className={cn(
           'w-full h-10 pl-9 pr-9 rounded-md border border-stone-300 bg-white',
