@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Osaan** is a knowledge management system built on a microservice landscape. It enables project managers to find employees with specific skill sets — users can create competence profiles and subscribe to be notified via email when matching profiles are added. This is a hobby/study project, not production-ready.
 
+Deeper reference docs live in `docs/`: `architecture.md` (system landscape), `develop.md` (local test data + TODO list), `devops.md` (CI/CD, K8s platform), `tests.md` (full testing guide).
+
 ## Build & Run Commands
 
 ### Microservices (Maven, Java 25, Spring Boot 4.0.5)
@@ -18,9 +20,15 @@ mvn clean package
 # Run with local profile (auto-starts dependencies via compose.yaml)
 mvn spring-boot:run -Dspring.profiles.active=local
 
-# Run a single test
-mvn test -Dtest=MyTestClass#myTestMethod
+# Run all tests for a service
+mvn test
+
+# Run a single test class / single method
+mvn test -Dtest=SkillControllerTest
+mvn test -Dtest=SkillControllerTest#getSkill_returnsSkill
 ```
+
+Integration tests are named `*IT.java` and start a real PostgreSQL via Testcontainers — no manual setup.
 
 When running locally in IDE, start `competence-matching-service` first — its `compose.yaml` contains shared infrastructure (PostgreSQL, RabbitMQ, etc.).
 
@@ -38,6 +46,10 @@ cd ui/osaan-admin-ui/frontend && npm run generate:client
 
 # Run tests
 cd ui/osaan-admin-ui/frontend && npm test
+
+# Lint (zero-warning policy) and format
+cd ui/osaan-admin-ui/frontend && npm run lint
+cd ui/osaan-admin-ui/frontend && npm run format
 ```
 
 ### User UI (`ui/osaan-ui/`)
@@ -46,24 +58,44 @@ cd ui/osaan-admin-ui/frontend && npm test
 cd ui/osaan-ui
 npm run dev          # http://localhost:3000
 npm run type-check   # TypeScript check
+npm run lint
+npm test             # Vitest
 npm run build
 ```
 
 ### Full Stack
 
-```bash
-# Docker Compose (requires pre-built microservice JARs)
-docker compose up -d --build
-
-# Kubernetes (k3d) — sets up full platform including Istio, ArgoCD, Keycloak
-./setup-cluster.sh
-```
-
-### E2E Tests
+Prefer the `Makefile` targets — they build the service JARs first, which `docker compose` alone does not:
 
 ```bash
-cd e2e && npm test
+make build-services   # mvn clean package -DskipTests for all 5 modules
+make up               # build-services + docker compose up -d --build
+make up-no-build      # compose up with existing JARs/images
+make down             # compose down
+make clean            # compose down -v (drops volumes)
+make restart          # down + up
+
+make setup-cluster    # ./setup-cluster.sh — k3d + Istio + ArgoCD + Keycloak
+make delete-cluster   # k3d cluster delete osaan-dev
 ```
+
+### E2E Tests (`e2e/`)
+
+Playwright. There is **no `npm test` script** — invoke Playwright directly, or run in-cluster via Testkube.
+
+```bash
+# Smoke tests locally (no browser launched — just gateway reachability)
+cd e2e
+export SMOKE_GW_HTTP=http://localhost:9080
+export SMOKE_GW_HTTPS=https://localhost:9443
+npx playwright test --config playwright.smoke.config.ts
+
+# In-cluster (Testkube)
+testkube run testworkflow cluster-smoke --watch
+testkube run testworkflow osaan-ui-e2e --watch
+```
+
+Config picks `.env.dev` when `NODE_ENV=development`, otherwise `.env.local`.
 
 ## Architecture
 
@@ -88,7 +120,7 @@ Layer structure per service:
 - `domain/` — entities, value objects, domain repository interfaces
 - `infrastructure/` — driven adapters (`persistence/`, `cache/`, `client/`, `config/`)
 
-If the microservice does not follow this package structure yet, feel free to refactor to this direction.
+**Refactoring policy** (same rule in `.cursor/rules/project-context.mdc` — keep the two in sync): do **not** restructure package layout, routing structure, or architecture without asking first. The one standing exception: when you are already editing a microservice for another reason, moving the classes you touch toward the layout above is fine. Wholesale re-layout of a service is a separate, explicitly-requested task.
 
 Java conventions:
 
@@ -119,6 +151,7 @@ Next.js 15 App Router with React 19.
 - TanStack Query wired via `src/providers/query-provider.tsx`
 - Tailwind CSS for styling; i18next for text
 - Server Components by default; mark client components with `'use client'`
+- Validation: Zod schemas in `src/lib/validation/schemas/` (one file per domain type), used by both API route handlers and forms (`react-hook-form` + `@hookform/resolvers`). Zod issues are translated to user-facing text by `src/lib/validation/i18n-error-map.ts`, which resolves i18n keys in order: `validation.fields.<field>.<code>` → `validation.custom.<message>` → `validation.codes.<code>` → `validation.generic`. Add matching keys to `public/locales/{en,fi}.json`.
 
 ### Platform
 
@@ -126,7 +159,7 @@ Next.js 15 App Router with React 19.
 - **Messaging**: RabbitMQ 4 via Spring Cloud Stream
 - **Database**: PostgreSQL 18
 - **Service mesh**: Istio (Kubernetes only)
-- **GitOps**: ArgoCD watching the `dev` branch; CI updates `kustomization.yaml` image tags on push
+- **GitOps**: ArgoCD watching the `dev` branch. `.github/workflows/build.yml` runs on push to `dev`, detects which components changed (per-service, admin backend/frontend, osaan-ui), builds and publishes only those images, then commits updated `kustomization.yaml` image tags — which ArgoCD picks up.
 - **Observability**: Zipkin (local tracing), Jaeger (K8s), Prometheus + Grafana, Kiali
 - **Secrets**: SOPS with age encryption for Kubernetes secrets
 
@@ -178,10 +211,31 @@ Infrastructure is in place (Vitest + Testing Library + MSW). Test files live in 
 - **Custom hooks** — test with `renderHook` + a real `QueryClient` (no retries, no cache time)
 - **Client components** (`'use client'`) — test with `renderWithProviders()` from `src/test/renderWithProviders.tsx`
 - **Pure utility functions** — plain unit tests
+- **Zod schemas** — plain unit tests per schema, alongside `src/lib/validation/__tests__/`
 - Mock HTTP calls with MSW handlers in `src/test/mocks/handlers.ts`; add new route handlers for new API endpoints
-- **Skip**: Server Components, Next.js API route handlers, NextAuth internals
+- **Skip**: Server Components, NextAuth internals
+
+**API route handlers** (`src/app/api/**/route.ts`) — test these. They own request validation, so their tests are where validation behaviour is pinned down. Follow `src/app/api/skills/__tests__/route.test.ts`.
+
+- Import the handler directly (`import { GET } from '../route'`) and call it — no HTTP server, no MSW
+- Stub the upstream call with `vi.mock('@/lib/server-api', () => ({ fetchWithAuth: vi.fn() }))`; `vi.mocked(fetchWithAuth).mockReset()` in `beforeEach`
+- Build the request by hand with `new NextRequest(url, { method, body })`
+- Dynamic segments are passed as the second arg with **async params**: `{ params: Promise.resolve({ employeeId: 'e1' }) }`
+- Cover per endpoint: valid input forwards upstream with the expected path/method (`expect.objectContaining`), and each invalid input returns 400 **and** leaves `fetchWithAuth` uncalled
 
 Run: `cd ui/osaan-ui && npm test`
+
+## Local Test Data
+
+Seeded users for local development — **username is also the password**. Full skill matrix in `docs/develop.md`.
+
+| Username | Role |
+|---|---|
+| `anna` | ADMIN |
+| `mikko` | MANAGER, USER |
+| `liisa`, `jari`, `sari`, `aleksi`, `kaisa`, `timo`, `emilia`, `petri` | USER |
+
+`Java` appears on 7 of the 10 profiles with ratings 1–5, which makes it the most useful skill for exercising search and filter scenarios.
 
 ### Local service URLs (Docker Compose)
 

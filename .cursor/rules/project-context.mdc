@@ -15,6 +15,8 @@ Knowledge management system built on a microservice landscape.
 
 If the codebase does not match the conventions in scoped rules under `.cursor/rules/`, **do not refactor package layout, routing structure, or architecture without asking the user**.
 
+The one standing exception: when already editing a microservice for another reason, moving the classes you touch toward the DDD/hex layout in `spring-boot.mdc` is fine. Wholesale re-layout of a service is a separate, explicitly-requested task. (Same rule is stated in `CLAUDE.md` — keep the two in sync.)
+
 ## Technology overview
 
 **Microservices** — Java 25, Spring Boot 4, SpringDoc OpenAPI 3, Jakarta Bean Validation 3, JUnit 5, Micrometer/Actuator. Scoped rule: `spring-boot.mdc`.
