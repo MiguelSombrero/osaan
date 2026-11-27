@@ -170,6 +170,38 @@ test('a refined task without an automated-test criterion is an error', () => {
   assert.match(errors.join('\n'), /no acceptance criterion names an automated test/);
 });
 
+test('a criterion that only mentions testing by hand is not automated', () => {
+  const errors = run({
+    iteration: iterationFile([validRow]),
+    tasks: { '01-thing.md': taskFile({ criteria: '- [ ] Tested manually in a browser' }) },
+  });
+  assert.match(errors.join('\n'), /no acceptance criterion names an automated test/);
+});
+
+test('a "## " line inside a code fence is not a section', () => {
+  const scope = ['An example:', '', '```markdown', '## Done when', '```'].join('\n');
+  const sections = [
+    ['Why', 'Because.'],
+    ['Scope', scope],
+    ['Constraints', '**None.**'],
+    ['Open questions', '**None.**'],
+    ['Acceptance criteria', '- [ ] `npm test` passes'],
+  ];
+  const errors = run({
+    iteration: iterationFile([validRow]),
+    tasks: { '01-thing.md': taskFile({ sections }) },
+  });
+  assert.deepEqual(errors, []);
+});
+
+test('a task file name without a number prefix is an error', () => {
+  const errors = run({
+    iteration: iterationFile([['01', 'thing', 'Do the thing', 'refined']]),
+    tasks: { '01-thing.md': taskFile(), 'notes.md': taskFile({ id: '02' }) },
+  });
+  assert.match(errors.join('\n'), /notes\.md: file name must start with the task number/);
+});
+
 test('a done task with an unticked criterion is an error', () => {
   const errors = run({
     iteration: iterationFile([['01', 'thing', 'Do the thing', 'done']]),

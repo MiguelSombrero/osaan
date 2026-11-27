@@ -91,8 +91,9 @@ Something failing unexpectedly? Check `docs/common-failures.md` first.
 
 ## Architecture in brief
 
-- Services talk over REST and RabbitMQ domain events (Spring Cloud Stream);
-  each has its own PostgreSQL database.
+- Services talk over REST and RabbitMQ domain events (Spring Cloud Stream).
+  For simplicity they share one PostgreSQL database, `osaan-db`, in both
+  Compose and k3d.
 - Each UI has a backend-for-frontend: the admin UI's Express proxy, and
   osaan-ui's Next.js API routes. Keycloak (OAuth2) authenticates users of
   both UIs; sessions live in Redis/Valkey.

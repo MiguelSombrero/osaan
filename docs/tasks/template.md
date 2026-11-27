@@ -61,7 +61,8 @@ Questions for the product owner. `**None.**` only once they are answered.
 ## Acceptance criteria
 
 - [ ] Observable outcome — and the command or check that verifies it
-- [ ] At least one criterion is an automated test
+- [ ] At least one criterion is an automated test, naming its command in
+      backticks (`npm test`, `mvn verify`, `make verify`, …)
 ```
 
 ### Rules

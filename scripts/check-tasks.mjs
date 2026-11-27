@@ -8,13 +8,16 @@ import { fileURLToPath } from 'node:url';
 const STATUSES = ['needs-refinement', 'refined', 'in-progress', 'done', 'dropped'];
 const SECTIONS = ['Why', 'Scope', 'Constraints', 'Open questions', 'Acceptance criteria'];
 const PAST_REFINEMENT = ['refined', 'in-progress', 'done'];
-const AUTOMATED_TEST = /\btest|make verify/i;
+// A criterion counts as automated when it names the command in backticks.
+const AUTOMATED_TEST = /`[^`]*(test|make verify|mvn|playwright|vitest)[^`]*`/i;
 
 function sectionsOf(text) {
   const sections = [];
   let current = null;
+  let inFence = false;
   for (const line of text.split('\n')) {
-    const heading = line.match(/^## (.+?)\s*$/);
+    if (/^\s*(```|~~~)/.test(line)) inFence = !inFence;
+    const heading = !inFence && line.match(/^## (.+?)\s*$/);
     if (heading) {
       current = { name: heading[1], body: [] };
       sections.push(current);
@@ -34,9 +37,10 @@ function parseTask(file, text) {
   const errors = [];
   const fileId = file.match(/^(\d+)-/)?.[1];
   const heading = text.match(/^# Task (\d+): (.+)$/m);
+  if (!fileId) errors.push('file name must start with the task number, as NN-slug.md');
   if (!heading) {
     errors.push('missing "# Task NN: Title" heading');
-  } else if (heading[1] !== fileId) {
+  } else if (fileId && heading[1] !== fileId) {
     errors.push(`heading says task ${heading[1]}, file name says ${fileId}`);
   }
 
