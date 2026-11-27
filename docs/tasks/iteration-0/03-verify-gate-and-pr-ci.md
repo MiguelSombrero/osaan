@@ -1,6 +1,6 @@
 # Task 03: `make verify` and pull-request CI
 
-- **Status:** refined
+- **Status:** in-progress
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-3
 

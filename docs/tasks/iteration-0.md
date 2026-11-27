@@ -29,7 +29,7 @@ version is upgraded.
 |---|---|---|
 | [01](iteration-0/01-agent-workflow.md) | Light agent workflow: skills, task checker, CLAUDE.md | done |
 | [02](iteration-0/02-stack-runs-from-scratch.md) | Stack runs from scratch in k3d | done |
-| [03](iteration-0/03-verify-gate-and-pr-ci.md) | `make verify` and pull-request CI | refined |
+| [03](iteration-0/03-verify-gate-and-pr-ci.md) | `make verify` and pull-request CI | in-progress |
 | [04](iteration-0/04-cluster-verify.md) | `make cluster-verify` with local images | refined |
 | [05](iteration-0/05-compose-infra-only.md) | Docker Compose runs shared infrastructure only | refined |
 | [06](iteration-0/06-todos-and-docs.md) | Move TODOs into iterations and consolidate docs | refined |
