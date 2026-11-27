@@ -70,10 +70,11 @@ beforeEach(() => {
 // This prevents test output pollution when intentionally testing error scenarios
 const originalUnhandledRejection = process.listeners('unhandledRejection');
 process.removeAllListeners('unhandledRejection');
-process.on('unhandledRejection', (reason: any) => {
+process.on('unhandledRejection', (reason: unknown) => {
   // Ignore ApiError rejections from React Query mutations in tests
   // These are intentional and handled by the components
-  if (reason?.name === 'ApiError' || reason?.constructor?.name === 'ApiError') {
+  const error = reason as { name?: string; constructor?: { name?: string } } | undefined;
+  if (error?.name === 'ApiError' || error?.constructor?.name === 'ApiError') {
     return;
   }
   // Re-throw other unhandled rejections

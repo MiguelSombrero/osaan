@@ -9,7 +9,7 @@
     "frontend:start": "npm --prefix frontend run dev",
     "frontend:dev": "npm run dev --prefix frontend",
     "generate:client": "npm --prefix frontend run generate:client",
-    "lint:all": "eslint 'frontend/src/**/*.{ts,tsx}' 'backend/src/**/*.{js,ts}'"
+    "lint:all": "npm --prefix backend run lint && npm --prefix frontend run lint"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
