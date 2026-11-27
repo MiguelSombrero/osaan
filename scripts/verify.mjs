@@ -123,7 +123,7 @@ function git(...args) {
   return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean);
 }
 
-function changedFiles(base) {
+export function changedFiles(base) {
   return [
     ...new Set([
       ...git('diff', '--name-only', `${base}...HEAD`),

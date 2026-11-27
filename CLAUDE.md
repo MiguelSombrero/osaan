@@ -75,6 +75,9 @@ make verify                       # every component (scripts/verify.mjs)
 make verify COMPONENTS=osaan-ui   # named components only
 make verify-changed               # only what differs from origin/dev
 make cluster-status               # every ArgoCD app Synced and Healthy
+make cluster-verify               # changed apps: local images to k3d + Testkube, auto-sync restored
+make cluster-verify COMPONENTS=employee-service   # named ArgoCD apps only
+make cluster-reset                # every ArgoCD app back to what dev declares
 
 make build-services               # mvn clean package -DskipTests for all modules
 make up | down | clean | restart  # Docker Compose (up builds the JARs first)

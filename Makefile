@@ -1,6 +1,6 @@
 SERVICES = osaan-core employee-service skill-catalog-service competence-profile-service competence-matching-service
 
-.PHONY: verify verify-changed install-hooks setup-cluster delete-cluster cluster-status build-services up up-no-build down clean restart
+.PHONY: verify verify-changed install-hooks setup-cluster delete-cluster cluster-status cluster-verify cluster-reset build-services up up-no-build down clean restart
 
 # The local gate, the same checks CI runs on every pull request.
 # make verify COMPONENTS=osaan-ui,e2e  runs only those components.
@@ -25,6 +25,17 @@ delete-cluster:
 
 cluster-status:
 	@node scripts/cluster-status.mjs
+
+# Deploys the working tree's changed apps to k3d with locally built images and
+# runs the Testkube workflows; ArgoCD auto-sync is paused for those apps only
+# and restored afterwards. COMPONENTS=employee-service,osaan-ui names the apps;
+# otherwise the apps that differ from BASE (default origin/dev).
+cluster-verify:
+	@node scripts/cluster-verify.mjs $(if $(COMPONENTS),--only $(COMPONENTS),--changed $(or $(BASE),origin/dev))
+
+# Returns every ArgoCD app to what GitHub dev declares, e.g. after a killed cluster-verify.
+cluster-reset:
+	@node scripts/cluster-verify.mjs --reset
 
 build-services:
 	@for svc in $(SERVICES); do \
