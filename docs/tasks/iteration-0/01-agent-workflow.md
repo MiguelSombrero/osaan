@@ -1,6 +1,6 @@
 # Task 01: Light agent workflow: skills, task checker, CLAUDE.md
 
-- **Status:** refined
+- **Status:** in-progress
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-1
 
