@@ -1,6 +1,6 @@
 # Task 01: Light agent workflow: skills, task checker, CLAUDE.md
 
-- **Status:** needs-refinement
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-1
 
@@ -42,19 +42,21 @@ duplicated in `.cursor/rules/`, and carries detail that belongs in READMEs.
   the skills order them, they do not add gates.
 - Docs policy is [docs/tasks/README.md](../README.md#documentation): no ADRs,
   no backlog.
+- Cursor is no longer used: `.cursor/rules/` is deleted, and `CLAUDE.md`
+  plus the READMEs are the only agent instructions.
+- `check-tasks.mjs` runs only in `make verify` — no Claude Code edit hook.
+- Repository scripts are Node `.mjs`, tested with `node:test`; this binds
+  every script iteration 0 adds.
 
 ## Open questions
 
-- Is Cursor still in use? If not, `.cursor/rules/` is deleted; if yes, which
-  file is the source and which is generated from it?
-- Should `check-tasks.mjs` run from a Claude Code edit hook after every edit, or
-  only in `make verify`?
+**None.**
 
 ## Acceptance criteria
 
-- [ ] `node --test scripts/` passes, and includes a test that fails on a task
+- [x] `node --test scripts/` passes, and includes a test that fails on a task
       file with a missing section and on a `refined` task with open questions
-- [ ] `node scripts/check-tasks.mjs` passes on `docs/tasks/`
-- [ ] `wc -l CLAUDE.md` is under 150
-- [ ] The three skills are listed by Claude Code in a fresh session in this
+- [x] `node scripts/check-tasks.mjs` passes on `docs/tasks/`
+- [x] `wc -l CLAUDE.md` is under 150
+- [x] The three skills are listed by Claude Code in a fresh session in this
       repository

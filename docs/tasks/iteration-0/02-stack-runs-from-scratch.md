@@ -1,6 +1,6 @@
 # Task 02: Stack runs from scratch in k3d
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-2
 
@@ -32,13 +32,16 @@ anything is changed on purpose.
   the measured usage and propose what to make optional — do not cut silently.
 - ArgoCD deploys from GitHub `dev`, so this task's fixes are verified with
   ArgoCD pointed at the branch (the exception in the roadmap's step 5).
+- The cluster stays `osaan-dev` (context `k3d-osaan-dev`).
+- Image Updater write-back stays off until iteration 4: `GITHUB_TOKEN` is
+  not set, the script already continues without it, and the cluster runs the
+  image digests pinned in the repo. Docker Hub credentials are set.
+- The `/etc/hosts` entries for the gateway hosts already exist on the
+  development machine.
 
 ## Open questions
 
-- Cluster name: the script uses `osaan-dev` (context `k3d-osaan-dev`).
-  Keep it, or rename to `osaan-k3d`?
-- Do the Docker Hub and GitHub tokens the script expects still exist, or
-  does Image Updater stay off until iteration 4?
+**None.**
 
 ## Acceptance criteria
 

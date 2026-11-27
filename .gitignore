@@ -70,3 +70,6 @@ secrets-template.yaml
 **/blob-report/
 **/playwright/.cache/
 **/playwright/.auth/
+
+# Agent session checkpoint
+.claude/session-checkpoint.md

@@ -1,6 +1,6 @@
 # Task 03: `make verify` and pull-request CI
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-3
 
@@ -24,8 +24,8 @@ baseline taken during planning shows red parts nobody noticed:
 - `make verify` runs, for every component: tests, lint, type-check where
   there is one, and build. `make verify` with a component list or a
   changed-files mode runs only what a diff touched.
-- The admin UI frontend builds and tests from a clean checkout (the client
-  is generated as part of the build, or committed — see open questions).
+- The admin UI frontend builds and tests from a clean checkout, with its
+  generated API clients committed.
 - Lint passes for the admin UI frontend and backend with ESLint flat config.
 - The admin UI backend has a working test runner and at least one test.
 - A GitHub Actions workflow runs the same checks on every pull request to
@@ -38,15 +38,18 @@ baseline taken during planning shows red parts nobody noticed:
 - The same command runs locally and in CI — no CI-only checks.
 - No dependency upgrades except what the lint and test fixes need; those
   belong to iterations 1–3.
+- Generated API clients are committed. They stay openapi-generator output
+  here; the move to Orval is iteration 2. Agents may not edit them (denied
+  in `.claude/settings.json`), and `make verify` fails when regenerating
+  would change them.
+- The PO enables branch protection on `dev` once the check exists; this
+  task ends by naming the exact check to require.
+- `main` is left untouched.
+- Scripts are Node `.mjs` with `node:test` ([task 01](01-agent-workflow.md)).
 
 ## Open questions
 
-- Generated API clients: generate at build time, or commit them (marked
-  read-only for agents in `.claude/settings.json`)?
-- Branch protection on `dev` requiring the PR check is a GitHub setting only
-  the PO can switch on. Will you, once the check exists?
-- `main` is 268 commits behind `dev` and nothing deploys from it. Delete
-  it, or fast-forward it and keep it?
+**None.**
 
 ## Acceptance criteria
 
@@ -55,3 +58,5 @@ baseline taken during planning shows red parts nobody noticed:
       the PR check fail; reverting it makes both pass
 - [ ] `npm test` in `ui/osaan-admin-ui/backend` runs at least one test
 - [ ] `npm run lint` passes in both admin UI packages
+- [ ] Hand-editing a committed generated client file makes `make verify`
+      fail
