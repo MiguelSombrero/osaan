@@ -33,7 +33,7 @@ export const COMPONENTS = [
     name: 'scripts',
     dir: '.',
     paths: ['scripts/', 'docs/', 'CLAUDE.md', '.claude/'],
-    steps: [run('node', '--test', 'scripts/'), run('node', 'scripts/check-tasks.mjs')],
+    steps: [run('node', '--test', 'scripts/*.test.mjs'), run('node', 'scripts/check-tasks.mjs')],
   },
   { name: 'osaan-core', dir: CORE, paths: [`${CORE}/`], steps: [mvn('install')] },
   service('employee-service'),
