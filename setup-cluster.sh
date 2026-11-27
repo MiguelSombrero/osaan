@@ -55,7 +55,6 @@ if ! k3d cluster list | grep -q "${CLUSTER_NAME}"; then
     --api-port 6550 \
     -p '9080:80@loadbalancer' \
     -p '443:443@loadbalancer' \
-    -p '9443:443@loadbalancer' \
     --volume "${K3D_STORAGE_DIR}:/var/lib/rancher/k3s/storage@all" \
     --agents 2 \
     --k3s-arg '--disable=traefik@server:*'
@@ -143,9 +142,9 @@ helm upgrade --install istio-ingressgateway istio/gateway \
 
 wait_for_deployments "istio-system"
 
-# --- Cluster DNS: keycloak.local for pods outside the mesh ---
+# --- Cluster DNS: gateway hosts for pods outside the mesh ---
 echo ""
-echo "==> Configuring CoreDNS override for keycloak.local..."
+echo "==> Configuring CoreDNS override for the gateway hosts..."
 kubectl apply -f manifests/bootstrap/coredns-custom.yaml
 kubectl -n kube-system rollout restart deployment/coredns
 kubectl -n kube-system rollout status deployment/coredns --timeout=120s

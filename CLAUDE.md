@@ -81,7 +81,7 @@ each subtree's `CLAUDE.md` and README.
 E2E (`e2e/`): there is no `npm test`; run Playwright directly.
 
 ```bash
-(cd e2e && SMOKE_GW_HTTP=http://localhost:9080 SMOKE_GW_HTTPS=https://localhost:9443 \
+(cd e2e && SMOKE_GW_HTTP=http://localhost:9080 SMOKE_GW_HTTPS=https://localhost \
   npx playwright test --config playwright.smoke.config.ts)
 testkube run testworkflow cluster-smoke --watch
 testkube run testworkflow osaan-ui-e2e --watch

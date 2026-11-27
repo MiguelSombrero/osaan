@@ -26,10 +26,8 @@ spec:
         protocol: openid-connect
         redirectUris:
           - https://osaan.local/*
-          - https://osaan.local:9443/*
         webOrigins:
           - https://osaan.local
-          - https://osaan.local:9443
         publicClient: false
         bearerOnly: false
         directAccessGrantsEnabled: false
@@ -38,7 +36,7 @@ spec:
         implicitFlowEnabled: false
         attributes:
           post.logout.redirect.uris: >-
-            https://osaan.local/*##https://osaan.local:9443/*##
+            https://osaan.local/*
       - clientId: osaan-admin-ui
         name: Osaan Admin UI
         secret: osaan-admin-secret
@@ -46,10 +44,8 @@ spec:
         protocol: openid-connect
         redirectUris:
           - https://osaan.admin.local/*
-          - https://osaan.admin.local:9443/*
         webOrigins:
           - https://osaan.admin.local
-          - https://osaan.admin.local:9443
         publicClient: false
         bearerOnly: false
         directAccessGrantsEnabled: false
@@ -58,7 +54,7 @@ spec:
         implicitFlowEnabled: false
         attributes:
           post.logout.redirect.uris: >-
-            https://osaan.admin.local/*##https://osaan.admin.local:9443/*##
+            https://osaan.admin.local/*
     users:
       - id: a1b2c3d4-0001-4000-a000-000000000001
         username: anna

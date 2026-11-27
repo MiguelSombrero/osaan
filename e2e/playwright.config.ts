@@ -30,7 +30,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL:
-      process.env.BASE_URL || "http://osaan-ui-svc.osaan-dev.svc.cluster.local",
+      process.env.BASE_URL || "https://osaan.local",
 
     /* Bypass SSL certificate errors for local development */
     ignoreHTTPSErrors: true,

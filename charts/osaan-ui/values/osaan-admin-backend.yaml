@@ -32,13 +32,13 @@ configMap:
     TARGET_API: http://skill-catalog-svc:80
     SESSION_COOKIE_SECURE: "true"
     CORS_ENABLED: "true"
-    CORS_ORIGIN: https://osaan.admin.local:9443
+    CORS_ORIGIN: https://osaan.admin.local
     REDIS_ENABLED: "true"
     REDIS_HOST: valkey.osaan-dev.svc.cluster.local
     REDIS_PORT: "6379"
-    BASE_URL: https://osaan.admin.local:9443
-    LOGIN_REDIRECT_URL: https://osaan.admin.local:9443/skills
-    LOGOUT_REDIRECT_URL: https://osaan.admin.local:9443
+    BASE_URL: https://osaan.admin.local
+    LOGIN_REDIRECT_URL: https://osaan.admin.local/skills
+    LOGOUT_REDIRECT_URL: https://osaan.admin.local
     KEYCLOAK_ENABLED: "true"
     KEYCLOAK_ISSUER_BASE_URL: https://keycloak.local/realms/osaan
     KEYCLOAK_CLIENT_ID: osaan-admin-ui

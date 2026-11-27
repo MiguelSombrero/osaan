@@ -82,7 +82,7 @@ testkube get testworkflowexecution --testworkflow cluster-smoke
 ```bash
 cd e2e
 export SMOKE_GW_HTTP=http://localhost:9080
-export SMOKE_GW_HTTPS=https://localhost:9443
+export SMOKE_GW_HTTPS=https://localhost
 npx playwright test --config playwright.smoke.config.ts
 ```
 

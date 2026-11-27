@@ -64,8 +64,8 @@ There are also multiple management UI:s for development:
 - Prometheus: http://prometheus.local:9080
 - RabbitMQ: http://rabbit.local:9080
 - Mailhog: http://mail.local:9080
-- Keycloak: https://keycloak.local:9443
-- ArgoCD: https://argocd.local:9443
+- Keycloak: https://keycloak.local
+- ArgoCD: https://argocd.local
 
 For subdomain to work add to your local `/etc/hosts`file:
 

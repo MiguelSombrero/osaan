@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
 // In-cluster defaults — the Istio ingressgateway service DNS name.
 // For local dev, override via env vars:
 //   SMOKE_GW_HTTP=http://localhost:9080
-//   SMOKE_GW_HTTPS=https://localhost:9443
+//   SMOKE_GW_HTTPS=https://localhost
 const GW_HTTP =
   process.env.SMOKE_GW_HTTP ??
   "http://istio-ingressgateway.istio-system.svc.cluster.local";

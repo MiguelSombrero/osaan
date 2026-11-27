@@ -47,7 +47,7 @@ Nginx server is serving UI from `http://localhost:8085`
 
 If you have created cluster with `setup-cluster.sh` script, ArgoCD will sync all the resources in `kustomization.yaml` file to the cluster.
 
-Nginx server is serving UI from `https://osaan.admin.local:9443`
+Nginx server is serving UI from `https://osaan.admin.local`
 (Login → admin/admin for ADMIN role)
 (Login → user/user for USER role)
 
