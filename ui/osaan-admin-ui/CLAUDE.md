@@ -17,7 +17,7 @@ cd ui/osaan-admin-ui/frontend && npm run format
 ## Structure
 
 - Route-level screens in `src/pages/`; domain areas under `src/<domain>/`; shared UI in `src/components/`
-- OpenAPI-generated HTTP clients in `src/api/generated/` — regenerate, never hand-edit
+- OpenAPI-generated HTTP clients in `src/api/generated/` are committed: after a spec change run `npm run generate:client` and commit the result; never hand-edit them (`make verify` fails on any drift)
 - TanStack Query for server state; Zustand for UI state
 - MUI + Emotion for components; theme in `src/theme.ts`
 - i18next for all UI text (`src/i18n.ts`)

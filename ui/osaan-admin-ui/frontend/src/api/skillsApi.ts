@@ -1,4 +1,4 @@
-import { PublicSkillsApi, type GetSkillsResponse, type Skill } from './generated/skills';
+import { PublicSkillsApi, type GetSkillsResponse } from './generated/skills';
 import { Configuration } from './generated/skills/configuration';
 import { DEFAULT_PAGE, DEFAULT_SIZE, DEFAULT_ORDER } from '@/skill/hooks/useSkillSearchParams';
 
