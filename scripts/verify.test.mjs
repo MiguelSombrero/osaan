@@ -24,9 +24,13 @@ test('a change to the OpenAPI specs selects both admin UI packages', () => {
 });
 
 test('a change to the gate itself selects every component', () => {
-  for (const file of ['Makefile', 'scripts/verify.mjs', '.github/workflows/verify.yml']) {
+  for (const file of ['Makefile', 'scripts/verify.mjs', '.github/workflows/verify.yml', '.github/workflows/build.yml']) {
     assert.deepEqual(selectComponents([file]), ALL, file);
   }
+});
+
+test('a change to the admin UI root package selects both admin UI packages', () => {
+  assert.deepEqual(selectComponents(['ui/osaan-admin-ui/package.json']), ['admin-backend', 'admin-frontend']);
 });
 
 test('a docs-only change selects the scripts component, which checks the task files', () => {

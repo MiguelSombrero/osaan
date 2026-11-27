@@ -43,13 +43,13 @@ export const COMPONENTS = [
   {
     name: 'admin-backend',
     dir: 'ui/osaan-admin-ui/backend',
-    paths: ['ui/osaan-admin-ui/backend/'],
+    paths: ['ui/osaan-admin-ui/backend/', 'ui/osaan-admin-ui/package.json'],
     steps: [npmCi, run('npm', 'run', 'lint'), run('npm', 'test')],
   },
   {
     name: 'admin-frontend',
     dir: 'ui/osaan-admin-ui/frontend',
-    paths: ['ui/osaan-admin-ui/frontend/', 'ui/osaan-admin-ui/backend/src/openapi/'],
+    paths: ['ui/osaan-admin-ui/frontend/', 'ui/osaan-admin-ui/backend/src/openapi/', 'ui/osaan-admin-ui/package.json'],
     steps: [
       npmCi,
       { kind: 'generated-unchanged', generate: run('npm', 'run', 'generate:client'), path: 'src/api/generated' },
@@ -77,12 +77,13 @@ export const COMPONENTS = [
 ];
 
 // A change to any of these can change what every component's check means.
-const GATE_FILES = ['Makefile', 'scripts/verify.mjs', '.github/workflows/verify.yml'];
+const GATE_FILES = ['Makefile', 'scripts/verify.mjs'];
+const GATE_DIRS = ['.github/workflows/'];
 
 const NAMES = COMPONENTS.map((c) => c.name);
 
 export function selectComponents(changedFiles) {
-  if (changedFiles.some((f) => GATE_FILES.includes(f))) return NAMES;
+  if (changedFiles.some((f) => GATE_FILES.includes(f) || GATE_DIRS.some((d) => f.startsWith(d)))) return NAMES;
   return COMPONENTS.filter((c) => changedFiles.some((f) => c.paths.some((p) => f === p || f.startsWith(p)))).map(
     (c) => c.name,
   );
