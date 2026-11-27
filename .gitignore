@@ -50,7 +50,6 @@ build/
 bin/
 
 ### Generated Clients ###
-ui/osaan-admin-ui/frontend/src/api/generated/
 
 ### Secrets (Never commit plaintext secrets!) ###
 # Plaintext secret templates (NOT encrypted)

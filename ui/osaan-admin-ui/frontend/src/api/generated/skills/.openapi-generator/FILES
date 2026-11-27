@@ -1,0 +1,11 @@
+.gitignore
+.npmignore
+api.ts
+base.ts
+common.ts
+configuration.ts
+docs/GetSkillsResponse.md
+docs/PublicSkillsApi.md
+docs/Skill.md
+git_push.sh
+index.ts

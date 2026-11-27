@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(./ui/osaan-admin-ui/frontend/src/api/generated/**)",
+      "Write(./ui/osaan-admin-ui/frontend/src/api/generated/**)"
+    ]
+  }
+}
