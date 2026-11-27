@@ -1,6 +1,6 @@
 # Task 02: Stack runs from scratch in k3d
 
-- **Status:** in-progress
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-2
 
@@ -45,10 +45,10 @@ anything is changed on purpose.
 
 ## Acceptance criteria
 
-- [ ] `make delete-cluster; make setup-cluster` completes with no prompt and
+- [x] `make delete-cluster; make setup-cluster` completes with no prompt and
       exit code 0 — run twice, the second time against the existing cluster
-- [ ] `make cluster-status` exits 0
-- [ ] `testkube run testworkflow cluster-smoke --watch` and
+- [x] `make cluster-status` exits 0
+- [x] `testkube run testworkflow cluster-smoke --watch` and
       `testkube run testworkflow osaan-ui-e2e --watch` both pass
-- [ ] Signing in as `anna` in the admin UI and as `mikko` in osaan-ui works
+- [x] Signing in as `anna` in the admin UI and as `mikko` in osaan-ui works
       in a browser through the gateway
