@@ -1,6 +1,6 @@
 # Task 01: Light agent workflow: skills, task checker, CLAUDE.md
 
-- **Status:** in-progress
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-1
 
@@ -54,9 +54,9 @@ duplicated in `.cursor/rules/`, and carries detail that belongs in READMEs.
 
 ## Acceptance criteria
 
-- [ ] `node --test scripts/` passes, and includes a test that fails on a task
+- [x] `node --test scripts/` passes, and includes a test that fails on a task
       file with a missing section and on a `refined` task with open questions
-- [ ] `node scripts/check-tasks.mjs` passes on `docs/tasks/`
-- [ ] `wc -l CLAUDE.md` is under 150
-- [ ] The three skills are listed by Claude Code in a fresh session in this
+- [x] `node scripts/check-tasks.mjs` passes on `docs/tasks/`
+- [x] `wc -l CLAUDE.md` is under 150
+- [x] The three skills are listed by Claude Code in a fresh session in this
       repository

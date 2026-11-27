@@ -27,7 +27,7 @@ version is upgraded.
 
 | ID | Task | Status |
 |---|---|---|
-| [01](iteration-0/01-agent-workflow.md) | Light agent workflow: skills, task checker, CLAUDE.md | in-progress |
+| [01](iteration-0/01-agent-workflow.md) | Light agent workflow: skills, task checker, CLAUDE.md | done |
 | [02](iteration-0/02-stack-runs-from-scratch.md) | Stack runs from scratch in k3d | refined |
 | [03](iteration-0/03-verify-gate-and-pr-ci.md) | `make verify` and pull-request CI | refined |
 | [04](iteration-0/04-cluster-verify.md) | `make cluster-verify` with local images | refined |
