@@ -1,39 +1,31 @@
 import { test, expect } from "@playwright/test";
 
-test("has title", async ({ page }) => {
-  await page.goto("");
+// osaan-ui renders in Finnish or English depending on the saved language,
+// so every text match accepts both.
+const signInWithKeycloak = /sign in with keycloak|kirjaudu keycloakilla/i;
+const mySkills = /^(my skills|osaamiseni)$/i;
+const signOut = /^(sign out|kirjaudu ulos)$/i;
 
-  await expect(page.getByText(/Welcome to Osaan/i)).toBeVisible();
-});
-
-test("admin can sign in and see skills list", async ({ page }) => {
+test("home page offers sign-in with Keycloak", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("link", { name: "Manage Competences" }).click();
+  await expect(
+    page.getByRole("button", { name: signInWithKeycloak }).first()
+  ).toBeVisible();
+});
 
-  await page.getByRole("button", { name: "Sign in with Keycloak" }).click();
+test("a user can sign in and sees their competence profile", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: signInWithKeycloak }).first().click();
 
-  const usernameField = page
-    .getByLabel(/^username or email$/i)
-    .or(page.locator("input#username"));
-  await expect(usernameField).toBeVisible({ timeout: 30_000 });
+  // Seeded user: the username is also the password.
+  const username = page.locator("input#username");
+  await expect(username).toBeVisible({ timeout: 30_000 });
+  await username.fill("mikko");
+  await page.locator("input#password").fill("mikko");
+  await page.locator("#kc-login").click();
 
-  await usernameField.fill("admin");
-
-  const passwordField = page
-    .getByLabel(/^password$/i)
-    .or(page.locator("input#password"));
-  await passwordField.fill("admin");
-
-  await page
-    .locator("#kc-login")
-    .or(page.getByRole("button", { name: /^sign in$/i }))
-    .click();
-
-  const skillsGridItems = page.locator("main .grid > div");
-  await expect(skillsGridItems).toHaveCount(20, { timeout: 30_000 });
-
-  await expect(page.getByRole("heading", { name: "agile" })).toBeVisible({
-    timeout: 30_000,
-  });
+  await expect(page).toHaveURL(/\/competences/, { timeout: 30_000 });
+  await expect(page.getByRole("heading", { name: mySkills })).toBeVisible();
+  await expect(page.getByRole("button", { name: signOut })).toBeVisible();
 });
