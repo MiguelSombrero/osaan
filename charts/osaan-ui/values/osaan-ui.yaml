@@ -20,8 +20,8 @@ configMap:
   data:
     NODE_ENV: production
     NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    NEXT_PUBLIC_APP_URL: https://osaan.local:9443
-    NEXTAUTH_URL: https://osaan.local:9443
+    NEXT_PUBLIC_APP_URL: https://osaan.local
+    NEXTAUTH_URL: https://osaan.local
     KEYCLOAK_ENABLED: "true"
     KEYCLOAK_ISSUER: https://keycloak.local/realms/osaan
     KEYCLOAK_CLIENT_ID: osaan-ui

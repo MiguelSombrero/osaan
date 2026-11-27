@@ -14,6 +14,8 @@ dotenv.config({ path: envPath });
  */
 export default defineConfig({
   testDir: "./tests",
+  /* Smoke tests have their own config and workflow (playwright.smoke.config.ts). */
+  testIgnore: "smoke/**",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -28,7 +30,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL:
-      process.env.BASE_URL || "http://osaan-ui-svc.osaan-dev.svc.cluster.local",
+      process.env.BASE_URL || "https://osaan.local",
 
     /* Bypass SSL certificate errors for local development */
     ignoreHTTPSErrors: true,
