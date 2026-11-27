@@ -1,6 +1,6 @@
 # Task 01: Light agent workflow: skills, task checker, CLAUDE.md
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-1
 

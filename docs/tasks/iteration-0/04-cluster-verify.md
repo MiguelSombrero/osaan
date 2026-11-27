@@ -1,6 +1,6 @@
 # Task 04: `make cluster-verify` with local images
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-4
 

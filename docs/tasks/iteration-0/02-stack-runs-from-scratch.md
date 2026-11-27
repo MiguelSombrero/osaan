@@ -1,6 +1,6 @@
 # Task 02: Stack runs from scratch in k3d
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-2
 
