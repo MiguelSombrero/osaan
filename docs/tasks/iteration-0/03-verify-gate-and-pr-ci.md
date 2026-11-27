@@ -1,6 +1,6 @@
 # Task 03: `make verify` and pull-request CI
 
-- **Status:** in-progress
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-3
 
@@ -53,10 +53,10 @@ baseline taken during planning shows red parts nobody noticed:
 
 ## Acceptance criteria
 
-- [ ] `make verify` exits 0 on a clean checkout of the branch
-- [ ] A commit on the branch that breaks one test makes `make verify` and
+- [x] `make verify` exits 0 on a clean checkout of the branch
+- [x] A commit on the branch that breaks one test makes `make verify` and
       the PR check fail; reverting it makes both pass
-- [ ] `npm test` in `ui/osaan-admin-ui/backend` runs at least one test
-- [ ] `npm run lint` passes in both admin UI packages
-- [ ] Hand-editing a committed generated client file makes `make verify`
+- [x] `npm test` in `ui/osaan-admin-ui/backend` runs at least one test
+- [x] `npm run lint` passes in both admin UI packages
+- [x] Hand-editing a committed generated client file makes `make verify`
       fail
