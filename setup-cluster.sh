@@ -17,6 +17,9 @@ ARGOCD_VERSION="v3.3.8"         # https://github.com/argoproj/argo-cd/releases
 ARGOCD_IMAGE_UPDATER_VERSION="v1.2.0"   # https://github.com/argoproj-labs/argocd-image-updater/releases
 EXTERNAL_SECRETS_CHART_VERSION="2.4.0"   # https://github.com/external-secrets/external-secrets/releases
 TESTKUBE_VERSION="2.9.5"                # https://github.com/kubeshop/testkube/releases
+# minio/minio is gone from Docker Hub; pgsty/minio is a drop-in fork. Revisit with the Testkube upgrade (iteration 4).
+TESTKUBE_MINIO_IMAGE="pgsty/minio"
+TESTKUBE_MINIO_TAG="RELEASE.2026-08-04T00-00-00Z"   # https://hub.docker.com/r/pgsty/minio/tags
 # ============================================================
 
 echo "===================================================="
@@ -332,6 +335,8 @@ helm upgrade --install testkube kubeshop/testkube \
   --set testkube-api.multinamespace.enabled=true \
   --set "testkube-api.additionalNamespaces={osaan-dev,keycloak,istio-system}" \
   --set testkube-operator.installCRD=true \
+  --set testkube-api.minio.image.repository="${TESTKUBE_MINIO_IMAGE}" \
+  --set testkube-api.minio.image.tag="${TESTKUBE_MINIO_TAG}" \
   --timeout 10m || true
 
 echo "⏳ Waiting for Testkube CRDs to be established..."
@@ -353,6 +358,8 @@ helm upgrade --install testkube kubeshop/testkube \
   --set testkube-api.multinamespace.enabled=true \
   --set "testkube-api.additionalNamespaces={osaan-dev,keycloak,istio-system}" \
   --set testkube-operator.installCRD=true \
+  --set testkube-api.minio.image.repository="${TESTKUBE_MINIO_IMAGE}" \
+  --set testkube-api.minio.image.tag="${TESTKUBE_MINIO_TAG}" \
   --timeout 10m
 
 # Create Docker Hub pull secret for testkube so runner pods can pull
