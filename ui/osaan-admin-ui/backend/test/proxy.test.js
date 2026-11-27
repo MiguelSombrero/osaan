@@ -23,7 +23,7 @@ beforeEach(() => {
 test('GET /health answers ok', async () => {
   const res = await fetch(`${app.url}/health`);
   assert.equal(res.status, 200);
-  assert.deepEqual(await res.json(), { status: 'broken on purpose' });
+  assert.deepEqual(await res.json(), { status: 'ok' });
 });
 
 test('GET /api/v1/skills forwards the query to the skill catalog and returns its answer', async () => {
