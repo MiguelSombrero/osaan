@@ -157,7 +157,8 @@ export async function runClusterVerify({ apps, tests }, ops, { log = console.log
       result.restoreErrors.push(err);
     }
   }
-  if (paused && result.restoreErrors.length === 0) {
+  // After Ctrl-C the user wants out: auto-sync is back, ArgoCD finishes alone.
+  if (paused && result.restoreErrors.length === 0 && !result.interrupted) {
     log(`wait for ArgoCD to return ${apps.join(', ')} to dev`);
     try {
       await ops.waitForSync(apps);
@@ -225,6 +226,9 @@ function sh(cmd, args, { input, capture = false, env } = {}) {
     env: env ? { ...process.env, ...env } : process.env,
     encoding: 'utf8',
     maxBuffer: 64 * 1024 * 1024,
+    // Short captured commands get their own process group, so a second Ctrl-C
+    // cannot kill the patches that restore auto-sync.
+    detached: capture,
     stdio: [input === undefined ? 'inherit' : 'pipe', capture ? 'pipe' : 'inherit', capture ? 'pipe' : 'inherit'],
   });
   if (result.error) throw new Error(result.error.code === 'ENOENT' ? `${cmd} is not installed` : result.error.message);
@@ -280,7 +284,7 @@ function e2eFiles() {
     if (bytes.includes(0)) throw new Error(`${path} is binary; a workflow copy can only carry text files`);
     return { path, content: bytes.toString('utf8') };
   });
-  const size = files.reduce((n, f) => n + f.content.length, 0);
+  const size = files.reduce((n, f) => n + Buffer.byteLength(f.content), 0);
   if (size > 1024 * 1024) throw new Error(`e2e/ is ${Math.round(size / 1024)} KiB; a workflow copy holds at most 1 MiB`);
   return files;
 }
@@ -324,8 +328,13 @@ function clusterOps({ runId }) {
       patch('application', name, { spec: { syncPolicy: { automated: null } } });
       const restore = async () => patch('application', name, { spec: { syncPolicy: { automated } } });
       // An ApplicationSet that still owned the field would put it straight back.
-      await sleep(3000);
-      if (isAutoSyncOn(getJson('application', name))) throw new Error(`auto-sync of ${name} was turned back on`);
+      try {
+        await sleep(3000);
+        if (isAutoSyncOn(getJson('application', name))) throw new Error(`auto-sync of ${name} was turned back on`);
+      } catch (err) {
+        await restore().catch(() => {});
+        throw err;
+      }
       return restore;
     },
 
@@ -379,8 +388,9 @@ function clusterOps({ runId }) {
     },
 
     async runWorkflow(name) {
+      const env = { KUBECONFIG: kubeconfig() };
       try {
-        sh('testkube', ['run', 'testworkflow', name, '--watch'], { env: { KUBECONFIG: kubeconfig() } });
+        sh('testkube', ['run', 'testworkflow', name, '--watch'], { env });
         return true;
       } catch (err) {
         if (/is not installed/.test(err.message)) throw err;

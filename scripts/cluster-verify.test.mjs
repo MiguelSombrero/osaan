@@ -232,6 +232,7 @@ test('an interrupt stops at the next step and still restores auto-sync', async (
   assert.equal(result.interrupted, true);
   assert.ok(!calls.includes('rollout employee-service'));
   assert.ok(calls.includes(`enable-auto-sync ${ROOT_APP}`));
+  assert.ok(!calls.some((c) => c.startsWith('wait-for-sync')), 'no wait for ArgoCD after Ctrl-C');
   assert.ok([...autoSync.values()].every(Boolean));
 });
 
