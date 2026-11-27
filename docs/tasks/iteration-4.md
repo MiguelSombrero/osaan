@@ -37,7 +37,8 @@ and the change follows from that comparison.
 8. **ArgoCD 3.3 → 3.6, cert-manager 1.19 → 1.21, External Secrets, Image
    Updater, RabbitMQ operator**, each via `upgrade-component`.
 9. **Testkube 2.9 → 2.16,** with the e2e workflows triggered and reported
-   reliably (old TODOs on triggers and failure notifications).
+   reliably: failure notifications and a way to view Playwright reports
+   (old TODOs).
 10. **Mailhog → Mailpit,** and observability charts (Prometheus, Grafana,
     Jaeger, Kiali) to current versions; decide on an OpenTelemetry
     Collector and on log aggregation (old TODO).

@@ -27,11 +27,13 @@ runtime, and Compose runs only what IDE and `npm run dev` work needs.
 
 - k3d versions are the source of truth. When iteration 4 upgrades a
   component, its Compose pin moves in the same task.
+- The mail catcher stays Mailhog here, because k3d runs Mailhog. Both move to
+  Mailpit together in [iteration 4](../iteration-4.md) task 10.
+- The version check is a Node `.mjs` script ([task 01](01-agent-workflow.md)).
 
 ## Open questions
 
-- Mail catcher: switch to Mailpit here (Mailhog is unmaintained), or keep
-  Mailhog until iteration 4 changes it in k3d at the same time?
+**None.**
 
 ## Acceptance criteria
 

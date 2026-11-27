@@ -31,13 +31,38 @@ READMEs), which the documentation policy reduces.
 
 - The documentation set is the one in the roadmap's
   [Documentation](../README.md#documentation) section.
+- The five microservice READMEs merge into one `microservices/README.md`:
+  shared run, test and build steps, and a table of each service's port and
+  Swagger URL.
+- The link check is a Node `.mjs` script ([task 01](01-agent-workflow.md)).
+- The PO placed every old TODO item from `docs/develop.md` at refinement:
+
+  | Old TODO | Placement |
+  |---|---|
+  | Subscription/id page showing matching employees | Dropped: new feature, not modernization |
+  | Upgrade to TypeScript 7 | Iteration 5, task 2 |
+  | Is osaan-admin-ui working in k3d? | Iteration 0 task 02; iteration 2 task 6 |
+  | Draw a component diagram | Dropped: `docs/architecture.md` already has a landscape diagram |
+  | Make microservices configuration better | Iteration 1, task 6 |
+  | Test tracing in Docker Compose | Dropped: Compose no longer runs the apps or Zipkin ([task 05](05-compose-infra-only.md)) |
+  | Zustand store for osaan-ui | Dropped: added with the first feature that needs it |
+  | Library for generating API models | Iteration 3, task 6 (Orval) |
+  | Log aggregation in k3d | Iteration 4, task 10 |
+  | Testkube containers not created by triggers | Iteration 0 task 02; iteration 4 task 9 |
+  | Refactor setup-cluster secret creation | Iteration 4, tasks 3 and 4 |
+  | Lots of cool stuff in osaan-ui | Dropped: new features |
+  | Toast notifications in admin UI | Dropped: new feature |
+  | Change Keycloak initial admin passwords | Iteration 4, task 7 |
+  | CI/CD release pipelines | Dropped: a release process around `main` may come later, with no task now |
+  | Integration tests for microservices | Iteration 1, tasks 4 and 5 |
+  | More e2e tests | Iteration 2 task 6; iteration 3 task 1 |
+  | TestWorkflow failure notifications, Playwright report UI | Iteration 4, task 9 |
+
+  The dropped items are listed in this iteration's closing notes.
 
 ## Open questions
 
-- For each old TODO item: which iteration, or dropped? The agent proposes
-  a placement for every item; the PO confirms or changes it.
-- Do the microservice READMEs stay, one per service, or merge into one
-  `microservices/README.md`?
+**None.**
 
 ## Acceptance criteria
 

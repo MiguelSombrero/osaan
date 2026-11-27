@@ -29,5 +29,7 @@ refined.
 6. **Service configuration cleanup** (old TODO "make microservices
    configuration better"): one way to configure per environment, no
    duplicated profile files.
-
-Expected to grow in iteration 0 task 06, as TODO items are sorted.
+7. **Services export their OpenAPI spec.** Each service writes its springdoc
+   spec into the repository at build time, and `make verify` fails when the
+   committed spec no longer matches the code. The UIs generate their clients
+   from these files instead of hand-copied YAML.

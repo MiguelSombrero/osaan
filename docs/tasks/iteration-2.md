@@ -20,9 +20,10 @@ refined.
 2. **React 18 → 19** in the admin frontend.
 3. **MUI 7 → 9**, one major at a time.
 4. **Vite 7 → 8, Vitest 3 → 5, ESLint 9 → 10.**
-5. **API client generation:** keep openapi-generator, or move to a
-   generator that also emits TanStack Query hooks, such as Orval —
-   decided at refinement.
+5. **Admin UI moves to Orval** (decided at iteration 0 refinement): types,
+   client, TanStack Query hooks and MSW mocks generated from the specs the
+   services export (iteration 1 task 7), committed. The hand-written API
+   wrappers, hooks and test mocks they replace are removed.
 6. **Admin UI e2e in k3d:** a Playwright test that signs in as `anna` and
    manages a skill, run by Testkube (old TODO "is osaan-admin-ui working in
    k3d?").

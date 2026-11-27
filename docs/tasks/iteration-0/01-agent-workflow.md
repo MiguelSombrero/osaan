@@ -42,13 +42,15 @@ duplicated in `.cursor/rules/`, and carries detail that belongs in READMEs.
   the skills order them, they do not add gates.
 - Docs policy is [docs/tasks/README.md](../README.md#documentation): no ADRs,
   no backlog.
+- Cursor is no longer used: `.cursor/rules/` is deleted, and `CLAUDE.md`
+  plus the READMEs are the only agent instructions.
+- `check-tasks.mjs` runs only in `make verify` — no Claude Code edit hook.
+- Repository scripts are Node `.mjs`, tested with `node:test`; this binds
+  every script iteration 0 adds.
 
 ## Open questions
 
-- Is Cursor still in use? If not, `.cursor/rules/` is deleted; if yes, which
-  file is the source and which is generated from it?
-- Should `check-tasks.mjs` run from a Claude Code edit hook after every edit, or
-  only in `make verify`?
+**None.**
 
 ## Acceptance criteria
 

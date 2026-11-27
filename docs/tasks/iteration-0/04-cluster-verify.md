@@ -32,11 +32,11 @@ every task and need to verify each change in the cluster before merging.
 - Agreed in planning: local images, not ArgoCD pointed at the branch (see
   the roadmap's step 5).
 - Needs a running cluster from [task 02](02-stack-runs-from-scratch.md).
+- Node `.mjs`, tested with `node:test` ([task 01](01-agent-workflow.md)).
 
 ## Open questions
 
-- Script language: Node `.mjs` with `node:test` (shares a
-  test runner with `check-tasks.mjs`), or Bash with `bats`?
+**None.**
 
 ## Acceptance criteria
 

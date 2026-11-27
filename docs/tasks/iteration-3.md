@@ -23,3 +23,7 @@ refined.
 4. **Tailwind CSS 3 → 4.**
 5. **One Redis client:** `redis` 4 and `@upstash/redis` are both
    dependencies; keep one, at its current version.
+6. **osaan-ui generates its API code with Orval** (decided at iteration 0
+   refinement): types, Zod schemas and MSW mocks from the exported service
+   specs replace the hand-written `src/types/` and request schemas (old TODO
+   "add some library for generating API related models").
