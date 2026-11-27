@@ -20,6 +20,10 @@ export function summarize(list) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const contextFlag = process.argv.indexOf('--context');
   const context = contextFlag > -1 ? process.argv[contextFlag + 1] : 'k3d-osaan-dev';
+  if (!context) {
+    console.error('Usage: node scripts/cluster-status.mjs [--context <kube-context>]');
+    process.exit(2);
+  }
   const json = execFileSync(
     'kubectl',
     ['--context', context, 'get', 'applications.argoproj.io', '-A', '-o', 'json'],
