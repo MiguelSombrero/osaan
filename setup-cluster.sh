@@ -143,6 +143,13 @@ helm upgrade --install istio-ingressgateway istio/gateway \
 
 wait_for_deployments "istio-system"
 
+# --- Cluster DNS: keycloak.local for pods outside the mesh ---
+echo ""
+echo "==> Configuring CoreDNS override for keycloak.local..."
+kubectl apply -f manifests/bootstrap/coredns-custom.yaml
+kubectl -n kube-system rollout restart deployment/coredns
+kubectl -n kube-system rollout status deployment/coredns --timeout=120s
+
 # --- Installing cert-manager ---
 echo ""
 echo "==> Installing cert-manager ${CERT_MANAGER_VERSION}..."

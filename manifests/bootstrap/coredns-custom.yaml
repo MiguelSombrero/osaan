@@ -1,0 +1,12 @@
+# k3s CoreDNS override, applied by setup-cluster.sh: resolves keycloak.local to
+# the Istio ingress gateway for every pod, as /etc/hosts does on the host.
+# Meshed pods resolve it through Istio DNS capture instead; pods outside the
+# mesh (Testkube runners) need this to follow the Keycloak sign-in redirect.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  keycloak-local.override: |
+    rewrite name exact keycloak.local istio-ingressgateway.istio-system.svc.cluster.local answer auto
