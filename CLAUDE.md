@@ -64,9 +64,17 @@ The product owner (PO) decides; agents write all code and docs and advise.
 
 ## Commands
 
+**`make verify` is the gate**: tests, lint, type-check and build of every
+component, the same checks the `Verify` workflow runs on every pull request
+(required check: `verify-passed`). Green before every push; `make
+install-hooks` makes `pre-push` run `make verify-changed`. Write its long
+output to a file and read that, rather than piping to `tail`.
+
 ```bash
-node --test scripts/              # repository script tests
-node scripts/check-tasks.mjs      # task files follow docs/tasks/template.md
+make verify                       # every component (scripts/verify.mjs)
+make verify COMPONENTS=osaan-ui   # named components only
+make verify-changed               # only what differs from origin/dev
+make cluster-status               # every ArgoCD app Synced and Healthy
 
 make build-services               # mvn clean package -DskipTests for all modules
 make up | down | clean | restart  # Docker Compose (up builds the JARs first)

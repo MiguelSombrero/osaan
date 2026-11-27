@@ -1,0 +1,4 @@
+#!/bin/sh
+# Installed by `make install-hooks`. Runs the gate on what this branch changes
+# compared with origin/dev. Skip once with `git push --no-verify`.
+exec node scripts/verify.mjs --changed origin/dev

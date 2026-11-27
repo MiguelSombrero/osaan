@@ -1,0 +1,76 @@
+name: Verify
+
+# The same gate as `make verify`, on every pull request to dev: scripts/verify.mjs
+# picks the components the pull request touches and runs each one's checks.
+# Branch protection requires the single `verify-passed` check.
+on:
+  pull_request:
+    branches: [dev]
+
+concurrency:
+  group: verify-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '25'
+  NODE_VERSION: '24'
+
+jobs:
+  plan:
+    name: plan
+    runs-on: ubuntu-latest
+    outputs:
+      components: ${{ steps.plan.outputs.components }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - id: plan
+        run: |
+          components=$(node scripts/verify.mjs --changed "origin/${{ github.base_ref }}" --list)
+          echo "Components to verify: ${components}"
+          echo "components=${components}" >> "$GITHUB_OUTPUT"
+
+  verify:
+    name: verify (${{ matrix.component }})
+    needs: plan
+    if: needs.plan.outputs.components != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        component: ${{ fromJson(needs.plan.outputs.components) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      # Java builds the microservices and runs openapi-generator for the admin frontend.
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: maven
+      - run: node scripts/verify.mjs --only "${{ matrix.component }}"
+        env:
+          CI: 'true'
+
+  verify-passed:
+    name: verify-passed
+    if: always()
+    needs: [plan, verify]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "plan: ${{ needs.plan.result }}, verify: ${{ needs.verify.result }}"
+          [ "${{ needs.plan.result }}" = "success" ] || exit 1
+          case "${{ needs.verify.result }}" in
+            success|skipped) ;;
+            *) exit 1 ;;
+          esac
