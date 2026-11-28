@@ -45,4 +45,6 @@ and the change follows from that comparison.
    its own `-local` runs.
 10. **Mailhog → Mailpit,** and observability charts (Prometheus, Grafana,
     Jaeger, Kiali) to current versions; decide on an OpenTelemetry
-    Collector and on log aggregation (old TODO).
+    Collector and on log aggregation (old TODO). The services' tracing
+    moves from Zipkin export to OTLP here (decided at iteration 1
+    refinement).
