@@ -10,12 +10,12 @@ this orders them.
 
 ## Procedure
 
-1. **Confirm the task is `refined`.** Never start one that is not. Read the
-   task file and everything it links.
+1. **Confirm the task is `refined` on `origin/dev`.** Never start one that
+   is not: its refinement PR must be merged first. Read the task file and
+   everything it links.
 2. **Worktree and branch.** One session, one worktree; never share a
    checkout with another session. `git fetch origin`, then work on a branch
-   off `origin/dev` named `iteration-N/<topic>`, or on the branch that
-   already carries this task's refinement commits. At most two sessions run
+   off `origin/dev` named `iteration-N/<topic>`. At most two sessions run
    heavy work at once (a k3d cluster, `make cluster-verify`, a full
    `make verify`).
 3. **Checkpoint.** Write `.claude/session-checkpoint.md` (gitignored):

@@ -36,12 +36,16 @@ The product owner (PO) decides; agents write all code and docs and advise.
    conversation. Answers become `Constraints`.
 2. **Only the PO moves a task to `refined`.** The agent records that move in
    its own commit, quoting the PO's words.
-3. **Implement one task per PR** with the `implement-task` skill, on a branch
+3. **Refinement is its own PR**, on `iteration-N/refinement`: the task
+   files, the answers and the `refined` commit, and no code. The PO merges
+   it before any of its tasks is implemented, so every implementation
+   starts from a task file that is already on `dev`.
+4. **Implement one task per PR** with the `implement-task` skill, on a branch
    off up-to-date `dev` (`iteration-N/<topic>`), in its own worktree. The PR
-   carries the task-file commit, the `refined` commit, then the code.
-4. **Every task adds or strengthens a test.** An upgrade task proves the
+   carries the code and the task's status changes.
+5. **Every task adds or strengthens a test.** An upgrade task proves the
    system still works with tests that ran before and after it.
-5. **Verify by running it**, at the level the task touches:
+6. **Verify by running it**, at the level the task touches:
    - `make verify` — unit tests, lint, type-check and build for what changed.
      No cluster needed. Required before every push, and run by CI on every PR.
    - `make cluster-verify` — for anything deployable or deployed: builds the
@@ -50,14 +54,14 @@ The product owner (PO) decides; agents write all code and docs and advise.
      e2e workflows, and restores auto-sync.
    - Tasks that change the ArgoCD apps themselves also verify with ArgoCD
      pointed at the branch.
-6. **Upgrades follow the `upgrade-component` skill:** read the target
+7. **Upgrades follow the `upgrade-component` skill:** read the target
    version's release notes and migration guide — never memory — upgrade one
    major at a time, and log every surprise in `docs/common-failures.md`.
-7. **Revisit decisions.** Where a past choice (layout, Helm, ArgoCD, tooling)
+8. **Revisit decisions.** Where a past choice (layout, Helm, ArgoCD, tooling)
    has a clearly better current practice, it becomes a task in an iteration.
-8. **No backlog.** A finding becomes a task in the current or next iteration,
+9. **No backlog.** A finding becomes a task in the current or next iteration,
    or is dropped with a one-line reason when the iteration closes.
-9. **Merging is the PO's.** Agents open PRs; they never merge.
+10. **Merging is the PO's.** Agents open PRs; they never merge.
 
 An iteration closes when the PO has seen each `Done when` criterion run and
 pass; the agent then sets its status above and writes its closing notes
@@ -91,5 +95,4 @@ deliberately small:
 | `make verify` + `pre-push` hook | The local gate, the same checks CI runs |
 | `.claude/session-checkpoint.md` | Gitignored progress note, read first when resuming interrupted work |
 
-Deliberately left out: ADRs, a backlog, separate refinement PRs and per-PR
-gate reports.
+Deliberately left out: ADRs, a backlog and per-PR gate reports.
