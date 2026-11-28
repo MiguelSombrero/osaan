@@ -25,7 +25,7 @@ const service = (name) => ({
   name,
   dir: `microservices/${name}`,
   paths: [`microservices/${name}/`, `${CORE}/`],
-  steps: [{ ...mvn('install', '-DskipTests'), cwd: CORE }, mvn('verify')],
+  steps: [{ ...mvn('clean', 'install', '-DskipTests'), cwd: CORE }, mvn('clean', 'verify')],
 });
 
 export const COMPONENTS = [
@@ -35,7 +35,7 @@ export const COMPONENTS = [
     paths: ['scripts/', 'docs/', 'CLAUDE.md', '.claude/'],
     steps: [run('node', '--test', 'scripts/*.test.mjs'), run('node', 'scripts/check-tasks.mjs')],
   },
-  { name: 'osaan-core', dir: CORE, paths: [`${CORE}/`], steps: [mvn('install')] },
+  { name: 'osaan-core', dir: CORE, paths: [`${CORE}/`], steps: [mvn('clean', 'install')] },
   service('employee-service'),
   service('skill-catalog-service'),
   service('competence-profile-service'),
@@ -123,7 +123,7 @@ function git(...args) {
   return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean);
 }
 
-function changedFiles(base) {
+export function changedFiles(base) {
   return [
     ...new Set([
       ...git('diff', '--name-only', `${base}...HEAD`),
