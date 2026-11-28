@@ -1,6 +1,10 @@
+# Shared infrastructure for running services in an IDE and UIs with
+# `npm run dev`. The applications themselves run in k3d, the only full-stack
+# runtime. k3d's versions are the source of truth:
+# scripts/check-compose-versions.mjs fails when a tag here differs.
 services:
   mailhog:
-    image: mailhog/mailhog
+    image: mailhog/mailhog:v1.0.1
     container_name: osaan-mailhog
     ports:
       - "1025:1025" # SMTP port
@@ -12,14 +16,14 @@ services:
       - ./maildir:/maildir
 
   rabbitmq:
-    image: rabbitmq:4-management
+    image: rabbitmq:4.3.4-management
     container_name: osaan-rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672" # Management UI
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.4
+    image: quay.io/keycloak/keycloak:26.6.1
     container_name: osaan-keycloak
     command:
       - start-dev
@@ -27,19 +31,17 @@ services:
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/cert.pem
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/key.pem
-      - KC_HOSTNAME=keycloak
+      # Plain HTTP, for local development only (k3d serves HTTPS). No fixed
+      # hostname: the issuer follows the request, http://localhost:8080
       - KC_HOSTNAME_STRICT=false
     volumes:
       - ./keycloak/realms:/opt/keycloak/data/import
-      - ./keycloak/certs:/opt/keycloak/certs:ro
     ports:
-      - "8443:8443"
+      - "127.0.0.1:8080:8080" # Loopback only: it serves sign-in without TLS
 
   # One DB for all microservices for simplicity in development
   osaan-db:
-    image: postgres:18.0-alpine
+    image: postgres:17.11-alpine
     container_name: osaan-db
     restart: always
     environment:
@@ -47,178 +49,17 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - osaan-data:/var/lib/postgresql
-
-  zipkin-server:
-    image: openzipkin/zipkin:2.24.0
-    restart: always
-    mem_limit: 1024m
-    environment:
-      - STORAGE_TYPE=mem
-    ports:
-      - 9411:9411
-
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      #- GF_ALERTING_ENABLED=true
-      #- GF_UNIFIED_ALERTING_ENABLED=false
-      - GF_SMTP_ENABLED=true
-      - GF_SMTP_SKIP_VERIFY=true
-      - GF_SMTP_HOST=mailhog:1025
-      - GF_SMTP_FROM_ADDRESS=grafana@osaan.com
-    volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
-    depends_on:
-      - prometheus
+      # Where PostgreSQL 17 keeps its data; 18 moves it to /var/lib/postgresql.
+      - osaan-db-data:/var/lib/postgresql/data
 
   osaan-valkey:
-    image: valkey/valkey:9.0.3-alpine
+    image: valkey/valkey:9.0.2-alpine
     container_name: osaan-valkey
     ports:
       - "6379:6379"
     volumes:
       - valkey-data:/data
 
-  # -----------------
-  # Microservices
-  # -----------------
-  employee-service:
-    build: ./microservices/employee-service
-    container_name: employee-service
-    depends_on:
-      - osaan-db
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      JAVA_TOOL_OPTIONS: >
-        -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
-        -Djavax.net.ssl.trustStorePassword=changeit
-      LOGGING_LEVEL_APPLICATION: TRACE
-    ports:
-      - "8091:8080"
-      - "4001:4004"
-    volumes:
-      - ./keycloak/certs/keycloak-truststore.jks:/opt/java/keycloak-truststore.jks:ro
-
-  skill-catalog-service:
-    build: ./microservices/skill-catalog-service
-    container_name: skill-catalog-service
-    depends_on:
-      - osaan-db
-      - keycloak
-      - osaan-valkey
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      JAVA_TOOL_OPTIONS: >
-        -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
-        -Djavax.net.ssl.trustStorePassword=changeit
-      LOGGING_LEVEL_APPLICATION: TRACE
-    ports:
-      - "8092:8080"
-      - "4002:4004"
-    volumes:
-      - ./keycloak/certs/keycloak-truststore.jks:/opt/java/keycloak-truststore.jks:ro
-
-  competence-profile-service:
-    build: ./microservices/competence-profile-service
-    container_name: competence-profile-service
-    depends_on:
-      - osaan-db
-      - rabbitmq
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      JAVA_TOOL_OPTIONS: >
-        -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
-        -Djavax.net.ssl.trustStorePassword=changeit
-      LOGGING_LEVEL_APPLICATION: TRACE
-    ports:
-      - "8093:8080"
-      - "4003:4004"
-    volumes:
-      - ./keycloak/certs/keycloak-truststore.jks:/opt/java/keycloak-truststore.jks:ro
-
-  competence-matching-service:
-    build: ./microservices/competence-matching-service
-    container_name: competence-matching-service
-    depends_on:
-      - osaan-db
-      - mailhog
-      - rabbitmq
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      JAVA_TOOL_OPTIONS: >
-        -Djavax.net.ssl.trustStore=/opt/java/keycloak-truststore.jks
-        -Djavax.net.ssl.trustStorePassword=changeit
-      LOGGING_LEVEL_APPLICATION: TRACE
-    ports:
-      - "8094:8080"
-      - "4004:4004"
-    volumes:
-      - ./keycloak/certs/keycloak-truststore.jks:/opt/java/keycloak-truststore.jks:ro
-
-  osaan-admin-backend:
-    build: ./ui/osaan-admin-ui/backend
-    container_name: osaan-admin-backend
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=staging
-    depends_on:
-      - osaan-valkey
-      - keycloak
-
-  osaan-admin-ui:
-    build:
-      context: ./ui/osaan-admin-ui/frontend
-      dockerfile: Dockerfile.dev
-    container_name: osaan-admin-ui
-    ports:
-      - "8085:5173"
-    environment:
-      - BACKEND_URL=http://osaan-admin-backend:3001
-    depends_on:
-      - osaan-admin-backend
-    volumes:
-      - ./ui/osaan-admin-ui/frontend/src:/app/src
-      - ./ui/osaan-admin-ui/frontend/public:/app/public
-      - ./ui/osaan-admin-ui/frontend/index.html:/app/index.html
-
-  osaan-ui:
-    build:
-      context: ./ui/osaan-ui
-      dockerfile: Dockerfile.dev
-    container_name: osaan-ui
-    ports:
-      - "3002:3000"
-    env_file:
-      - ./ui/osaan-ui/.env.staging
-    environment:
-      - WATCHPACK_POLLING=true
-    depends_on:
-      - skill-catalog-service
-      - competence-profile-service
-      - employee-service
-      - competence-matching-service
-      - keycloak
-      - osaan-valkey
-    volumes:
-      - ./ui/osaan-ui/src:/app/src
-      - ./ui/osaan-ui/public:/app/public
-      - ./ui/osaan-ui/next.config.ts:/app/next.config.ts
-
 volumes:
-  osaan-data:
+  osaan-db-data:
   valkey-data:

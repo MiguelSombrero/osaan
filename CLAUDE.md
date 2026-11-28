@@ -82,7 +82,7 @@ make cluster-verify COMPONENTS=employee-service   # named ArgoCD apps only
 make cluster-reset                # every ArgoCD app back to what dev declares
 
 make build-services               # mvn clean package -DskipTests for all modules
-make up | down | clean | restart  # Docker Compose (up builds the JARs first)
+make up | down | clean | restart  # Docker Compose: shared infrastructure only
 make setup-cluster                # k3d cluster osaan-dev + platform + ArgoCD
 make delete-cluster
 ```
@@ -110,6 +110,8 @@ Something failing unexpectedly? Check `docs/common-failures.md` first.
 - Each UI has a backend-for-frontend: the admin UI's Express proxy, and
   osaan-ui's Next.js API routes. Keycloak (OAuth2) authenticates users of
   both UIs; sessions live in Redis/Valkey.
+- `docker-compose.yaml` holds only shared infrastructure, at k3d's versions;
+  `make verify` fails when they differ, so upgrade both together.
 - k3d runs the full stack: Istio service mesh, ArgoCD (app-of-apps watching
   `dev`), Helm charts per workload, SOPS + age secrets, Testkube,
   Prometheus, Grafana, Jaeger and Kiali.

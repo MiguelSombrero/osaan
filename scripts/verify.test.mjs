@@ -37,6 +37,18 @@ test('a docs-only change selects the scripts component, which checks the task fi
   assert.deepEqual(selectComponents(['docs/tasks/iteration-0.md']), ['scripts']);
 });
 
+test('a change to Compose or to a file that declares a k3d version selects the version check', () => {
+  const files = [
+    'docker-compose.yaml',
+    'setup-cluster.sh',
+    'manifests/platform/postgres/postgres.yaml',
+    'manifests/argocd-apps/valkey-app.yaml',
+  ];
+  for (const file of files) assert.deepEqual(selectComponents([file]), ['scripts'], file);
+  const scripts = COMPONENTS.find((c) => c.name === 'scripts');
+  assert.ok(scripts.steps.some((s) => s.args?.includes('scripts/check-compose-versions.mjs')));
+});
+
 test('a file no component owns selects nothing', () => {
   assert.deepEqual(selectComponents(['charts/osaan-ui/values/osaan-ui.yaml']), []);
 });

@@ -13,6 +13,9 @@ spec:
     targetRevision: "0.9.4"  # https://github.com/valkey-io/valkey-helm/releases
     helm:
       values: |
+        # Pinned, with docker-compose.yaml following: not the chart's appVersion.
+        image:
+          tag: "9.0.2"
         auth:
           enabled: true
           usersExistingSecret: redis-secret

@@ -16,8 +16,8 @@ Osaan is a knowledge management system built on a microservice landscape. Projec
     - [Kubernetes](#kubernetes)
 - [Test Data](#test-data)
 - [Develop](#develop)
+  - [Local infrastructure](#local-infrastructure)
   - [IDE](#ide)
-  - [Docker Compose](#docker-compose)
   - [Kubernetes](#kubernetes)
 - [Bugs, issues and TODOs](#bugs-issues-and-todos)
 
@@ -49,12 +49,11 @@ There are also multiple management UI:s for development:
 
 #### Local
 
+With the [local infrastructure](#local-infrastructure) up:
+
 - Mail: http://localhost:8025
-- Zipkin: http://localhost:9411
 - RabbitMQ: http://localhost:15672 (guest/guest)
-- Keycloak: https://localhost:8443 (admin/admin) (docker compose only)
-- Prometheus: http://localhost:9090
-- Grafana: http://localhost:3000 (admin/admin)
+- Keycloak: http://localhost:8080 (admin/admin)
 
 #### Kubernetes
 
@@ -87,29 +86,28 @@ For subdomain to work add to your local `/etc/hosts`file:
 
 See [docs/develop.md](docs/develop.md) for detailed instructions on how to develop Osaan system.
 
-There are 3 options for running Osaan system locally:
+The full stack runs in Kubernetes (k3d). For work in an IDE or with
+`npm run dev`, Docker Compose runs only the shared infrastructure.
 
-1. IDE
-2. Docker Dompose
-3. Kubernetes
+### Local infrastructure
+
+```bash
+make up      # PostgreSQL, RabbitMQ, Keycloak, Valkey and Mailhog
+make down    # stop them
+make clean   # stop them and remove their data
+```
+
+The versions are the ones k3d runs, and `make verify` fails when they differ.
+PostgreSQL listens on `localhost:5432`, database `postgres`, user
+`postgres`, password `osaan_pass`; all services share it.
 
 ### IDE
 
-Start all microservices from `/microservices` folder (exept osaan-core which is library) in IDE with profile `spring.profiles.active=local`. Each microservice has `compose.yaml` file in the project root, which will start the necessary dependencies for that service. Start `competence-matching-service` first as its `compose.yaml` file contains all the shared dependecies like RabbitMQ.
-
-### Docker Compose
-
-When there is changes in microservices:
-
-```bash
-make up
-```
-
-When there is not changes:
-
-```bash
-make up-no-build
-```
+With the infrastructure up, start the microservices under `/microservices`
+with the `local` profile (`osaan-core` is a library, so install it first): set
+`spring.profiles.active=local` in the IDE, or run
+`mvn spring-boot:run -Dspring-boot.run.profiles=local` in the service folder.
+See each UI's README for running it with `npm run dev`.
 
 ### Kubernetes
 

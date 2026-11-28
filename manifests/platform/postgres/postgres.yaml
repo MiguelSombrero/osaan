@@ -7,6 +7,8 @@ metadata:
     postgres-operator.crunchydata.com/autoCreateUserSchema: "true"
 spec:
   postgresVersion: 17
+  # Pinned, with docker-compose.yaml following: the operator no longer chooses it.
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi9-17.11-2633
   users:
     - name: osaan-user
       databases:

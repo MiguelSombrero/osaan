@@ -35,6 +35,7 @@ level.
 | [06](iteration-1/06-service-configuration.md) | One way to configure each service | refined |
 | [07](iteration-1/07-openapi-export.md) | Services export their OpenAPI spec | refined |
 | [08](iteration-1/08-competence-profile-hexagonal.md) | competence-profile-service to the hexagonal layout | refined |
+| [09](iteration-1/09-local-auth-disabled.md) | A local run works, signed in or not | needs-refinement |
 
 The iteration starts once [iteration 0](iteration-0.md) tasks 05 and 06
 are merged. 01 goes first: every later task builds and tests through it.

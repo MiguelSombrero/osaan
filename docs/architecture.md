@@ -79,12 +79,22 @@ For USER and MANAGER roles: browse skills and manage competence profiles.
 
 | Dependency | Purpose |
 |------------|---------|
-| Keycloak 26.4 | OAuth2 / IAM |
-| PostgreSQL 18 | Persistent storage (one database per service) |
+| Keycloak 26 | OAuth2 / IAM |
+| PostgreSQL 17 | Persistent storage (one database shared by the services) |
 | RabbitMQ 4 | Domain event messaging (Spring Cloud Stream) |
 | Redis / Valkey | Session storage |
 | Istio | Service mesh (Kubernetes only) |
-| Zipkin / Jaeger | Distributed tracing (local / Kubernetes) |
-| Prometheus + Grafana | Metrics and monitoring |
+| Jaeger | Distributed tracing (Kubernetes only) |
+| Prometheus + Grafana | Metrics and monitoring (Kubernetes only) |
 
 See [devops.md](devops.md) for CI/CD pipeline and Kubernetes platform setup.
+
+---
+
+## Key decisions
+
+**k3d is the only full-stack runtime.** `docker-compose.yaml` runs only the
+shared infrastructure that IDE and `npm run dev` work needs, at the versions
+the k3d files declare, which `scripts/check-compose-versions.mjs` enforces.
+Rejected: keeping Compose as a second full deployment, which had already
+drifted from k3d and made every upgrade twice the work.

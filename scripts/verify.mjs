@@ -32,8 +32,21 @@ export const COMPONENTS = [
   {
     name: 'scripts',
     dir: '.',
-    paths: ['scripts/', 'docs/', 'CLAUDE.md', '.claude/'],
-    steps: [run('node', '--test', 'scripts/*.test.mjs'), run('node', 'scripts/check-tasks.mjs')],
+    paths: [
+      'scripts/',
+      'docs/',
+      'CLAUDE.md',
+      '.claude/',
+      // What check-compose-versions reads.
+      'docker-compose.yaml',
+      'setup-cluster.sh',
+      'manifests/',
+    ],
+    steps: [
+      run('node', '--test', 'scripts/*.test.mjs'),
+      run('node', 'scripts/check-tasks.mjs'),
+      run('node', 'scripts/check-compose-versions.mjs'),
+    ],
   },
   { name: 'osaan-core', dir: CORE, paths: [`${CORE}/`], steps: [mvn('clean', 'install')] },
   service('employee-service'),

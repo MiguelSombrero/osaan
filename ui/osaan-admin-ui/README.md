@@ -6,12 +6,11 @@ See [docs/architecture.md](../../docs/architecture.md) for the system architectu
 
 ## Develop
 
-There are 4 setups for running Osaan-admin-ui in localhost:
+There are 3 setups for running Osaan-admin-ui in localhost:
 
 1. Run `frontend` with `MSW` mock (no backend needed)
 2. Run `frontend` with Node.js `backend` and `skill-catalog-service`
-3. Run `frontend` in Docker Compose with all microservices (no authentication)
-4. Run `frontend` in Kubernetes with full system landscape
+3. Run `frontend` in Kubernetes with full system landscape
 
 ### Run frontend with MSW
 
@@ -22,10 +21,12 @@ Vite dev-server is serving UI from `http://localhost:5173`
 
 ### Run frontend with backend and skill-catalog-service
 
-Start all three services:
+Start the shared infrastructure at the repository root, then all three services:
+
+    make up
 
     cd microservices/skill-catalog-service
-    mvn run spring-boot:run -Dspring.profiles.active=local
+    mvn spring-boot:run -Dspring-boot.run.profiles=local
 
     cd frontend
     npm run dev
@@ -34,14 +35,6 @@ Start all three services:
     npm run dev
 
 Vite dev-server is serving UI from `http://localhost:5173`
-
-### Run in Docker Compose
-
-    docker compose up --build -d
-
-Nginx server is serving UI from `http://localhost:8085`
-(Login → admin/admin for ADMIN role)
-(Login → user/user for USER role)
 
 ### Run in Kubernetes
 

@@ -1,6 +1,6 @@
 # Task 05: Docker Compose runs shared infrastructure only
 
-- **Status:** refined
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-5
 
@@ -30,6 +30,16 @@ runtime, and Compose runs only what IDE and `npm run dev` work needs.
 - The mail catcher stays Mailhog here, because k3d runs Mailhog. Both move to
   Mailpit together in [iteration 4](../iteration-4.md) task 10.
 - The version check is a Node `.mjs` script ([task 01](01-agent-workflow.md)).
+- CI has no cluster, so the check compares Compose with the versions the
+  k3d files declare, with no second version list. RabbitMQ, Valkey,
+  PostgreSQL and Mailhog get exact versions there, keeping what already
+  runs. A pinned image no longer moves with its operator or chart. The PO,
+  asked on 2026-11-28 during implementation: "Yes, pin all".
+- Compose Keycloak serves plain HTTP, reachable from the host only on
+  loopback, and `keycloak/certs/` is deleted: its certificate had expired
+  and its committed private key had no other use. Local sign-in runs over
+  HTTP while k3d stays on HTTPS; git history is not rewritten. The PO, asked
+  on 2026-11-28 after the sign-in test: "Yes, do it".
 
 ## Open questions
 
@@ -37,9 +47,9 @@ runtime, and Compose runs only what IDE and `npm run dev` work needs.
 
 ## Acceptance criteria
 
-- [ ] `docker compose config` lists only infrastructure services, each with
+- [x] `docker compose config` lists only infrastructure services, each with
       a pinned image tag
-- [ ] A check in `make verify` fails when a Compose image tag differs from
+- [x] A check in `make verify` fails when a Compose image tag differs from
       the one deployed in k3d for the same component
-- [ ] With Compose up, each microservice starts with the `local` profile
+- [x] With Compose up, each microservice starts with the `local` profile
       and `/actuator/health` returns `UP`
