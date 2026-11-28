@@ -16,8 +16,8 @@ upgraded in the same task, so nothing is changed twice.
 
 | # | Iteration | Goal | Status |
 |---|---|---|---|
-| 0 | [Baseline and harness](iteration-0.md) | The stack runs from scratch, and every change can be verified locally, in CI and in k3d | 🔄 In progress |
-| 1 | [Backend](iteration-1.md) | Microservices on current Spring, one Maven build, every service tested like skill-catalog-service | ⬜ Todo |
+| 0 | [Baseline and harness](iteration-0.md) | The stack runs from scratch, and every change can be verified locally, in CI and in k3d | ✅ Done |
+| 1 | [Backend](iteration-1.md) | Microservices on current Spring, one Maven build, every service tested like skill-catalog-service | 🔄 In progress |
 | 2 | [Admin UI](iteration-2.md) | Admin UI and its backend on current React/MUI/Vite, the backend tested for the first time | ⬜ Todo |
 | 3 | [User UI](iteration-3.md) | osaan-ui on current Next.js, Tailwind and auth, with e2e coverage of its main flows | ⬜ Todo |
 | 4 | [Platform](iteration-4.md) | k3d platform and GitOps restructured to current practice and current versions | ⬜ Todo |

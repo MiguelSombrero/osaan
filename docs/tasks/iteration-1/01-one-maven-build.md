@@ -1,6 +1,6 @@
 # Task 01: One Maven build for the microservices
 
-- **Status:** refined
+- **Status:** in-progress
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-1
 
