@@ -7,7 +7,7 @@ Loaded when you work under `microservices/`. Java 25, Spring Boot 4, Maven.
 ```bash
 cd microservices/<service-name>
 mvn clean package                                   # build
-mvn spring-boot:run -Dspring.profiles.active=local  # run; compose.yaml starts dependencies
+mvn spring-boot:run -Dspring-boot.run.profiles=local  # run; needs `make up` first
 mvn test                                            # all tests
 mvn test -Dtest=SkillControllerTest                 # one class
 mvn test -Dtest=SkillControllerTest#getSkill_returnsSkill  # one method
@@ -15,8 +15,8 @@ mvn test -Dtest=SkillControllerTest#getSkill_returnsSkill  # one method
 
 Install `osaan-core` first when it changed: `(cd microservices/osaan-core && mvn install)`.
 Integration tests are named `*IT.java` and start a real PostgreSQL with
-Testcontainers. When running in an IDE, start `competence-matching-service`
-first: its `compose.yaml` holds the shared infrastructure.
+Testcontainers. To run a service on the host or in an IDE, start the shared
+infrastructure with `make up` at the repository root.
 
 ## Layout: DDD + hexagonal (ports and adapters)
 

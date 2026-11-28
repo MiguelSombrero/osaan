@@ -1,4 +1,8 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: osaan_pass # The Compose database, for local development only
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
@@ -16,7 +20,7 @@ logging:
 
 management:
   server.port: 4002
-  tracing.export.zipkin.endpoint: http://localhost:9411/api/v2/spans
+  tracing.export.zipkin.enabled: false # Traces are collected in k3d only
   tracing.sampling.probability: 1.0
 
 server:

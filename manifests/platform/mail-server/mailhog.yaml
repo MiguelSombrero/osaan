@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: mailhog
-          image: mailhog/mailhog
+          image: mailhog/mailhog:v1.0.1
           ports:
             - containerPort: 1025  # SMTP
             - containerPort: 8025  # Web UI

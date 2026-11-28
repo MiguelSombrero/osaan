@@ -33,3 +33,7 @@ refined.
    spec into the repository at build time, and `make verify` fails when the
    committed spec no longer matches the code. The UIs generate their clients
    from these files instead of hand-copied YAML.
+8. **Endpoints work with auth disabled.** With the `local` profile,
+   `GET /v1/competences` and `GET /v1/subscriptions` return 500 because they
+   read the user from a token that is not there (found in iteration 0 task
+   05).

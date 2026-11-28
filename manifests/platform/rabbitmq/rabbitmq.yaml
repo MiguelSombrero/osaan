@@ -5,6 +5,8 @@ metadata:
   namespace: osaan-dev
 spec:
   replicas: 1
+  # Pinned, with docker-compose.yaml following: the operator no longer chooses it.
+  image: rabbitmq:4.3.4-management
   resources:
     requests:
       memory: 256Mi

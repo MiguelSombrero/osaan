@@ -1,6 +1,6 @@
 # Task 05: Docker Compose runs shared infrastructure only
 
-- **Status:** refined
+- **Status:** in-progress
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-5
 

@@ -1,6 +1,6 @@
 SERVICES = osaan-core employee-service skill-catalog-service competence-profile-service competence-matching-service
 
-.PHONY: verify verify-changed install-hooks setup-cluster delete-cluster cluster-status cluster-verify cluster-reset build-services up up-no-build down clean restart
+.PHONY: verify verify-changed install-hooks setup-cluster delete-cluster cluster-status cluster-verify cluster-reset build-services up down clean restart
 
 # The local gate, the same checks CI runs on every pull request.
 # make verify COMPONENTS=osaan-ui,e2e  runs only those components.
@@ -43,10 +43,9 @@ build-services:
 		cd microservices/$$svc && mvn -B clean package -DskipTests && cd ../..; \
 	done
 
-up: build-services
-	docker compose up -d --build
-
-up-no-build:
+# Shared infrastructure only (PostgreSQL, RabbitMQ, Keycloak, Valkey, Mailhog),
+# for IDE and `npm run dev` work. The full stack runs in k3d.
+up:
 	docker compose up -d
 
 down:

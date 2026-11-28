@@ -31,7 +31,7 @@ version is upgraded.
 | [02](iteration-0/02-stack-runs-from-scratch.md) | Stack runs from scratch in k3d | done |
 | [03](iteration-0/03-verify-gate-and-pr-ci.md) | `make verify` and pull-request CI | done |
 | [04](iteration-0/04-cluster-verify.md) | `make cluster-verify` with local images | done |
-| [05](iteration-0/05-compose-infra-only.md) | Docker Compose runs shared infrastructure only | refined |
+| [05](iteration-0/05-compose-infra-only.md) | Docker Compose runs shared infrastructure only | in-progress |
 | [06](iteration-0/06-todos-and-docs.md) | Move TODOs into iterations and consolidate docs | refined |
 
 01 goes first: it creates the skills and checker the other tasks are run

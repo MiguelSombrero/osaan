@@ -42,6 +42,7 @@ src/
 - Node.js 20+
 - npm or pnpm
 - Running microservices (skill-catalog-service, competence-profile-service, employee-service)
+- Shared infrastructure for them: `make up` at the repository root
 
 ### Installation
 
