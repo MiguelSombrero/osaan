@@ -1,6 +1,6 @@
 # Task 06: Move TODOs into iterations and consolidate docs
 
-- **Status:** refined
+- **Status:** in-progress
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-6
 
