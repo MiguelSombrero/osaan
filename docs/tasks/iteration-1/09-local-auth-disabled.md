@@ -1,4 +1,4 @@
-# Task 09: User-specific endpoints work with auth disabled
+# Task 09: Local services work with auth disabled
 
 - **Status:** needs-refinement
 - **Iteration:** [1](../iteration-1.md)
@@ -13,10 +13,17 @@ user from the token. With auth off there is none, so
 with `npm run dev` against local services cannot use them. Found while
 running [iteration 0 task 05](../iteration-0/05-compose-infra-only.md).
 
+A UI signed in against the Compose Keycloak fares worse. skill-catalog,
+employee and competence-matching still validate a sent token while auth is
+off, against the default issuer `https://keycloak.local/realms/osaan`, and
+answer 500; competence-profile-service ignores the token. Seen in both UIs
+for skill-catalog and competence-profile; for the other two it is read from
+their security configuration.
+
 ## Scope
 
-- With the `local` profile, no endpoint fails only because auth is
-  disabled.
+- With the `local` profile, no request fails only because auth is
+  disabled, whether or not it carries a token.
 
 ## Constraints
 
