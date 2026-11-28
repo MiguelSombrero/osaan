@@ -26,8 +26,10 @@ The product owner (PO) decides; agents write all code and docs and advise.
   `upgrade-component` whenever a version number changes.
 - **Never start a task that is not `refined`**, and only the PO moves a task
   there. Record the move in its own commit, quoting the PO.
-- **One task, one PR**, on a branch `iteration-N/<topic>` off up-to-date
-  `dev`. Never commit directly to `dev`. Never merge; merging is the PO's.
+- **Refinement is its own PR**, on `iteration-N/refinement`, merged before
+  any of its tasks is implemented. Then **one task, one PR**, on a branch
+  `iteration-N/<topic>` off up-to-date `dev`. Never commit directly to
+  `dev`. Never merge; merging is the PO's.
 - **One worktree per session.** Two sessions never share a checkout.
 - **Every task adds or strengthens a test.** Verify by running the change,
   not only by compiling it.

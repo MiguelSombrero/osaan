@@ -70,9 +70,10 @@ Questions for the product owner. `**None.**` only once they are answered.
 - **Status.** A new task is `needs-refinement`. Only the product owner moves
   it to `refined`; the agent records that move in its own commit, quoting the
   product owner's words. Nothing is implemented before `refined`.
-- **One PR per task.** The PR holds the task file commit first, then the
-  `refined` commit, then the implementation. Refining and implementing are
-  separate commits, not separate PRs.
+- **Refinement before implementation, in separate PRs.** An iteration's
+  task files, the refinement answers and the `refined` commit go in one
+  refinement PR, which is merged before any of its tasks is implemented.
+  Each task is then implemented in its own PR.
 - **Acceptance criteria** must each be checkable on the task's own branch,
   before merge. Prefer one that fails today.
 - **Every task adds or strengthens a test** that would catch a regression in

@@ -11,14 +11,14 @@ unit is one iteration: its tasks share vocabulary and one `Done when`, so
 their questions are asked together. For a single task, run the same steps
 on that task alone.
 
-Refining writes no code. Its commits are the first commits of the PR for
-the first task that will be implemented. Refinement and implementation are
-separate commits in one PR, never separate PRs.
+Refining writes no code. It ends in its own pull request, which the PO
+merges before any of the iteration's tasks is implemented. Implementation
+PRs branch off `dev` after that merge.
 
 ## Procedure
 
 1. **Branch.** `git fetch origin`, then branch off `origin/dev` as
-   `iteration-N/<topic of the first task to implement>`.
+   `iteration-N/refinement` (`iteration-N/refine-NN` for a single task).
 2. **Write the missing files.** If the iteration still lists one-line tasks,
    write `## Done when` (enumerated `DW-N` outcomes that can be run) and one
    task file per line, all `needs-refinement`, following the template. Write
@@ -62,8 +62,14 @@ separate commits in one PR, never separate PRs.
     the checker, and commit "Move iteration N tasks to refined" quoting the
     PO's words. A task with a question still open stays
     `needs-refinement`, and you say so.
+11. **Open the refinement PR.** Run `make verify`, push, and open a PR to
+    `dev` titled "Refine iteration N", listing the tasks, their status and
+    the decisions. Never merge; implementation starts only after the PO
+    has merged it.
 
 ## A refined task that has gone stale
 
 If implementing contradicts what a `refined` task file says, stop and
-re-refine that task with the PO. Do not improvise the difference.
+re-refine that task with the PO. Do not improvise the difference. The
+re-refinement is a small refinement PR of its own (`iteration-N/refine-NN`),
+merged before the implementation continues on a branch rebased onto it.
