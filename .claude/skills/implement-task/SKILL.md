@@ -44,12 +44,19 @@ this orders them.
    `docs/architecture.md`'s Key decisions only for a main architectural
    decision, with the alternative rejected. An unexpected failure or gotcha
    gets a row in `docs/common-failures.md` when it happens.
-9. **Review.** Get a separate review of the full task diff against `origin/dev`.
-   Use `/code-review` in Claude Code, `codex review --base origin/dev` in Codex,
-   or the equivalent branch review in another harness. Commit the changes to
-   be reviewed first so the branch comparison includes them. Fix what is worth
-   fixing now. Anything bigger becomes a `needs-refinement` task file in the
-   current or next iteration, with its row: never a note left in the PR.
+9. **Review your own changes in this session.** The implementing agent does
+   this pass itself. Keep the diff in the current chat and worktree; do not
+   invoke a reviewer command, delegate to another agent, or upload it for review.
+   - Read the task's constraints and acceptance criteria again. Inspect
+     `git diff origin/dev...HEAD` for committed changes and `git diff HEAD`
+     for working changes. Use `git ls-files --others --exclude-standard`
+     to find and read untracked files intended for the PR.
+   - Trace changed behavior through its callers. Look for a concrete input or
+     failure that would break it, and check whether the tests would catch it.
+     For docs and skills, walk through the instructions as their reader would.
+   - Fix in-scope findings, rerun the affected checks and review the fixes.
+     Record larger findings as `needs-refinement` tasks in the current or next
+     iteration with a matching table row.
 10. **Tick the criteria by running them.** For each acceptance criterion,
     run its check and tick the box only when it passes. Then set the status
     to `done` in the file and the table, and run
