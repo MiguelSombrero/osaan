@@ -33,8 +33,12 @@ test('a change to the admin UI root package selects both admin UI packages', () 
   assert.deepEqual(selectComponents(['ui/osaan-admin-ui/package.json']), ['admin-backend', 'admin-frontend']);
 });
 
-test('a docs-only change selects the scripts component, which checks the task files', () => {
+test('Markdown changes select the scripts component for the repository link check', () => {
   assert.deepEqual(selectComponents(['docs/tasks/iteration-0.md']), ['scripts']);
+  assert.deepEqual(selectComponents(['README.md']), ['scripts']);
+  assert.deepEqual(selectComponents(['ui/osaan-ui/README.md']), ['scripts', 'osaan-ui']);
+  const scripts = COMPONENTS.find((c) => c.name === 'scripts');
+  assert.ok(scripts.steps.some((step) => step.args?.includes('scripts/check-markdown-links.mjs')));
 });
 
 test('a change to Compose or to a file that declares a k3d version selects the version check', () => {

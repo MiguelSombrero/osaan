@@ -1,204 +1,59 @@
 # Osaan UI
 
-Next.js application for USER and MANAGER roles in the Osaan competence management system.
+The Next.js app lets users browse skills and maintain competence profiles.
+Managers can search employees and subscribe to matching skill criteria.
+See the [architecture](../../docs/architecture.md) for the system layout.
 
-## Overview
+## Run locally
 
-This is a modern web application built with Next.js that allows users to:
-
-- Browse available skills from the skill catalog
-- Create and manage competence profiles
-- Link skills to employees with ratings (1-5)
-
-See [docs/architecture.md](../../docs/architecture.md) for the full system architecture.
-
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── api/                 # API routes (proxy to microservices)
-│   │   ├── skills/
-│   │   ├── competences/
-│   │   └── employees/
-│   ├── competences/         # Competences management page
-│   ├── layout.tsx           # Root layout with providers
-│   ├── page.tsx             # Home page
-│   └── globals.css          # Global styles
-├── lib/
-│   └── api-client.ts        # Client-side API functions
-├── providers/
-│   └── query-provider.tsx   # TanStack Query provider
-└── types/
-    ├── skill.ts             # Skill-related types
-    ├── competence.ts        # Competence-related types
-    └── employee.ts          # Employee-related types
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20+
-- npm or pnpm
-- Running microservices (skill-catalog-service, competence-profile-service, employee-service)
-- Shared infrastructure for them: `make up` at the repository root
-
-### Installation
+Use Node.js 24. Start the [shared infrastructure](../../README.md#local-infrastructure)
+and start the [microservices](../../microservices/README.md#run-locally)
+with the `local` profile. From `ui/osaan-ui`:
 
 ```bash
-# Install dependencies
 npm install
-
-# Copy environment variables
 cp .env.local.example .env.local
-
-# Edit .env.local with your microservice URLs
-```
-
-### Development
-
-```bash
-# Run development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [localhost:3000](http://localhost:3000). The
+[environment template](.env.local.example) has the default service URLs
+and disables Keycloak and Redis for local development. Use the
+[k3d stack](../../README.md#kubernetes) for sign-in and user-specific flows.
+Open [osaan.local](https://osaan.local) and use one of the
+[seeded accounts](../../README.md#test-data).
 
-### Build
+## Test and build
+
+From the repository root:
 
 ```bash
-# Build for production
+cd ui/osaan-ui
+npm test                   # Vitest
+npm test -- --run          # run once
+npm run type-check
+npm run lint
 npm run build
-
-# Start production server
 npm start
 ```
 
-## Environment Variables
+Vitest and Testing Library tests live in `src/**/__tests__/`. Use
+`renderHook` with a real `QueryClient` and retries and cache time disabled
+for custom hooks. Render client components with `renderWithProviders()`
+from `src/test/` and mock HTTP with `src/test/mocks/handlers.ts`.
 
-Create a `.env.local` file in the project root:
+## Build and run a Docker image
 
-```env
-# Microservice endpoints
-SKILL_CATALOG_API_URL=http://localhost:8092
-COMPETENCE_PROFILE_API_URL=http://localhost:8090
-EMPLOYEE_API_URL=http://localhost:8091
-
-# Future: Keycloak authentication
-# KEYCLOAK_ENABLED=false
-# KEYCLOAK_ISSUER_BASE_URL=
-# KEYCLOAK_CLIENT_ID=
-# KEYCLOAK_CLIENT_SECRET=
-
-# Future: Redis session store
-# REDIS_ENABLED=false
-# REDIS_URL=
-```
-
-## Features
-
-### Current Features (MVP)
-
-- **Browse Skills**: View all available skills with search and pagination
-- **Skill Search**: Filter skills by name
-- **Pagination**: Navigate through large skill lists
-- **Clean UI**: Modern, responsive design with Tailwind CSS
-- **Type Safety**: Full TypeScript support
-
-### Planned Features
-
-- **Competence Profile Creation**: Add skills with ratings to employee profiles
-- **Employee Management**: Create and link employee records
-- **Authentication**: Keycloak integration for secure access
-- **Session Management**: Redis-backed sessions
-- **Authorization**: Role-based access control (USER/MANAGER)
-- **Real-time Updates**: Optimistic updates with React Query
-
-## API Endpoints
-
-### Skills API
-
-- `GET /api/skills?query=java&page=0&size=20` - Fetch skills with pagination
-
-### Competences API
-
-- `POST /api/competences/:employeeId` - Create competences for an employee
-
-### Employees API
-
-- `POST /api/employees` - Create a new employee record
-
-## Docker Deployment
-
-Build and run with Docker:
+From `ui/osaan-ui`, build the image and set the service URLs to addresses
+reachable inside the container. The example uses Docker Desktop with the
+microservices running on the host.
 
 ```bash
-# Build image
 docker build -t osaan-ui .
-
-# Run container
-docker run -p 3000:3000 \
-  -e SKILL_CATALOG_API_URL=http://skill-catalog-service:8092 \
-  -e COMPETENCE_PROFILE_API_URL=http://competence-profile-service:8090 \
-  -e EMPLOYEE_API_URL=http://employee-service:8091 \
+docker run -p 3000:3000 \\
+  -e SKILL_CATALOG_API_URL=http://host.docker.internal:8092 \\
+  -e COMPETENCE_PROFILE_API_URL=http://host.docker.internal:8093 \\
+  -e EMPLOYEE_API_URL=http://host.docker.internal:8091 \\
+  -e COMPETENCE_MATCHING_API_URL=http://host.docker.internal:8094 \\
   osaan-ui
 ```
-
-### K3d Deployment
-
-This application is designed to be deployed in a K3d cluster. Ensure the microservices are accessible within the cluster network.
-
-## Development Notes
-
-### Adding New Microservice Integrations
-
-1. Add the microservice URL to `.env.local.example` and `.env.local`
-2. Create TypeScript types in `src/types/`
-3. Add API route in `src/app/api/[resource]/route.ts`
-4. Add client function in `src/lib/api-client.ts`
-5. Use in components with TanStack Query
-
-### Code Style
-
-- Use TypeScript for type safety
-- Follow Next.js 15 App Router conventions
-- Use `'use client'` directive only when necessary
-- Prefer Server Components over Client Components
-- Use Tailwind CSS for styling
-
-## Comparison with osaan-admin-ui
-
-Unlike `osaan-admin-ui` (Node + Express backend + React SPA), this application uses:
-
-- **Next.js** instead of separate Express backend and React frontend
-- **App Router** for routing and API routes
-- **Server Components** for better performance
-- **Built-in API routes** instead of standalone Express proxy
-- **Simplified deployment** with single container
-
-## Future Enhancements
-
-1. **Authentication & Authorization**
-   - Integrate Keycloak for SSO
-   - Extract user identity from OAuth tokens
-   - Implement role-based access control
-
-2. **Session Management**
-   - Redis-backed sessions
-   - Secure cookie handling
-
-3. **Competence Profile UI**
-   - Form for adding skills with ratings
-   - Visual skill matrix
-   - Employee profile page
-
-4. **Performance**
-   - Server-side rendering for initial page load
-   - Optimistic UI updates
-   - Request deduplication
-
-5. **Observability**
-   - OpenTelemetry tracing
-   - Error tracking
-   - Performance monitorin

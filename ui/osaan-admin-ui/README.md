@@ -1,56 +1,80 @@
-# osaan-admin-ui
+# Osaan Admin UI
 
-Osaan Admin UI is for Osaan admins to manage skills and employees.
+Admins manage skills and employees in a React frontend backed by an Express
+proxy. See the [architecture](../../docs/architecture.md) for the system layout.
 
-See [docs/architecture.md](../../docs/architecture.md) for the system architecture.
+## Run locally
 
-## Develop
+Use Node.js 24. For frontend-only work, run these commands from
+`ui/osaan-admin-ui/frontend`:
 
-There are 3 setups for running Osaan-admin-ui in localhost:
+```bash
+npm ci
+npm run dev:mock
+```
 
-1. Run `frontend` with `MSW` mock (no backend needed)
-2. Run `frontend` with Node.js `backend` and `skill-catalog-service`
-3. Run `frontend` in Kubernetes with full system landscape
+Open [localhost:5173](http://localhost:5173). MSW handles sign-in and skill
+operations, including error scenarios. Edit the mock users and responses in
+`src/test/mocks/data.ts` and `src/test/mocks/handlers.ts`. For example, set
+`currentAuthState` to `mockRegularUser` to see the UI as a regular user.
 
-### Run frontend with MSW
+To run against real services, start the
+[shared infrastructure](../../README.md#local-infrastructure) and run
+`skill-catalog-service` following the [microservice README](../../microservices/README.md#run-locally).
+Run each app in a separate terminal from its own directory:
 
-    cd frontend
-    npm run dev:mock
+```bash
+# From ui/osaan-admin-ui/backend
+npm ci
+npm run dev
+```
 
-Vite dev-server is serving UI from `http://localhost:5173`
+```bash
+# From ui/osaan-admin-ui/frontend
+npm ci
+npm run dev
+```
 
-### Run frontend with backend and skill-catalog-service
+Vite serves [localhost:5173](http://localhost:5173) and calls Express at
+`http://localhost:3000`. Express calls the skill catalog at
+`http://localhost:8092`. The development setup defaults to sign-in disabled.
 
-Start the shared infrastructure at the repository root, then all three services:
+## Run in Kubernetes
 
-    make up
+After [cluster setup](../../README.md#kubernetes), ArgoCD syncs the app.
+Open [osaan.admin.local](https://osaan.admin.local) and sign in as `anna` with
+the matching [test password](../../README.md#test-data).
 
-    cd microservices/skill-catalog-service
-    mvn spring-boot:run -Dspring-boot.run.profiles=local
+## Test and build the frontend
 
-    cd frontend
-    npm run dev
+From the repository root:
 
-    cd backend
-    npm run dev
+```bash
+cd ui/osaan-admin-ui/frontend
+npm test -- --run       # run once
+npm test -- --watch     # watch mode (also npm run test:watch)
+npm run lint
+npm run format
+npm run build
+npm run preview
+```
 
-Vite dev-server is serving UI from `http://localhost:5173`
+Tests live in `__tests__/` beside the code. Use Vitest and Testing Library
+with `renderWithProviders()` from `src/test/utils/` and the MSW handlers
+in `src/test/mocks/`. The Express backend has its own `npm test` and
+`npm run lint`, run from `ui/osaan-admin-ui/backend`.
 
-### Run in Kubernetes
+## Generate API clients
 
-If you have created cluster with `setup-cluster.sh` script, ArgoCD will sync all the resources in `kustomization.yaml` file to the cluster.
+Run `npm run generate:client` from `ui/osaan-admin-ui/frontend` after
+updating the [public](backend/src/openapi/skills-api.yaml) or
+[admin](backend/src/openapi/admin-skills-api.yaml) OpenAPI spec. Commit the
+regenerated clients. The specs are the source for API documentation.
 
-Nginx server is serving UI from `https://osaan.admin.local`
-(Login → admin/admin for ADMIN role)
-(Login → user/user for USER role)
+## Publish multi-architecture images manually
 
-## Notes and instructions
-
-### Build and push multi-arch image
-
-If you need to manually build and push multi-arch image, you can use following commands:
-
-Requires login to Docker Hub. Run command in `/frontend` or `/backend` directory.
+Log in to Docker Hub. Run each command from `ui/osaan-admin-ui` in its own
+terminal. If needed, [set up a multi-architecture builder](../../microservices/README.md#publish-a-multi-architecture-image-manually).
 
 ```bash
 cd frontend
@@ -60,19 +84,4 @@ docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-a
 ```bash
 cd backend
 docker buildx build --platform linux/amd64,linux/arm64 -t miguelsombrero/osaan-admin-ui-backend:latest --push .
-```
-
-If you got error "Multi-platform build is not supported for the docker driver", you need to switch `buildx` driver to
-`docker-container`:
-
-```bash
-docker buildx create --name multiarch-builder --driver docker-container --use
-```
-
-### Generate client
-
-To generate client from `backend/openapi/skill-api.yaml` when skill-catalog-service API changes:
-
-```bash
-npm run generate:client
 ```

@@ -89,24 +89,17 @@ make delete-cluster
 
 Run one component's suite from the root in a subshell, for example
 `(cd microservices/employee-service && mvn test)`. Component commands are in
-each subtree's `CLAUDE.md` and README.
+the [microservices](microservices/README.md), [admin UI](ui/osaan-admin-ui/README.md)
+and [user UI](ui/osaan-ui/README.md) READMEs.
 
-E2E (`e2e/`): there is no `npm test`; run Playwright directly.
-
-```bash
-(cd e2e && SMOKE_GW_HTTP=http://localhost:9080 SMOKE_GW_HTTPS=https://localhost \
-  npx playwright test --config playwright.smoke.config.ts)
-testkube run testworkflow cluster-smoke --watch
-testkube run testworkflow osaan-ui-e2e --watch
-```
+Use the [e2e README](e2e/README.md) for Testkube and Playwright commands.
 
 Something failing unexpectedly? Check `docs/common-failures.md` first.
 
 ## Architecture in brief
 
 - Services talk over REST and RabbitMQ domain events (Spring Cloud Stream).
-  For simplicity they share one PostgreSQL database, `osaan-db`, in both
-  Compose and k3d.
+  They share one PostgreSQL database in each environment.
 - Each UI has a backend-for-frontend: the admin UI's Express proxy, and
   osaan-ui's Next.js API routes. Keycloak (OAuth2) authenticates users of
   both UIs; sessions live in Redis/Valkey.
@@ -124,7 +117,7 @@ More in [docs/architecture.md](docs/architecture.md).
 ## Local test data
 
 Seeded users — **the username is also the password**. The full skill matrix
-is in `docs/develop.md`.
+is in the [root README](README.md#test-data).
 
 | Username | Role |
 |---|---|
