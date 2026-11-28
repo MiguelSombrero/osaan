@@ -35,6 +35,9 @@ READMEs), which the documentation policy reduces.
   shared run, test and build steps, and a table of each service's port and
   Swagger URL.
 - The link check is a Node `.mjs` script ([task 01](01-agent-workflow.md)).
+- Check relative file links and heading anchors in tracked, hand-maintained
+  Markdown. Exclude generated Markdown, including the committed OpenAPI client
+  docs under `ui/osaan-admin-ui/frontend/src/api/generated/`.
 - The PO placed every old TODO item from `docs/develop.md` at refinement:
 
   | Old TODO | Placement |
@@ -68,7 +71,8 @@ READMEs), which the documentation policy reduces.
 
 - [ ] `grep -rn "TODO" --include=*.md .` finds no TODO lists outside
       `docs/tasks/`
-- [ ] The link check in `make verify` passes, and fails on a broken
-      relative link
+- [ ] The link check in `make verify` fails on a broken relative link or
+      heading anchor in hand-maintained Markdown and passes when the only
+      broken link is in generated output
 - [ ] Every command in the removed docs appears in a README or
       `CLAUDE.md`

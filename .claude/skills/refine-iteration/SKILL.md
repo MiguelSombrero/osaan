@@ -45,8 +45,9 @@ PRs branch off `dev` after that merge.
 6. **Merge into one agenda.** Questions several tasks ask are one decision;
    note which tasks it binds. Drop questions another answer settles, and
    questions no task's `Scope` depends on. Put upstream decisions first.
-7. **Ask in rounds of up to four.** Use AskUserQuestion when the choices can
-   be named: recommended option first, with a trade-off in each description.
+7. **Ask in rounds of up to four.** For named choices, use the harness's
+   question picker (such as Claude Code's `AskUserQuestion`) or list the
+   choices in chat. Put the recommendation first and explain the trade-offs.
    Ask in plain text when the PO should describe rather than pick, or wants
    to discuss. After each round, re-derive: drop what an answer settled.
 8. **Record the answers** as `Constraints` in every task they bind. A

@@ -74,6 +74,7 @@ Only these are kept up to date, and only with what really matters:
 | File | Holds |
 |---|---|
 | `CLAUDE.md` | Rules and commands an agent needs every session; under 150 lines |
+| [`AGENTS.md`](../../AGENTS.md) | Entry point to the shared instructions and skills for other agent harnesses |
 | `docs/architecture.md` | The system's shape, and a **Key decisions** section — one paragraph per main decision, with the alternative rejected. No ADRs |
 | `docs/common-failures.md` | Failures and gotchas: symptom, cause, fix. One row each, added when it happens |
 | `README.md` files | How to run and test each part |

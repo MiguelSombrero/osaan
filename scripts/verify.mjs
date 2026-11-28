@@ -37,6 +37,8 @@ export const COMPONENTS = [
       'docs/',
       'CLAUDE.md',
       '.claude/',
+      'AGENTS.md',
+      '.agents/',
       // What check-compose-versions reads.
       'docker-compose.yaml',
       'setup-cluster.sh',
