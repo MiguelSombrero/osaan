@@ -3,6 +3,7 @@
 - **Status:** done
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-1
+- **PR:** [#10](https://github.com/MiguelSombrero/osaan/pull/10)
 
 ## Why
 
