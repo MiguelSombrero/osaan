@@ -21,7 +21,9 @@ and the change follows from that comparison.
    `manifests/argocd-apps/`), and use an AppProject instead of `default`.
 2. **Image versioning.** Immutable tags from CI instead of `latest` plus
    digest write-back, and decide whether Image Updater stays. It is the
-   source of the "build: automatic update" commits on `dev`.
+   source of the "build: automatic update" commits on `dev`. Also remove
+   the `osaan-local/*` images that `make cluster-verify` imports into the
+   k3d nodes; each run adds one per app and nothing deletes them.
 3. **One owner per component.** Istio is installed by `setup-cluster.sh`
    *and* managed by ArgoCD, and operators come in through OLM and
    operatorhub.io URLs. Reduce the script to bootstrap (cluster, ArgoCD,
@@ -38,7 +40,9 @@ and the change follows from that comparison.
    Updater, RabbitMQ operator**, each via `upgrade-component`.
 9. **Testkube 2.9 → 2.16,** with the e2e workflows triggered and reported
    reliably: failure notifications and a way to view Playwright reports
-   (old TODOs).
+   (old TODOs). The deployment-image-update TestTriggers also run dev's
+   workflows on every `make cluster-verify` deploy and restore, alongside
+   its own `-local` runs.
 10. **Mailhog → Mailpit,** and observability charts (Prometheus, Grafana,
     Jaeger, Kiali) to current versions; decide on an OpenTelemetry
     Collector and on log aggregation (old TODO).

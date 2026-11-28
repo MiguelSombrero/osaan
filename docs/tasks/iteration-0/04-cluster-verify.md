@@ -1,6 +1,6 @@
 # Task 04: `make cluster-verify` with local images
 
-- **Status:** in-progress
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-4
 
@@ -40,10 +40,10 @@ every task and need to verify each change in the cluster before merging.
 
 ## Acceptance criteria
 
-- [ ] With a visible change in one service on the branch (for example, its
+- [x] With a visible change in one service on the branch (for example, its
       `/actuator/info` version), `make cluster-verify COMPONENTS=<service>`
       exits 0 and the pod serves the changed response
-- [ ] Making the smoke test fail makes `make cluster-verify` exit non-zero,
+- [x] Making the smoke test fail makes `make cluster-verify` exit non-zero,
       and `kubectl -n argocd get application <service>` shows auto-sync on
       again afterwards
-- [ ] The script's own tests pass in `make verify`
+- [x] The script's own tests pass in `make verify`
