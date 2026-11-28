@@ -1,6 +1,6 @@
 # Task 08: competence-profile-service to the hexagonal layout
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-4
 

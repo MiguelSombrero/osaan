@@ -1,6 +1,6 @@
 # Task 06: One way to configure each service
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-5
 

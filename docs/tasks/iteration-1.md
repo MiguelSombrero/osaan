@@ -27,14 +27,14 @@ level.
 
 | ID | Task | Status |
 |---|---|---|
-| [01](iteration-1/01-one-maven-build.md) | One Maven build for the microservices | needs-refinement |
-| [02](iteration-1/02-spring-upgrade.md) | Spring Boot 4.2, Spring Cloud 2026.0 and the Java dependencies | needs-refinement |
-| [03](iteration-1/03-container-images.md) | Smaller, non-root service images | needs-refinement |
-| [04](iteration-1/04-employee-service-tests.md) | employee-service tests to the skill-catalog-service pattern | needs-refinement |
-| [05](iteration-1/05-competence-services-tests.md) | competence-profile and competence-matching tests, event flow included | needs-refinement |
-| [06](iteration-1/06-service-configuration.md) | One way to configure each service | needs-refinement |
-| [07](iteration-1/07-openapi-export.md) | Services export their OpenAPI spec | needs-refinement |
-| [08](iteration-1/08-competence-profile-hexagonal.md) | competence-profile-service to the hexagonal layout | needs-refinement |
+| [01](iteration-1/01-one-maven-build.md) | One Maven build for the microservices | refined |
+| [02](iteration-1/02-spring-upgrade.md) | Spring Boot 4.2, Spring Cloud 2026.0 and the Java dependencies | refined |
+| [03](iteration-1/03-container-images.md) | Smaller, non-root service images | refined |
+| [04](iteration-1/04-employee-service-tests.md) | employee-service tests to the skill-catalog-service pattern | refined |
+| [05](iteration-1/05-competence-services-tests.md) | competence-profile and competence-matching tests, event flow included | refined |
+| [06](iteration-1/06-service-configuration.md) | One way to configure each service | refined |
+| [07](iteration-1/07-openapi-export.md) | Services export their OpenAPI spec | refined |
+| [08](iteration-1/08-competence-profile-hexagonal.md) | competence-profile-service to the hexagonal layout | refined |
 
 The iteration starts once [iteration 0](iteration-0.md) tasks 05 and 06
 are merged. 01 goes first: every later task builds and tests through it.

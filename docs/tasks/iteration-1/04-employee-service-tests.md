@@ -1,6 +1,6 @@
 # Task 04: employee-service tests to the skill-catalog-service pattern
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-4
 

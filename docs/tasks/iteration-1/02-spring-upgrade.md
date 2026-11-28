@@ -1,6 +1,6 @@
 # Task 02: Spring Boot 4.2, Spring Cloud 2026.0 and the Java dependencies
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-2
 

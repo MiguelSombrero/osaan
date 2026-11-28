@@ -1,6 +1,6 @@
 # Task 05: competence-profile and competence-matching tests, event flow included
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-4
 

@@ -1,6 +1,6 @@
 # Task 03: Smaller, non-root service images
 
-- **Status:** needs-refinement
+- **Status:** refined
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-3
 
