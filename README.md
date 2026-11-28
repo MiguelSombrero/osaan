@@ -102,8 +102,9 @@ sops --decrypt secrets.enc.yaml | kubectl apply -f -
 
 ### Verify
 
-Run `make verify` from the repository root with Node.js 24, Java 25, Maven
-and Docker available. It runs the local checks used in PR CI, including
+Run `make verify` from the repository root with Node.js 24, Java 25 and
+Docker available. The Maven Wrapper supplies Maven. The gate runs the
+local checks used in PR CI, including
 link validation for tracked, hand-maintained Markdown. `make verify-changed`
 checks the affected components. `make verify COMPONENTS=scripts` runs the
 repository script and documentation checks.

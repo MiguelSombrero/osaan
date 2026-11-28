@@ -40,7 +40,7 @@ other three.
   license URL and the springdoc settings the spec is built from.
 - Each service has an `*IT` that starts it with Testcontainers, reads
   `/v3/api-docs/<group>` and compares it with the committed file, so
-  `mvn verify` (and with it `make verify`) fails on drift. A `-D` system
+  `./mvnw verify` (and with it `make verify`) fails on drift. A `-D` system
   property makes the same test rewrite the files. No
   `springdoc-openapi-maven-plugin`. Decided by the PO at refinement.
 - The files are JSON, at `microservices/<service>/openapi/<group>.json`.

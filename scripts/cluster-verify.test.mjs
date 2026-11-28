@@ -26,8 +26,16 @@ test('a change inside one service selects that service and the tests', () => {
   });
 });
 
-test('a change in osaan-core selects every service', () => {
-  assert.deepEqual(selectApps(['microservices/osaan-core/pom.xml']).apps, SERVICES);
+test('a change to the shared Maven build or osaan-core selects every service', () => {
+  for (const file of [
+    'microservices/osaan-core/pom.xml',
+    'microservices/pom.xml',
+    'microservices/mvnw',
+    'microservices/mvnw.cmd',
+    'microservices/.mvn/wrapper/maven-wrapper.properties',
+  ]) {
+    assert.deepEqual(selectApps([file]).apps, SERVICES, file);
+  }
 });
 
 test('each UI package selects its own app', () => {
@@ -325,21 +333,19 @@ test('parseJsonStream reads the objects kubectl prints one after another, and a 
   assert.deepEqual(parseJsonStream('  \n'), []);
 });
 
-test('a service image is built from a clean Maven build, osaan-core first and only once', () => {
+test('a service image is built with the wrapper and its reactor dependencies', () => {
   const app = APPS.find((a) => a.name === 'employee-service');
-  const withCore = buildCommands(app, 'osaan-local/employee-service:t', { withCore: true });
-  assert.deepEqual(
-    withCore.map(([cmd, args]) => [cmd, args.filter((a) => !a.startsWith('-'))]),
+  assert.deepEqual(buildCommands(app, 'osaan-local/employee-service:t'), [
     [
-      ['mvn', ['microservices/osaan-core/pom.xml', 'clean', 'install']],
-      ['mvn', ['microservices/employee-service/pom.xml', 'clean', 'package']],
-      ['docker', ['build', 'osaan-local/employee-service:t', 'microservices/employee-service']],
+      './mvnw',
+      ['-B', '--no-transfer-progress', '-q', '-pl', 'employee-service', '-am', 'clean', 'package', '-DskipTests'],
+      { cwd: 'microservices' },
     ],
-  );
-  assert.equal(buildCommands(app, 'i', { withCore: false }).length, 2);
+    ['docker', ['build', '-t', 'osaan-local/employee-service:t', 'microservices/employee-service']],
+  ]);
 });
 
 test('a UI image is built by Docker alone', () => {
   const app = APPS.find((a) => a.name === 'osaan-admin-ui');
-  assert.deepEqual(buildCommands(app, 'i', { withCore: true }), [['docker', ['build', '-t', 'i', 'ui/osaan-admin-ui/frontend']]]);
+  assert.deepEqual(buildCommands(app, 'i'), [['docker', ['build', '-t', 'i', 'ui/osaan-admin-ui/frontend']]]);
 });

@@ -53,6 +53,26 @@ test('a change to Compose or to a file that declares a k3d version selects the v
   assert.ok(scripts.steps.some((s) => s.args?.includes('scripts/check-compose-versions.mjs')));
 });
 
+test('a parent POM or wrapper change verifies every Maven module', () => {
+  const modules = ['osaan-core', 'employee-service', 'skill-catalog-service', 'competence-profile-service', 'competence-matching-service'];
+  for (const file of [
+    'microservices/pom.xml',
+    'microservices/mvnw',
+    'microservices/mvnw.cmd',
+    'microservices/.mvn/wrapper/maven-wrapper.properties',
+  ]) {
+    assert.deepEqual(selectComponents([file]), modules, file);
+  }
+  for (const name of modules) {
+    const component = COMPONENTS.find((c) => c.name === name);
+    assert.equal(component.dir, 'microservices');
+    assert.deepEqual(component.steps, [{
+      cmd: './mvnw',
+      args: ['-B', '--no-transfer-progress', '-pl', name, '-am', 'clean', 'verify'],
+    }]);
+  }
+});
+
 test('a file no component owns selects nothing', () => {
   assert.deepEqual(selectComponents(['charts/osaan-ui/values/osaan-ui.yaml']), []);
 });

@@ -5,18 +5,15 @@ Loaded when you work under `microservices/`. Java 25, Spring Boot 4, Maven.
 ## Commands
 
 ```bash
-cd microservices/<service-name>
-mvn clean package                                   # build
-mvn spring-boot:run -Dspring-boot.run.profiles=local  # run; needs `make up` first
-mvn test                                            # unit and context tests
-mvn test -Dtest=SkillControllerTest                 # one class
-mvn test -Dtest=SkillControllerTest#getSkill_existingId_returns200WithSkillData  # one method
+cd microservices
+./mvnw clean verify                                 # build and test all modules
+./mvnw -pl skill-catalog-service -am clean verify      # one service and osaan-core
+./mvnw -pl skill-catalog-service -am test -Dtest=SkillControllerTest -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
-Install `osaan-core` first when it changed: `(cd microservices/osaan-core && mvn install)`.
-Integration tests are named `*IT.java` and start a real PostgreSQL with
-Testcontainers. To run a service on the host or in an IDE, start the shared
-infrastructure with `make up` at the repository root.
+`verify` runs `*IT.java` through Maven Failsafe. Repository integration
+tests start PostgreSQL with Testcontainers. To run a service on the host
+or in an IDE, follow the [local run commands](README.md#run-locally).
 
 ## Layout: DDD + hexagonal (ports and adapters)
 

@@ -95,12 +95,11 @@ For USER and MANAGER roles: browse skills and manage competence profiles.
 
 The [Verify workflow](../.github/workflows/verify.yml) runs the same checks
 as `make verify` on PRs to `dev`. On push to `dev`, the
-[build workflow](../.github/workflows/build.yml) detects changed components,
-publishes `osaan-core` to GitHub Packages when it changes, and builds and
-pushes the affected service and UI images to Docker Hub. Java services and
-UI frontends run their tests before publication. Images target amd64 and
-arm64 and carry `latest` and commit SHA tags. Publication uses
-`DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` and GitHub Actions' `GITHUB_TOKEN`.
+[build workflow](../.github/workflows/build.yml) detects changed components
+and builds and pushes the affected service and UI images to Docker Hub.
+Java services and UI frontends run their tests before publication. Images
+target amd64 and arm64 and carry `latest` and commit SHA tags. Publication
+uses `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN`.
 
 The [bootstrap script](../setup-cluster.sh) sets up OLM, namespaces and
 secrets, bootstraps Istio with Helm, installs the platform operators,
@@ -125,6 +124,11 @@ write-back in the `argocd` namespace when their credentials are supplied.
 ---
 
 ## Key decisions
+
+**One Maven reactor for the backend.** The shared parent manages Java
+dependencies and test plugins. Each service builds with the `osaan-core`
+sources from the same checkout, which removes the separate library
+publication and GitHub Packages credentials from the build.
 
 **k3d is the only full-stack runtime.** `docker-compose.yaml` runs only the
 shared infrastructure that IDE and `npm run dev` work needs, at the versions

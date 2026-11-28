@@ -62,7 +62,7 @@ Questions for the product owner. `**None.**` only once they are answered.
 
 - [ ] Observable outcome — and the command or check that verifies it
 - [ ] At least one criterion is an automated test, naming its command in
-      backticks (`npm test`, `mvn verify`, `make verify`, …)
+      backticks (`npm test`, `./mvnw verify`, `make verify`, …)
 ```
 
 ### Rules

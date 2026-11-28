@@ -27,7 +27,7 @@ level.
 
 | ID | Task | Status |
 |---|---|---|
-| [01](iteration-1/01-one-maven-build.md) | One Maven build for the microservices | refined |
+| [01](iteration-1/01-one-maven-build.md) | One Maven build for the microservices | done |
 | [02](iteration-1/02-spring-upgrade.md) | Spring Boot 4.2, Spring Cloud 2026.0 and the Java dependencies | refined |
 | [03](iteration-1/03-container-images.md) | Smaller, non-root service images | refined |
 | [04](iteration-1/04-employee-service-tests.md) | employee-service tests to the skill-catalog-service pattern | refined |

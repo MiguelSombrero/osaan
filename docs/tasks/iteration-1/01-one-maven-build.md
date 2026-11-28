@@ -1,8 +1,9 @@
 # Task 01: One Maven build for the microservices
 
-- **Status:** refined
+- **Status:** done
 - **Iteration:** [1](../iteration-1.md)
 - **Covers:** DW-1
+- **PR:** [#10](https://github.com/MiguelSombrero/osaan/pull/10)
 
 ## Why
 
@@ -57,12 +58,11 @@ artifact is still called `subscription-matching-service`.
 
 ## Acceptance criteria
 
-- [ ] With `~/.m2/repository/com/github/miguelsombrero` deleted and no
-      `settings.xml` server for GitHub, `(cd microservices && ./mvnw
-      verify)` builds all five
-      modules and runs their tests
-- [ ] `CompetenceRepositoryIT` runs and passes in `make verify
+- [x] With a fresh local Maven repository and no `settings.xml` server for
+      GitHub, `(cd microservices && ./mvnw verify)` builds all five modules
+      and runs their tests
+- [x] `CompetenceRepositoryIT` runs and passes in `make verify
       COMPONENTS=competence-profile-service` (it does not run today)
-- [ ] `make verify`, `make build-services` and `make cluster-verify
+- [x] `make verify`, `make build-services` and `make cluster-verify
       COMPONENTS=employee-service` pass
-- [ ] `grep -rn "maven.pkg.github.com" .` finds nothing
+- [x] `git grep -n 'maven[.]pkg[.]github[.]com'` finds nothing

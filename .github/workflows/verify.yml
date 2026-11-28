@@ -57,6 +57,10 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
           cache: maven
+          cache-dependency-path: |
+            microservices/pom.xml
+            microservices/*/pom.xml
+            microservices/.mvn/wrapper/maven-wrapper.properties
       - run: node scripts/verify.mjs --only "${{ matrix.component }}"
         env:
           CI: 'true'

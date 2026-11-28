@@ -4,12 +4,7 @@ on:
   push:
     branches: [dev]
     paths:
-      - "microservices/osaan-core/**"
-      - "microservices/competence-matching-service/**"
-      - "microservices/competence-profile-service/**"
-      - "microservices/employee-service/**"
-      - "microservices/skill-catalog-service/**"
-      - "pom.xml"
+      - "microservices/**"
       - "ui/osaan-admin-ui/**"
       - "ui/osaan-ui/**"
   workflow_dispatch:
@@ -23,7 +18,6 @@ jobs:
     name: Detect changed components
     runs-on: ubuntu-latest
     outputs:
-      core_changed: ${{ steps.detect.outputs.core_changed }}
       changed_services: ${{ steps.detect.outputs.changed_services }}
       admin_backend_changed: ${{ steps.detect.outputs.admin_backend_changed }}
       admin_frontend_changed: ${{ steps.detect.outputs.admin_frontend_changed }}
@@ -35,44 +29,25 @@ jobs:
 
       - name: Detect changed components
         id: detect
+        env:
+          BEFORE: ${{ github.event.before }}
         run: |
-          echo "Detecting changes between ${{ github.event.before }} and ${{ github.sha }}"
+          ALL_SERVICES=(competence-matching-service competence-profile-service employee-service skill-catalog-service)
 
-          # Fallback for non-push events (e.g. workflow_dispatch): treat as "no filtering"
-          if [ "${{ github.event_name }}" != "push" ] || [ -z "${{ github.event.before }}" ]; then
-            CORE_CHANGED=true
-            SERVICES_JSON='["competence-matching-service","competence-profile-service","employee-service","skill-catalog-service"]'
-            ADMIN_BACKEND_CHANGED=true
-            ADMIN_FRONTEND_CHANGED=true
-            OSAAN_UI_CHANGED=true
-            printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
+          # A manual run or unavailable push base rebuilds everything.
+          if [ "$GITHUB_EVENT_NAME" != "push" ] || ! CHANGED_FILES=$(git diff --name-only "$BEFORE" "$GITHUB_SHA"); then
+            SERVICES_JSON=$(printf '%s\n' "${ALL_SERVICES[@]}" | jq -Rc . | jq -cs .)
             printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
-            printf 'admin_backend_changed=%s\n' "$ADMIN_BACKEND_CHANGED" >> "$GITHUB_OUTPUT"
-            printf 'admin_frontend_changed=%s\n' "$ADMIN_FRONTEND_CHANGED" >> "$GITHUB_OUTPUT"
-            printf 'osaan_ui_changed=%s\n' "$OSAAN_UI_CHANGED" >> "$GITHUB_OUTPUT"
+            printf 'admin_backend_changed=true\nadmin_frontend_changed=true\nosaan_ui_changed=true\n' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          CHANGED_FILES="$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)"
-
-          CORE_CHANGED=false
-          if echo "$CHANGED_FILES" | grep -qE '^microservices/osaan-core/|^pom.xml'; then
-            CORE_CHANGED=true
-          fi
-
           SERVICES_JSON='[]'
-          SERVICES=$(echo "$CHANGED_FILES" \
-            | grep -oE '^microservices/[^/]+/' \
-            | cut -d'/' -f2 \
-            | sort -u \
-            | grep -v 'osaan-core' || true)
-
-          for SVC in $SERVICES; do
-            SERVICES_JSON=$(echo "$SERVICES_JSON" | jq -c --arg svc "$SVC" '. + [$svc]')
+          for SVC in "${ALL_SERVICES[@]}"; do
+            if grep -qE "^microservices/(${SVC}/|osaan-core/|pom[.]xml$|mvnw([.]cmd)?$|[.]mvn/)" <<< "$CHANGED_FILES"; then
+              SERVICES_JSON=$(jq -c --arg svc "$SVC" '. + [$svc]' <<< "$SERVICES_JSON")
+            fi
           done
-
-          # Ensure compact single-line JSON
-          SERVICES_JSON=$(echo "$SERVICES_JSON" | jq -c '.')
 
           ADMIN_BACKEND_CHANGED=false
           if echo "$CHANGED_FILES" | grep -qE '^ui/osaan-admin-ui/backend/'; then
@@ -89,58 +64,18 @@ jobs:
             OSAAN_UI_CHANGED=true
           fi
 
-          printf 'core_changed=%s\n' "$CORE_CHANGED" >> "$GITHUB_OUTPUT"
           printf 'changed_services=%s\n' "$SERVICES_JSON" >> "$GITHUB_OUTPUT"
           printf 'admin_backend_changed=%s\n' "$ADMIN_BACKEND_CHANGED" >> "$GITHUB_OUTPUT"
           printf 'admin_frontend_changed=%s\n' "$ADMIN_FRONTEND_CHANGED" >> "$GITHUB_OUTPUT"
           printf 'osaan_ui_changed=%s\n' "$OSAAN_UI_CHANGED" >> "$GITHUB_OUTPUT"
 
-  build-core:
-    name: Build & Publish osaan-core
-    runs-on: ubuntu-latest
-    needs: detect-changes
-    if: needs.detect-changes.outputs.core_changed == 'true'
-    permissions:
-      contents: read
-      packages: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: temurin
-          cache: maven
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-
-      - name: Build and publish osaan-core
-        run: |
-          cd microservices/osaan-core
-          mvn -B clean deploy
-
   build-and-push-services:
     name: Build & Push microservice images
     runs-on: ubuntu-latest
-    needs:
-      - detect-changes
-      - build-core
-    if: >
-      always() &&
-      needs.detect-changes.outputs.changed_services != '[]' &&
-      (
-        needs.detect-changes.outputs.core_changed != 'true' ||
-        needs.build-core.result == 'success'
-      )
+    needs: detect-changes
+    if: needs.detect-changes.outputs.changed_services != '[]'
     permissions:
       contents: read
-      packages: read
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         service: ${{ fromJson(needs.detect-changes.outputs.changed_services) }}
@@ -160,14 +95,14 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
           cache: maven
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
+          cache-dependency-path: |
+            microservices/pom.xml
+            microservices/*/pom.xml
+            microservices/.mvn/wrapper/maven-wrapper.properties
 
-      - name: Build and test with Maven
-        run: |
-          cd microservices/${{ matrix.service }}
-          mvn -B clean package
+      - name: Build and test with the Maven Wrapper
+        working-directory: microservices
+        run: ./mvnw -B --no-transfer-progress -pl "${{ matrix.service }}" -am clean verify
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3

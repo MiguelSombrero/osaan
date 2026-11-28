@@ -81,14 +81,14 @@ make cluster-verify               # changed apps: local images to k3d + Testkube
 make cluster-verify COMPONENTS=employee-service   # named ArgoCD apps only
 make cluster-reset                # every ArgoCD app back to what dev declares
 
-make build-services               # mvn clean package -DskipTests for all modules
+make build-services               # package all Maven modules without tests
 make up | down | clean | restart  # Docker Compose: shared infrastructure only
 make setup-cluster                # k3d cluster osaan-dev + platform + ArgoCD
 make delete-cluster
 ```
 
 Run one component's suite from the root in a subshell, for example
-`(cd microservices/employee-service && mvn test)`. Component commands are in
+`(cd microservices && ./mvnw -pl employee-service -am test)`. Component commands are in
 the [microservices](microservices/README.md), [admin UI](ui/osaan-admin-ui/README.md)
 and [user UI](ui/osaan-ui/README.md) READMEs.
 
