@@ -49,9 +49,9 @@ up:
 	docker compose up -d
 
 down:
-	docker compose down
+	docker compose down --remove-orphans
 
 clean:
-	docker compose down -v
+	docker compose down -v --remove-orphans
 
 restart: down up
