@@ -14,18 +14,23 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CORE = 'microservices/osaan-core';
+export const MAVEN_SHARED_PATHS = [
+  'microservices/osaan-core/',
+  'microservices/pom.xml',
+  'microservices/mvnw',
+  'microservices/mvnw.cmd',
+  'microservices/.mvn/',
+];
 
 const run = (cmd, ...args) => ({ cmd, args });
 const npmCi = { kind: 'npm-ci' };
-const mvn = (...goals) => run('mvn', '-B', '--no-transfer-progress', ...goals);
 const vitest = run('npx', '--no-install', 'vitest', 'run');
 
-const service = (name) => ({
+const mavenModule = (name) => ({
   name,
-  dir: `microservices/${name}`,
-  paths: [`microservices/${name}/`, `${CORE}/`],
-  steps: [{ ...mvn('clean', 'install', '-DskipTests'), cwd: CORE }, mvn('clean', 'verify')],
+  dir: 'microservices',
+  paths: [`microservices/${name}/`, ...MAVEN_SHARED_PATHS],
+  steps: [run('./mvnw', '-B', '--no-transfer-progress', '-pl', name, '-am', 'clean', 'verify')],
 });
 
 export const COMPONENTS = [
@@ -51,11 +56,11 @@ export const COMPONENTS = [
       run('node', 'scripts/check-compose-versions.mjs'),
     ],
   },
-  { name: 'osaan-core', dir: CORE, paths: [`${CORE}/`], steps: [mvn('clean', 'install')] },
-  service('employee-service'),
-  service('skill-catalog-service'),
-  service('competence-profile-service'),
-  service('competence-matching-service'),
+  mavenModule('osaan-core'),
+  mavenModule('employee-service'),
+  mavenModule('skill-catalog-service'),
+  mavenModule('competence-profile-service'),
+  mavenModule('competence-matching-service'),
   {
     name: 'admin-backend',
     dir: 'ui/osaan-admin-ui/backend',
@@ -160,7 +165,7 @@ function exec({ cmd, args, cwd }) {
 }
 
 function runStep(step, component) {
-  const cwd = step.cwd ?? component.dir;
+  const cwd = component.dir;
   if (step.kind === 'npm-ci') {
     const dir = join(ROOT, cwd);
     const install = {

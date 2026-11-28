@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.cloud.stream.binder.test.EnableTestBinder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
         "skill.service.url=http://localhost:0",
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration"
 })
+@EnableTestBinder
 @Testcontainers
 class CompetenceRepositoryIT {
 

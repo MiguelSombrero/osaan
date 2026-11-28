@@ -4,20 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.github.miguelsombrero.osaan</groupId>
+        <artifactId>osaan-microservices</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>com.github.miguelsombrero.osaan</groupId>
+
     <artifactId>osaan-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <java.version>25</java.version>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
     </properties>
@@ -59,19 +53,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <release>${java.version}</release>
-                    <annotationProcessorPaths>
+                    <annotationProcessorPaths combine.self="override">
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
 
             <plugin>
@@ -103,13 +91,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/MiguelSombrero/osaan</url>
-        </repository>
-    </distributionManagement>
-
 </project>

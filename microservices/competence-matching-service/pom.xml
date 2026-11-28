@@ -3,26 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.github.miguelsombrero.osaan</groupId>
+        <artifactId>osaan-microservices</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.github.miguelsombrero.osaan</groupId>
-    <artifactId>subscription-matching-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>subscription-matching-service</name>
+    <artifactId>competence-matching-service</artifactId>
+    <name>competence-matching-service</name>
     <description>Microservice for managing subscriptions of subscription profiles</description>
-
-    <properties>
-        <datasource-micrometer.version>2.2.1</datasource-micrometer.version>
-        <java.version>25</java.version>
-        <org.mapstruct.version>1.6.3</org.mapstruct.version>
-        <osaan.core.version>1.0.0-SNAPSHOT</osaan.core.version>
-        <spring-cloud.version>2025.1.2</spring-cloud.version>
-        <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -70,7 +58,6 @@
         <dependency>
             <groupId>net.ttddyy.observation</groupId>
             <artifactId>datasource-micrometer-spring-boot</artifactId>
-            <version>${datasource-micrometer.version}</version>
         </dependency>
 
         <!-- Monitoring -->
@@ -82,18 +69,15 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc-openapi.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.miguelsombrero.osaan</groupId>
             <artifactId>osaan-core</artifactId>
-            <version>${osaan.core.version}</version>
         </dependency>
 
         <dependency>
@@ -138,62 +122,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>0.2.0</version>
-                        </path>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/MiguelSombrero/osaan</url>
-        </repository>
-    </repositories>
-
 </project>

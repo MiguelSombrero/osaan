@@ -20,13 +20,12 @@ import { dirname, join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { summarize } from './cluster-status.mjs';
-import { changedFiles } from './verify.mjs';
+import { changedFiles, MAVEN_SHARED_PATHS } from './verify.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CLUSTER = 'osaan-dev';
 const CONTEXT = `k3d-${CLUSTER}`;
 const NAMESPACE = 'osaan-dev';
-const CORE = 'microservices/osaan-core';
 // Where Testkube puts a workflow's git content; the workflows' workingDir is under it.
 const REPO_MOUNT = '/data/repo';
 const MANAGED_BY = { 'app.kubernetes.io/managed-by': 'cluster-verify' };
@@ -38,7 +37,7 @@ const service = (name) => ({
   name,
   chart: 'osaan-microservice',
   build: { dir: `microservices/${name}`, maven: true },
-  paths: [`microservices/${name}/`, `${CORE}/`],
+  paths: [`microservices/${name}/`, ...MAVEN_SHARED_PATHS],
 });
 const ui = (name, dir) => ({ name, chart: 'osaan-ui', build: { dir }, paths: [`${dir}/`] });
 
@@ -205,12 +204,14 @@ export function workflowCopy(manifest, files) {
 
 // The image must hold only the working tree: `clean` drops classes another
 // branch's build left in target/, which Spring would load as well.
-export function buildCommands(app, image, { withCore }) {
-  const mvn = (dir, goal) => ['mvn', ['-B', '--no-transfer-progress', '-q', '-f', `${dir}/pom.xml`, 'clean', goal, '-DskipTests']];
+export function buildCommands(app, image) {
   const commands = [];
   if (app.build.maven) {
-    if (withCore) commands.push(mvn(CORE, 'install'));
-    commands.push(mvn(app.build.dir, 'package'));
+    commands.push([
+      './mvnw',
+      ['-B', '--no-transfer-progress', '-q', '-pl', app.name, '-am', 'clean', 'package', '-DskipTests'],
+      { cwd: 'microservices' },
+    ]);
   }
   commands.push(['docker', ['build', '-t', image, app.build.dir]]);
   return commands;
@@ -218,10 +219,10 @@ export function buildCommands(app, image, { withCore }) {
 
 // --- commands ----------------------------------------------------------------
 
-function sh(cmd, args, { input, capture = false, env } = {}) {
-  if (!capture) console.log(`$ ${[cmd, ...args].join(' ')}`);
+function sh(cmd, args, { input, capture = false, env, cwd = '.' } = {}) {
+  if (!capture) console.log(`$ ${cwd === '.' ? '' : `cd ${cwd} && `}${[cmd, ...args].join(' ')}`);
   const result = spawnSync(cmd, args, {
-    cwd: ROOT,
+    cwd: join(ROOT, cwd),
     input,
     env: env ? { ...process.env, ...env } : process.env,
     encoding: 'utf8',
@@ -291,7 +292,6 @@ function e2eFiles() {
 
 function clusterOps({ runId }) {
   const deployments = new Map();
-  let coreInstalled = false;
   let kubeconfigDir = null;
   // Testkube's CLI talks to the current kube context; pin it to the cluster
   // without changing the user's current context.
@@ -308,8 +308,7 @@ function clusterOps({ runId }) {
   return {
     async build(name) {
       const image = `osaan-local/${name}:${runId}`;
-      for (const [cmd, args] of buildCommands(appOf(name), image, { withCore: !coreInstalled })) sh(cmd, args);
-      coreInstalled ||= appOf(name).build.maven;
+      for (const [cmd, args, options] of buildCommands(appOf(name), image)) sh(cmd, args, options);
       return image;
     },
 

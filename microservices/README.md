@@ -5,20 +5,15 @@ See the [architecture](../docs/architecture.md) for service responsibilities.
 
 ## Run locally
 
-Use Java 25 and Maven. From the repository root, run `make up` to start
-[shared infrastructure](../README.md#local-infrastructure) and install the
-shared library once or after it changes.
+Use Java 25. From the repository root, run `make up` to start the
+[shared infrastructure](../README.md#local-infrastructure). Then package
+and run a service from `microservices/`. Substitute the service name as
+needed. In an IDE, set `spring.profiles.active=local`.
 
 ```bash
-(cd microservices/osaan-core && mvn clean install -DskipTests)
-```
-
-Start each service from its own directory, substituting the name below.
-In an IDE, set `spring.profiles.active=local`.
-
-```bash
-cd microservices/<service-name>
-mvn spring-boot:run -Dspring-boot.run.profiles=local
+cd microservices
+./mvnw -pl employee-service -am clean package -DskipTests
+java -jar employee-service/target/employee-service-*.jar --spring.profiles.active=local
 ```
 
 | Service | Local port | Swagger UI |
@@ -35,19 +30,19 @@ flows. Known local gaps are tracked in [iteration 1 task 09](../docs/tasks/itera
 
 ## Test and build
 
-Run these in a service directory after installing `osaan-core`:
+Run these from `microservices/`. The wrapper pins Maven and `-am` builds
+`osaan-core` alongside the selected service.
 
 ```bash
-mvn test
+./mvnw verify
+./mvnw -pl skill-catalog-service -am verify
 # One class or one method in skill-catalog-service
-mvn test -Dtest=SkillControllerTest
-mvn test -Dtest=SkillControllerTest#getSkill_existingId_returns200WithSkillData
-mvn clean package
-mvn clean verify
+./mvnw -pl skill-catalog-service -am test -Dtest=SkillControllerTest -Dsurefire.failIfNoSpecifiedTests=false
+./mvnw -pl skill-catalog-service -am test -Dtest=SkillControllerTest#getSkill_existingId_returns200WithSkillData -Dsurefire.failIfNoSpecifiedTests=false
 ```
 
-`mvn test` runs unit and Spring context tests. In skill-catalog-service,
-Maven Failsafe also runs `*IT.java` during `mvn verify`. Context and
+`./mvnw test` runs unit and Spring context tests. Maven Failsafe also runs
+`*IT.java` in every module during `./mvnw verify`. Context and
 repository tests that start PostgreSQL with Testcontainers need a running
 Docker daemon. Further integration test work is tracked in
 [iteration 1](../docs/tasks/iteration-1.md).
@@ -63,7 +58,7 @@ Skill-catalog-service is the reference suite.
 | Repository | Testcontainers, `@ServiceConnection` | `CachingSkillRepositoryIntegrationIT` |
 
 From the repository root, `make build-services` packages all five Maven
-modules without tests. It uses the locally installed `osaan-core` dependency.
+modules without tests.
 
 ### Publish a multi-architecture image manually
 

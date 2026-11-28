@@ -1,5 +1,3 @@
-SERVICES = osaan-core employee-service skill-catalog-service competence-profile-service competence-matching-service
-
 .PHONY: verify verify-changed install-hooks setup-cluster delete-cluster cluster-status cluster-verify cluster-reset build-services up down clean restart
 
 # The local gate, the same checks CI runs on every pull request.
@@ -38,10 +36,7 @@ cluster-reset:
 	@node scripts/cluster-verify.mjs --reset
 
 build-services:
-	@for svc in $(SERVICES); do \
-		echo "Building $$svc..."; \
-		cd microservices/$$svc && mvn -B clean package -DskipTests && cd ../..; \
-	done
+	cd microservices && ./mvnw -B --no-transfer-progress clean package -DskipTests
 
 # Shared infrastructure only (PostgreSQL, RabbitMQ, Keycloak, Valkey, Mailhog),
 # for IDE and `npm run dev` work. The full stack runs in k3d.
