@@ -30,6 +30,11 @@ runtime, and Compose runs only what IDE and `npm run dev` work needs.
 - The mail catcher stays Mailhog here, because k3d runs Mailhog. Both move to
   Mailpit together in [iteration 4](../iteration-4.md) task 10.
 - The version check is a Node `.mjs` script ([task 01](01-agent-workflow.md)).
+- CI has no cluster, so the check compares Compose with the versions the
+  k3d files declare, with no second version list. RabbitMQ, Valkey,
+  PostgreSQL and Mailhog get exact versions there, keeping what already
+  runs. A pinned image no longer moves with its operator or chart. The PO,
+  asked on 2026-11-28 during implementation: "Yes, pin all".
 
 ## Open questions
 
