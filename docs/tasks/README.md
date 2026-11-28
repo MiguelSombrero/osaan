@@ -23,9 +23,9 @@ upgraded in the same task, so nothing is changed twice.
 | 4 | [Platform](iteration-4.md) | k3d platform and GitOps restructured to current practice and current versions | ⬜ Todo |
 | 5 | [Toolchain](iteration-5.md) | Node 26, TypeScript 7 and pinned CI everywhere, with automation that keeps it current | ⬜ Todo |
 
-Iteration 0 has task files. Iterations 1–5 list one-line tasks; their task
-files are written when each is refined, because iteration 0 will change what
-they need. Status: ⬜ Todo → 🔄 In progress → ✅ Done.
+Iterations 0 and 1 have task files. Iterations 2–5 list one-line tasks;
+their task files are written when each is refined, because earlier
+iterations will change what they need. Status: ⬜ Todo → 🔄 In progress → ✅ Done.
 
 ## How we work
 
