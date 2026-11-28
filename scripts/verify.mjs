@@ -47,6 +47,7 @@ export const COMPONENTS = [
     steps: [
       run('node', '--test', 'scripts/*.test.mjs'),
       run('node', 'scripts/check-tasks.mjs'),
+      run('node', 'scripts/check-markdown-links.mjs'),
       run('node', 'scripts/check-compose-versions.mjs'),
     ],
   },
@@ -99,9 +100,9 @@ const NAMES = COMPONENTS.map((c) => c.name);
 
 export function selectComponents(changedFiles) {
   if (changedFiles.some((f) => GATE_FILES.includes(f) || GATE_DIRS.some((d) => f.startsWith(d)))) return NAMES;
-  return COMPONENTS.filter((c) => changedFiles.some((f) => c.paths.some((p) => f === p || f.startsWith(p)))).map(
-    (c) => c.name,
-  );
+  return COMPONENTS.filter((c) => changedFiles.some((f) =>
+    (c.name === 'scripts' && /\.md$/i.test(f)) || c.paths.some((p) => f === p || f.startsWith(p)),
+  )).map((c) => c.name);
 }
 
 export function parseArgs(argv) {

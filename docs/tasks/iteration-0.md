@@ -32,7 +32,24 @@ version is upgraded.
 | [03](iteration-0/03-verify-gate-and-pr-ci.md) | `make verify` and pull-request CI | done |
 | [04](iteration-0/04-cluster-verify.md) | `make cluster-verify` with local images | done |
 | [05](iteration-0/05-compose-infra-only.md) | Docker Compose runs shared infrastructure only | done |
-| [06](iteration-0/06-todos-and-docs.md) | Move TODOs into iterations and consolidate docs | refined |
+| [06](iteration-0/06-todos-and-docs.md) | Move TODOs into iterations and consolidate docs | done |
 
 01 goes first: it creates the skills and checker the other tasks are run
 with. 02 comes next, because 03–05 are verified against a running stack.
+
+## Closing notes
+
+The remaining development items are already covered by the iterations
+listed in [task 06](iteration-0/06-todos-and-docs.md#constraints). The
+following items were dropped:
+
+- Subscription detail page listing matching employees is new feature work.
+- A separate component diagram would duplicate the [architecture landscape](../architecture.md#system-overview).
+- Compose tracing lost its runtime when the apps and Zipkin moved out of Compose in [task 05](iteration-0/05-compose-infra-only.md).
+- A Zustand store in osaan-ui can wait for the first feature that needs it.
+- Unspecified osaan-ui enhancements are new feature work.
+- Admin UI toast notifications are new feature work.
+- Release pipelines around `main` can wait until a release process is needed.
+- The osaan-core documentation placeholder is covered by the shared [microservice README](../../microservices/README.md) and [architecture](../architecture.md#microservices).
+- The user UI's stale feature list repeated existing profile editing, authentication, sessions, access controls and tracing.
+- The user UI's skill matrix, employee profile page, error tracking and extra performance work lack a current modernization requirement.

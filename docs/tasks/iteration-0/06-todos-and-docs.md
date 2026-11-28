@@ -1,8 +1,9 @@
 # Task 06: Move TODOs into iterations and consolidate docs
 
-- **Status:** refined
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-6
+- **PR:** [#9](https://github.com/MiguelSombrero/osaan/pull/9)
 
 ## Why
 
@@ -69,10 +70,10 @@ READMEs), which the documentation policy reduces.
 
 ## Acceptance criteria
 
-- [ ] `grep -rn "TODO" --include=*.md .` finds no TODO lists outside
+- [x] `grep -rn "TODO" --include=*.md .` finds no TODO lists outside
       `docs/tasks/`
-- [ ] The link check in `make verify` fails on a broken relative link or
+- [x] The link check in `make verify` fails on a broken relative link or
       heading anchor in hand-maintained Markdown and passes when the only
       broken link is in generated output
-- [ ] Every command in the removed docs appears in a README or
+- [x] Every command in the removed docs appears in a README or
       `CLAUDE.md`

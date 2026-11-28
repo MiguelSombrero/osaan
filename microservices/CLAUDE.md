@@ -8,9 +8,9 @@ Loaded when you work under `microservices/`. Java 25, Spring Boot 4, Maven.
 cd microservices/<service-name>
 mvn clean package                                   # build
 mvn spring-boot:run -Dspring-boot.run.profiles=local  # run; needs `make up` first
-mvn test                                            # all tests
+mvn test                                            # unit and context tests
 mvn test -Dtest=SkillControllerTest                 # one class
-mvn test -Dtest=SkillControllerTest#getSkill_returnsSkill  # one method
+mvn test -Dtest=SkillControllerTest#getSkill_existingId_returns200WithSkillData  # one method
 ```
 
 Install `osaan-core` first when it changed: `(cd microservices/osaan-core && mvn install)`.
