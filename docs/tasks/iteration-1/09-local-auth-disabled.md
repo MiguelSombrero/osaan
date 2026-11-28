@@ -1,4 +1,4 @@
-# Task 09: Local services work with auth disabled
+# Task 09: A local run works, signed in or not
 
 - **Status:** needs-refinement
 - **Iteration:** [1](../iteration-1.md)
@@ -20,14 +20,25 @@ answer 500; competence-profile-service ignores the token. Seen in both UIs
 for skill-catalog and competence-profile; for the other two it is read from
 their security configuration.
 
+The admin UI also has two problems of its own with sign-in on. Its backend
+crashes at startup with the development default `REDIS_ENABLED=false`
+(`"session.store" must be of type object`). And without a
+`LOGIN_REDIRECT_URL`, which `.env.development` does not set, signing in or
+out ends on `Cannot GET /` at the backend.
+
 ## Scope
 
 - With the `local` profile, no request fails only because auth is
   disabled, whether or not it carries a token.
+- The admin backend started for local development with sign-in on does not
+  crash at startup.
+- Signing in to and out of the admin UI run with `npm run dev` ends in the
+  admin UI.
 
 ## Constraints
 
-**None.**
+- The two admin UI problems belong to this task. The PO, asked on
+  2026-11-28: "Yes, add them".
 
 ## Open questions
 
@@ -36,6 +47,8 @@ their security configuration.
   2026-10-28)?
 - Is this its own task, or part of [task 06](06-service-configuration.md),
   which redefines the `local` profile with auth off?
+- Should the admin backend keep sessions in memory when Redis is off, or
+  require Redis whenever sign-in is on?
 
 ## Acceptance criteria
 
@@ -44,3 +57,8 @@ their security configuration.
       COMPONENTS=competence-profile-service,competence-matching-service`
 - [ ] With Compose up and the `local` profile, `GET /v1/competences` and
       `GET /v1/subscriptions` return 200
+- [ ] A test starts the admin backend with sign-in on and the development
+      defaults, and its sign-in and sign-out return to the frontend, in
+      `make verify COMPONENTS=admin-backend`
+- [ ] With Compose up, signing in to and out of the admin UI run with
+      `npm run dev` ends in the admin UI
