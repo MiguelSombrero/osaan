@@ -12,8 +12,8 @@ npm run dev
 
 Runs the app at `http://localhost:5173` and connects to:
 
-- Backend API: `http://localhost:8080`
-- Skill Catalog Service: `http://localhost:8082`
+- Backend API: `http://localhost:3000`
+- Skill Catalog Service (through the backend): `http://localhost:8092`
 
 ### Mock Development (frontend only)
 

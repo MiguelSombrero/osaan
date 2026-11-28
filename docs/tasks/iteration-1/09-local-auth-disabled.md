@@ -43,8 +43,9 @@ out ends on `Cannot GET /` at the backend.
 ## Open questions
 
 - Should a local run keep auth off and supply a stand-in user, or turn auth
-  on against the Compose Keycloak (whose self-signed certificate expired on
-  2026-10-28)?
+  on against the Compose Keycloak? It serves plain HTTP, so setting the
+  services' issuer to `http://localhost:8080/realms/osaan` may be enough
+  (not tried).
 - Is this its own task, or part of [task 06](06-service-configuration.md),
   which redefines the `local` profile with auth off?
 - Should the admin backend keep sessions in memory when Redis is off, or

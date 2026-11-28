@@ -53,7 +53,7 @@ With the [local infrastructure](#local-infrastructure) up:
 
 - Mail: http://localhost:8025
 - RabbitMQ: http://localhost:15672 (guest/guest)
-- Keycloak: https://localhost:8443 (admin/admin)
+- Keycloak: http://localhost:8080 (admin/admin)
 
 #### Kubernetes
 

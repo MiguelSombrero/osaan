@@ -31,15 +31,13 @@ services:
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/cert.pem
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/key.pem
-      # No fixed hostname: the issuer follows the request, https://localhost:8443
+      # Plain HTTP, for local development only (k3d serves HTTPS). No fixed
+      # hostname: the issuer follows the request, http://localhost:8080
       - KC_HOSTNAME_STRICT=false
     volumes:
       - ./keycloak/realms:/opt/keycloak/data/import
-      - ./keycloak/certs:/opt/keycloak/certs:ro
     ports:
-      - "8443:8443"
+      - "127.0.0.1:8080:8080" # Loopback only: it serves sign-in without TLS
 
   # One DB for all microservices for simplicity in development
   osaan-db:
