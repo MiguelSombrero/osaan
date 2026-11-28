@@ -1,6 +1,6 @@
 # Task 05: Docker Compose runs shared infrastructure only
 
-- **Status:** in-progress
+- **Status:** done
 - **Iteration:** [0](../iteration-0.md)
 - **Covers:** DW-5
 
@@ -42,9 +42,9 @@ runtime, and Compose runs only what IDE and `npm run dev` work needs.
 
 ## Acceptance criteria
 
-- [ ] `docker compose config` lists only infrastructure services, each with
+- [x] `docker compose config` lists only infrastructure services, each with
       a pinned image tag
-- [ ] A check in `make verify` fails when a Compose image tag differs from
+- [x] A check in `make verify` fails when a Compose image tag differs from
       the one deployed in k3d for the same component
-- [ ] With Compose up, each microservice starts with the `local` profile
+- [x] With Compose up, each microservice starts with the `local` profile
       and `/actuator/health` returns `UP`
