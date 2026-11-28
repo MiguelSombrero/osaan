@@ -35,6 +35,11 @@ runtime, and Compose runs only what IDE and `npm run dev` work needs.
   PostgreSQL and Mailhog get exact versions there, keeping what already
   runs. A pinned image no longer moves with its operator or chart. The PO,
   asked on 2026-11-28 during implementation: "Yes, pin all".
+- Compose Keycloak serves plain HTTP, reachable from the host only on
+  loopback, and `keycloak/certs/` is deleted: its certificate had expired
+  and its committed private key had no other use. Local sign-in runs over
+  HTTP while k3d stays on HTTPS; git history is not rewritten. The PO, asked
+  on 2026-11-28 after the sign-in test: "Yes, do it".
 
 ## Open questions
 
