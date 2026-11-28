@@ -1,6 +1,6 @@
 ---
 name: implement-task
-description: Numbered procedure for implementing one refined Osaan task under docs/tasks/iteration-N/ — worktree and branch, checkpoint, test first, make verify, make cluster-verify for deployable changes, the light doc rule, /code-review, ticking each acceptance criterion by running it, opening the PR, and tearing the worktree down. Invoke before writing any code for a task.
+description: Implement one refined Osaan task under docs/tasks/iteration-N/ from worktree setup through verification, branch review and pull request. Invoke before writing code for a task.
 ---
 
 # Implement a task
@@ -10,11 +10,12 @@ this orders them.
 
 ## Procedure
 
-1. **Confirm the task is `refined` on `origin/dev`.** Never start one that
-   is not: its refinement PR must be merged first. Read the task file and
-   everything it links.
+1. **Confirm the task is `refined` on `origin/dev`.** Fetch first. For a bare
+   task number, use the roadmap's single `In progress` iteration. Ask the PO
+   if this does not identify one eligible task. Its refinement PR must be
+   merged first. Read the task file and everything it links.
 2. **Worktree and branch.** One session, one worktree; never share a
-   checkout with another session. `git fetch origin`, then work on a branch
+   checkout with another session. Work on a branch
    off `origin/dev` named `iteration-N/<topic>`. At most two sessions run
    heavy work at once (a k3d cluster, `make cluster-verify`, a full
    `make verify`).
@@ -43,9 +44,19 @@ this orders them.
    `docs/architecture.md`'s Key decisions only for a main architectural
    decision, with the alternative rejected. An unexpected failure or gotcha
    gets a row in `docs/common-failures.md` when it happens.
-9. **Review.** Run `/code-review` on the branch's diff. Fix what is worth
-   fixing now. Anything bigger becomes a `needs-refinement` task file in the
-   current or next iteration, with its row: never a note left in the PR.
+9. **Review your own changes in this session.** The implementing agent does
+   this pass itself. Keep the diff in the current chat and worktree; do not
+   invoke a reviewer command, delegate to another agent, or upload it for review.
+   - Read the task's constraints and acceptance criteria again. Inspect
+     `git diff origin/dev...HEAD` for committed changes and `git diff HEAD`
+     for working changes. Use `git ls-files --others --exclude-standard`
+     to find and read untracked files intended for the PR.
+   - Trace changed behavior through its callers. Look for a concrete input or
+     failure that would break it, and check whether the tests would catch it.
+     For docs and skills, walk through the instructions as their reader would.
+   - Fix in-scope findings, rerun the affected checks and review the fixes.
+     Record larger findings as `needs-refinement` tasks in the current or next
+     iteration with a matching table row.
 10. **Tick the criteria by running them.** For each acceptance criterion,
     run its check and tick the box only when it passes. Then set the status
     to `done` in the file and the table, and run
